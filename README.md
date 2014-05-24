@@ -15,7 +15,7 @@ or if the parameter name is not important in the exception output
 ```
 email.If().IsNull().IsNotValidEmail().ThenThrow();
 ```
-//check if valid
+check if valid
 ```
 var precondition = email.If().IsNull().IsNotValidEmail();
 if (!precondition.IsValid) {
@@ -23,7 +23,7 @@ if (!precondition.IsValid) {
     string errors = precondition.ToString();
 }
 ```
-//more complex checks
+more complex checks
 ```
 double a=1.0,b=2.0,c=3.0;
 a.If().IsFalse(x => x > b && x < c, "a must be between b and c").ThenThrow();
