@@ -62,6 +62,7 @@ ifDateNotValid.Combine(ifStringNotValid).ThenThrow();
 - Examines stack details to return row and file information when running in debug mode
 - Easy to extend. Its built on extension methods, add your own extensions to extend with new validations.
 - Throw your own exception types
+- Supports nullable types
 - Kind of fluent...
 
 **Available checks:**
