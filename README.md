@@ -3,8 +3,8 @@ RS.Assert (Another pragmatic argument validation lib)
 
 <strong>Example usage:</strong><br />
 <code>
-email.If("Email")
-      .IsNull()
+email.If("Email")<br />
+      .IsNull()<br />
       .IsNotValidEmail().ThenThrow();
 </code><br />
 Example exception debug: Email must be a valid email address at SomeMethod, line number 27 in file Asserts.cs<br />
@@ -16,18 +16,18 @@ email.If().IsNull().IsNotValidEmail().ThenThrow();
 </code><br />
 //check if valid
 <code>
-var precondition = email.If().IsNull().IsNotValidEmail();
-if (!precondition.IsValid) {
-    //Get errors
-    string errors = precondition.ToString();
+var precondition = email.If().IsNull().IsNotValidEmail();<br />
+if (!precondition.IsValid) {<br />
+    //Get errors<br />
+    string errors = precondition.ToString();<br />
 }
 </code><br />
 
 //more complex checks
 <code>
-double a=1.0,b=2.0,c=3.0;
+double a=1.0,b=2.0,c=3.0;<br />
 a.If().IsFalse(x => x > b && x < c, "a must be between b and c").ThenThrow();
-</code>
+</code><br />
 Example output: Double a must be between b and c at SomeMethod, line number 28 in file Asserts.cs
 
 
