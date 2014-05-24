@@ -1,7 +1,7 @@
 RS.Assert (Another pragmatic argument validation lib)
 =========
 
-***Available on nuget: PM> Install-Package RS.Assert***
+###Available on nuget: PM> Install-Package RS.Assert###
 
 **Example usage:**
 ```
