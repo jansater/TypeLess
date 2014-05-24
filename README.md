@@ -63,6 +63,7 @@ ifDateNotValid.Combine(ifStringNotValid).ThenThrow();
 - Easy to extend. Its built on extension methods, add your own extensions to extend with new validations.
 - Throw your own exception types
 - Supports nullable types
+- Can return number of validation errors if would be necessary
 - Kind of fluent...
 
 **Available checks:**
