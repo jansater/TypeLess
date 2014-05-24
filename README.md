@@ -11,6 +11,7 @@ email.If("Email")
       .IsNotValidEmail().ThenThrow();
 
 Example exception debug: Email must be a valid email address at SomeMethod, line number 27 in file Asserts.cs
+
 Example exception not debug: Email must be a valid email address
 
 //or if the parameter name is not important in the exception output
@@ -41,24 +42,24 @@ Features:
 - Kind of fluent...
 
 Available checks:
--IsNull
--IsEmpty
--IsTrue
--IsFalse
--IsEmpty
--ContainsLessThan x elements
--ContainsMoreThan x elements
--IsZero
--IsNotEqualTo
--IsEqualTo
--IsSmallerThan
--IsLargerThan
--IsPositive
--IsNegative
--IsEmptyOrWhitespace
--IsNotValidEmail
--IsShorterThan
--IsLongerThan
--DoesNotContainAlphaChars
--IsNotWithin 
+- IsNull
+- IsEmpty
+- IsTrue
+- IsFalse
+- IsEmpty
+- ContainsLessThan x elements
+- ContainsMoreThan x elements
+- IsZero
+- IsNotEqualTo
+- IsEqualTo
+- IsSmallerThan
+- IsLargerThan
+- IsPositive
+- IsNegative
+- IsEmptyOrWhitespace
+- IsNotValidEmail
+- IsShorterThan
+- IsLongerThan
+- DoesNotContainAlphaChars
+- IsNotWithin 
 
