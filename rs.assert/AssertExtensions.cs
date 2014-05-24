@@ -14,9 +14,36 @@ namespace RS.Assert
     /// <summary>
     /// Throws arg null exception instead of arg exception just to avoid parameter name messages ... could use a custom exception though
     /// </summary>
+#if !DEBUG
     [DebuggerStepThrough]
+#endif
     public static class AssertExtensions 
     {
+
+        private static string TryReadLine(string filePath, int line) {
+            try
+            {
+                using (Stream stream = File.Open(filePath, FileMode.Open))
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        string row = null;
+                        for (int i = 0; i < line && !reader.EndOfStream; i++)
+                        {
+                            row = reader.ReadLine();
+                        }
+
+                        return row;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            
+        }
+
         private static string GetTypeName(Type type)
         {
             if (type.IsGenericType)
@@ -33,6 +60,20 @@ namespace RS.Assert
 
         public static Assertion<T> If<T>(this T source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
+
+            if (String.IsNullOrEmpty(name) && Debugger.IsAttached && file != null && lineNumber.HasValue) {
+                var line = TryReadLine(file, lineNumber.Value);
+                if (line != null) {
+                    var match = Regex.Match(line, "[ \\t]*(?<caller>.*?).If\\(");
+                    if (match.Success) {
+                        var callingProperty = match.Result("$1");
+                        if (!String.IsNullOrWhiteSpace(callingProperty)) {
+                            name = callingProperty;
+                        }
+                    }
+                }
+            }
+
             return new Assertion<T>(name ?? GetTypeName(typeof(T)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
@@ -44,6 +85,7 @@ namespace RS.Assert
         /// <returns></returns>
         public static Assertion<T> IsNull<T>(this Assertion<T> source)
         {
+
             if (source.IgnoreFurtherChecks) {
                 return source;
             }
