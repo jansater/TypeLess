@@ -61,5 +61,6 @@ a.If().IsFalse(x => x > b && x < c, "a must be between b and c").ThenThrow();
 - IsShorterThan
 - IsLongerThan
 - DoesNotContainAlphaChars
+- DoesNotContainDigit
 - IsNotWithin 
 
