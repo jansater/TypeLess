@@ -357,7 +357,7 @@ namespace RS.Assert
 
             if (source.Item.Length < length)
             {
-                source.Append(String.Format("{0} must be longer than {1} characters", source.Item, length - 1));
+                source.Append(String.Format("must be longer than {0} characters", length - 1));
             }
             return source;
         }
@@ -371,7 +371,7 @@ namespace RS.Assert
 
             if (source.Item.Length > length)
             {
-                source.Append(String.Format("{0} must be shorter than {1} characters", source.Item, length - 1));
+                source.Append(String.Format("must be shorter than {0} characters", length + 1));
             }
             return source;
         }

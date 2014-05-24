@@ -22,6 +22,18 @@ namespace RS.Assert.Tests
         }
 
         [Fact]
+        public void SomeMethod() {
+            DateTime d1 = new DateTime(2014,05,01);
+            DateTime d2 = new DateTime(2014,05,10);
+            string s1 = "abc";
+
+            var ifDateNotValid = new DateTime(2014, 05, 24).If().IsNotWithin(d1, d2);
+            var ifStringNotValid = s1.If("abc").IsShorterThan(4);
+
+            ifDateNotValid.Combine(ifStringNotValid).ThenThrow();
+        }
+
+        [Fact]
         public void WhenNullThenThrow()
         {
 

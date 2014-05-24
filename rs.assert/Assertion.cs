@@ -3,8 +3,7 @@ using System.Text;
 
 namespace RS.Assert
 {
-
-    public class Assertion<T>
+    public class Assertion<T> : IAssertion
     {
 
         private StringBuilder _sb { get; set; }
@@ -28,7 +27,7 @@ namespace RS.Assert
             _caller = caller;
         }
 
-        public Assertion<T> Combine(Assertion<T> otherAssertion) {
+        public Assertion<T> Combine(IAssertion otherAssertion) {
 
             _isValid |= otherAssertion.IsValid;
             _sb.Append(". ").AppendLine(otherAssertion.ToString());
