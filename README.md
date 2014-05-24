@@ -1,20 +1,16 @@
-RS.Assert
+RS.Assert (Another pragmatic argument validation lib)
 =========
 
-Pragmatic argument validation lib
-
-A small lib created to speed up argument validation.
-
 <strong>Example usage:</strong><br />
+<code>
 email.If("Email")
       .IsNull()
       .IsNotValidEmail().ThenThrow();
+</code>
+Example exception debug: Email must be a valid email address at SomeMethod, line number 27 in file Asserts.cs<br />
+Example exception not debug: Email must be a valid email address<br />
 
-Example exception debug: Email must be a valid email address at SomeMethod, line number 27 in file Asserts.cs
-
-Example exception not debug: Email must be a valid email address
-
-//or if the parameter name is not important in the exception output
+//or if the parameter name is not important in the exception output<br />
 email.If().IsNull().IsNotValidEmail().ThenThrow();
 
 //check if valid
@@ -31,7 +27,7 @@ a.If().IsFalse(x => x > b && x < c, "a must be between b and c").ThenThrow();
 Example output: Double a must be between b and c at SomeMethod, line number 28 in file Asserts.cs
 
 
-Features: 
+<strong>Features:</strong>
 - Chain validation checks 
 - Short circuit validation 
 - Throw or get errors as text 
@@ -41,7 +37,7 @@ Features:
 - Throw your own exception types
 - Kind of fluent...
 
-Available checks:
+<strong>Available checks:</strong>
 - IsNull
 - IsEmpty
 - IsTrue
