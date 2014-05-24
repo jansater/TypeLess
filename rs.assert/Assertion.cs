@@ -42,13 +42,15 @@ namespace RS.Assert
             {
                 return;
             }
+
+            if (Debugger.IsAttached)
+            {
+                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { AppendTrace() });
+            }
+            else {
+                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { _sb.ToString() });
+            }
             
-#if DEBUG
-            throw (Exception)Activator.CreateInstance(typeof(E), new object[] { AppendTrace() });
-            
-#else
-            throw (Exception)Activator.CreateInstance(typeof(E), new object[] { _sb.ToString() });
-#endif
         }
 
         /// <summary>
@@ -62,11 +64,13 @@ namespace RS.Assert
                 return;
             }
 
-#if DEBUG
-            throw new ArgumentNullException("", AppendTrace());
-#else
-            throw new ArgumentNullException("", _sb.ToString());
-#endif
+            if (Debugger.IsAttached) {
+                throw new ArgumentNullException("", AppendTrace());
+            }
+            else
+            {
+                throw new ArgumentNullException("", _sb.ToString());
+            }
         }
 
         public override string ToString()
@@ -75,11 +79,14 @@ namespace RS.Assert
             {
                 return _sb.ToString() + " is valid";
             }
-#if DEBUG
-            return AppendTrace();
-#else
-            return _sb.ToString();
-#endif
+
+            if (Debugger.IsAttached)
+            {
+                return AppendTrace();
+            }
+            else {
+                return _sb.ToString();
+            }
         }
 
         private bool _isValid = true;
