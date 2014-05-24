@@ -3,13 +3,15 @@ RS.Assert (Another pragmatic argument validation lib)
 
 **Example usage:**
 ```
+string email = "some text";
 email.If("Email")
-      .IsNull()
-      .IsNotValidEmail().ThenThrow();
+  .IsNull()
+  .IsNotValidEmail()
+  .IsLongerThan(5).ThenThrow();
 ```
 
-- *Example exception debug: Email must be a valid email address at SomeMethod, line number 27 in file Asserts.cs*
-- *Example exception not debug: Email must be a valid email address*
+- *Example exception debug: Email must be a valid email address and must be shorter than 6 characters at SomeMethod, line number 27 in file Asserts.cs*
+- *Example exception not debug: Email must be a valid email address and must be shorter than 6 characters*
 
 or if the parameter name is not important in the exception output
 ```
