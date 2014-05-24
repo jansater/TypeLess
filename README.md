@@ -1,7 +1,7 @@
 RS.Assert (Another pragmatic argument validation lib)
 =========
 
-<strong>Example usage:</strong><br />
+**Example usage:
 ```
 email.If("Email")
       .IsNull()
