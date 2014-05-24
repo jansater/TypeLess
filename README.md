@@ -28,7 +28,7 @@ if (!precondition.IsValid) {
 more complex checks
 ```
 double a=1.0,b=2.0,c=3.0;
-a.If().IsFalse(x => **x > b && x < c**, "a must be between b and c").ThenThrow();
+a.If().IsFalse(x => x > b && x < c, "a must be between b and c").ThenThrow();
 ```
 - *Example output: Double a must be between b and c*
 
@@ -36,7 +36,7 @@ short circuit validation (default for isNull check)
 ```
 string email = "some text";
   email.If("Email")
-    .IsNotValidEmail().**StopIfNotValid()**
+    .IsNotValidEmail().StopIfNotValid()
     .IsLongerThan(5).ThenThrow();
 ```
 - *Example output: Email must be a valid email address*
