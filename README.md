@@ -5,12 +5,14 @@ RS.Assert (Another pragmatic argument validation lib)
 
 **Typical usage**
 ```
-public Program(SomeDTO input)
+public SomeMethod(SomeDTO input)
 {
     input.If("Input").IsNull().ThenThrow();
     input.Email.If("Email").IsNull().IsNotValidEmail().ThenThrow();
     input.Name.If("Name").IsNull().IsEmptyOrWhitespace().ThenThrow();
     input.UserId.If("User id").IsSmallerThan(0).ThenThrow();
+    
+    ...
 }
 ```
 
