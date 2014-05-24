@@ -1,6 +1,8 @@
 ﻿
+using Microsoft.CSharp.RuntimeBinder;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -469,6 +471,42 @@ namespace RS.Assert
             {
                 targetObject.Append(String.Format("must be within {0} and {1}", min, max));
             }
+            return targetObject;
+        }
+
+        /// <summary>
+        /// Make a call to this class IsValid method to determine whether the specified target object is valid. Normally used to define validation checks in for example dto's. 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="targetObject">The target object.</param>
+        /// <param name="min">The minimum.</param>
+        /// <param name="max">The maximum.</param>
+        /// <returns></returns>
+        public static Assertion<T> IsInvalid<T>(this Assertion<T> targetObject) where T : class
+        {
+            if (targetObject.IgnoreFurtherChecks)
+            {
+                return targetObject;
+            }
+
+            targetObject = targetObject.IsNull();
+
+            if (targetObject.Item != null) {
+                dynamic d = targetObject.Item;
+                try
+                {
+                    var classAssertions = d.IsInvalid() as IEnumerable<IAssertion>;
+                    foreach (var item in classAssertions)
+                    {
+                        targetObject = targetObject.Combine(item);
+                    }
+                }
+                catch (RuntimeBinderException)
+                {
+                    throw new MissingMethodException("You must define method public IEnumerable<IAssertion> IsInvalid() {} in class " + typeof(T).Name);
+                }
+            }
+            
             return targetObject;
         }
 

@@ -31,7 +31,7 @@ namespace RS.Assert
 
         public Assertion<T> Combine(IAssertion otherAssertion) {
 
-            _isValid |= otherAssertion.IsValid;
+            _isValid &= otherAssertion.IsValid;
             _sb.Append(". ").AppendLine(otherAssertion.ToString());
             return this;
         }

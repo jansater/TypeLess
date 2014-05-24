@@ -57,6 +57,7 @@ namespace RS.Assert.Tests
 
         }
 
+
         [Fact]
         public void WhenNullThenDontCheckFurther()
         {
@@ -520,6 +521,56 @@ namespace RS.Assert.Tests
                 d.If().IsNotWithin(dMin, dMax).ThenThrow();
             });
 
+
+        }
+
+        public class SomeClassWithoutValidate {
+            
+
+        }
+
+        public class SomeClassWithValidateB
+        {
+            public string Name { get; set; }
+            public int Number { get; set; }
+
+            public IEnumerable<IAssertion> IsInvalid()
+            {
+                yield return Name.If().IsNull();
+                yield return Number.If().IsNull();
+            }
+        }
+
+        public class SomeClassWithValidate {
+            public string Name { get; set; }
+            public int Number { get; set; }
+            public SomeClassWithValidateB Prop { get; set; }
+
+            public SomeClassWithValidate()
+            {
+                Prop = new SomeClassWithValidateB();
+            }
+
+            public IEnumerable<IAssertion> IsInvalid() {
+                yield return Prop.If().IsInvalid();
+            }
+        }
+
+        [Fact]
+        public void WhenDTOIsInValidThenThrow()
+        {
+
+            Xunit.Assert.Throws<MissingMethodException>(() =>
+            {
+                var x = new SomeClassWithoutValidate();
+                x.If().IsInvalid().ThenThrow();
+            });
+
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                var x = new SomeClassWithValidate();
+                x.If().IsInvalid().ThenThrow();
+            });
 
         }
 
