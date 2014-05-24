@@ -2,32 +2,34 @@ RS.Assert (Another pragmatic argument validation lib)
 =========
 
 <strong>Example usage:</strong><br />
-<code>
-email.If("Email")<br />
-      .IsNull()<br />
+```
+email.If("Email")
+      .IsNull()
       .IsNotValidEmail().ThenThrow();
-</code><br />
+```
+<br />
 Example exception debug: Email must be a valid email address at SomeMethod, line number 27 in file Asserts.cs<br />
 Example exception not debug: Email must be a valid email address<br />
 
 //or if the parameter name is not important in the exception output<br />
-<code>
+```
 email.If().IsNull().IsNotValidEmail().ThenThrow();
-</code><br />
+```
+<br />
 //check if valid
-<code>
-var precondition = email.If().IsNull().IsNotValidEmail();<br />
-if (!precondition.IsValid) {<br />
-    //Get errors<br />
-    string errors = precondition.ToString();<br />
+```
+var precondition = email.If().IsNull().IsNotValidEmail();
+if (!precondition.IsValid) {
+    //Get errors
+    string errors = precondition.ToString();
 }
-</code><br />
+```<br />
 
 //more complex checks
-<code>
-double a=1.0,b=2.0,c=3.0;<br />
+```
+double a=1.0,b=2.0,c=3.0;
 a.If().IsFalse(x => x > b && x < c, "a must be between b and c").ThenThrow();
-</code><br />
+```<br />
 Example output: Double a must be between b and c at SomeMethod, line number 28 in file Asserts.cs
 
 
