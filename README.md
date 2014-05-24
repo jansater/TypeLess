@@ -5,7 +5,7 @@ Pragmatic argument validation lib
 
 A small lib created to speed up argument validation.
 
-Example usage:
+<strong>Example usage:</strong><br />
 email.If("Email")
       .IsNull()
       .IsNotValidEmail().ThenThrow();
