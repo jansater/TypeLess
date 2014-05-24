@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -13,6 +14,7 @@ namespace RS.Assert
     /// <summary>
     /// Throws arg null exception instead of arg exception just to avoid parameter name messages ... could use a custom exception though
     /// </summary>
+    [DebuggerStepThrough]
     public static class AssertExtensions 
     {
         private static string GetTypeName(Type type)

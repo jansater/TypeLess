@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text;
 
 namespace RS.Assert
 {
+    [DebuggerStepThrough]
     public class Assertion<T> : IAssertion
     {
 
