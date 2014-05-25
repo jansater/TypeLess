@@ -59,7 +59,7 @@ or if the parameter name is not important in the exception output
 ``` c#
 email.If().IsNull().IsNotValidEmail().ThenThrow();
 ```
-check if valid
+####Use with normal if statement####
 ``` c#
 var precondition = email.If().IsNull().IsNotValidEmail();
 if (!precondition.IsValid) {
@@ -67,14 +67,14 @@ if (!precondition.IsValid) {
     string errors = precondition.ToString();
 }
 ```
-more complex checks
+####Custom validation with lambda expresions####
 ``` c#
 double a=1.0,b=2.0,c=3.0;
 a.If().IsFalse(x => x > b && x < c, "a must be between b and c").ThenThrow();
 ```
 - *Example output: Double a must be between b and c*
 
-short circuit validation (default for isNull check)
+####short circuit validation (default for isNull check)####
 ``` c#
 string email = "some text";
   email.If("Email")
@@ -83,7 +83,7 @@ string email = "some text";
 ```
 - *Example output: Email must be a valid email address*
 
-Combine validation output from multiple properties
+####Combine validation output from multiple properties####
 ``` c#
 DateTime d1 = new DateTime(2014,05,01);
 DateTime d2 = new DateTime(2014,05,10);
