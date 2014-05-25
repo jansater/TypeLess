@@ -4,7 +4,9 @@ using System.Text;
 
 namespace RS.Assert
 {
+#if !DEBUG
     [DebuggerStepThrough]
+#endif
     public class Assertion<T> : IAssertion
     {
 
@@ -21,7 +23,6 @@ namespace RS.Assert
         {
             Name = s;
             _sb = new StringBuilder();
-            _sb.Append(Name);
             Item = source;
 
             _file = file;
@@ -31,8 +32,20 @@ namespace RS.Assert
 
         public Assertion<T> Combine(IAssertion otherAssertion) {
 
-            _isValid &= otherAssertion.IsValid;
-            _sb.Append(". ").AppendLine(otherAssertion.ToString());
+            if (otherAssertion == null || otherAssertion.IsValid) {
+                return this;
+            }
+
+            if (_isValid)
+            {
+                _isValid &= otherAssertion.IsValid;
+                _sb.Append(otherAssertion.ToString());
+            }
+            else {
+                _isValid &= otherAssertion.IsValid;
+                _sb.Append(". ").AppendLine(otherAssertion.ToString());
+            }
+            
             return this;
         }
 
@@ -64,7 +77,8 @@ namespace RS.Assert
                 return;
             }
 
-            if (Debugger.IsAttached) {
+            if (Debugger.IsAttached && _errorCount != 0)
+            {
                 throw new ArgumentNullException("", AppendTrace());
             }
             else
@@ -77,10 +91,10 @@ namespace RS.Assert
         {
             if (IsValid)
             {
-                return _sb.ToString() + " is valid";
+                return Name + " is valid";
             }
 
-            if (Debugger.IsAttached)
+            if (Debugger.IsAttached && _errorCount != 0)
             {
                 return AppendTrace();
             }
@@ -126,7 +140,12 @@ namespace RS.Assert
 
         public void Append(string s)
         {
+            if (_errorCount == 0) {
+                _sb.Append(Name);
+            }
+            
             _errorCount++;
+
             if (_isValid)
             {
                 _sb.Append(" ").Append(s);

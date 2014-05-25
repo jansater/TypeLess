@@ -66,7 +66,7 @@ namespace RS.Assert
             if (String.IsNullOrEmpty(name) && Debugger.IsAttached && file != null && lineNumber.HasValue) {
                 var line = TryReadLine(file, lineNumber.Value);
                 if (line != null) {
-                    var match = Regex.Match(line, "[ \\t]*(?<caller>.*?).If\\(");
+                    var match = Regex.Match(line, "(?<caller>\\S*?).If\\(");
                     if (match.Success) {
                         var callingProperty = match.Result("$1");
                         if (!String.IsNullOrWhiteSpace(callingProperty)) {
