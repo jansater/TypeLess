@@ -3,7 +3,32 @@ RS.Assert (Another pragmatic argument validation lib)
 
 ###Available on nuget: PM> Install-Package RS.Assert###
 
-**Typical usage**
+**What problem/annoyance is this trying to solve**
+```
+public void Login(SomeDTO data) {
+    if (data != null) {
+        throw new ArgumentNullException("Data is required");
+    }
+    
+    if (data.Email == null) {
+        throw new ArgumentNullException("Email is required");
+    }
+    
+    if (NotValidEmail(data.Email)) {
+        throw new ArgumentException("Email is not valid");
+    }
+    
+    if (data.Email.Length > 5) {
+        throw new ArgumentException("Email must be shorter than 6 characters")
+    }
+    
+    ...
+}
+```
+
+If you are like me then writing this is tedious!
+
+**Would be easier to write this**
 ```
 public SomeMethod(SomeDTO input)
 {
@@ -15,6 +40,8 @@ public SomeMethod(SomeDTO input)
     ...
 }
 ```
+
+And that is what you can do with RS.Assert
 
 **Other example:**
 ```
