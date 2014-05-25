@@ -121,7 +121,7 @@ ifDateNotValid.Combine(ifStringNotValid).ThenThrow();
 ```
 - *Example output: DateTime must be within 2014-05-01 00:00:00 and 2014-05-10 00:00:00. abc must be longer than 3 characters*
 
-**Features:**
+###Features:###
 - Chain validation checks 
 - Short circuit validation 
 - Throw or get errors as text 
@@ -134,7 +134,7 @@ ifDateNotValid.Combine(ifStringNotValid).ThenThrow();
 - Can return number of validation errors
 - Kind of fluent...
 
-**Available (predefined) checks:**
+###Available (predefined) checks:###
 - IsNull
 - IsEmpty
 - IsTrue
