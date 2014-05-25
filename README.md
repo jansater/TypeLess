@@ -99,7 +99,7 @@ a.If().IsFalse(x => x > b && x < c, "a must be between b and c").ThenThrow();
 ```
 - *Example output: Double a must be between b and c*
 
-####short circuit validation (default for isNull check)####
+####Short circuit validation (default for isNull check)####
 ``` c#
 string email = "some text";
   email.If("Email")
