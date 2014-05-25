@@ -29,7 +29,7 @@ public void Login(SomeDTO data) {
 If you are like me then writing this is tedious!
 
 **Would be easier to write this**
-```
+``` c#
 public SomeMethod(SomeDTO input)
 {
     input.If("Input").IsNull().ThenThrow();
@@ -44,7 +44,7 @@ public SomeMethod(SomeDTO input)
 And that is what you can do with RS.Assert
 
 **Other example:**
-```
+``` c#
 string email = "some text";
 email.If("Email")
   .IsNull()
@@ -56,11 +56,11 @@ email.If("Email")
 - *Example exception not debug: Email must be a valid email address and must be shorter than 6 characters*
 
 or if the parameter name is not important in the exception output
-```
+``` c#
 email.If().IsNull().IsNotValidEmail().ThenThrow();
 ```
 check if valid
-```
+``` c#
 var precondition = email.If().IsNull().IsNotValidEmail();
 if (!precondition.IsValid) {
     //Get errors
@@ -68,14 +68,14 @@ if (!precondition.IsValid) {
 }
 ```
 more complex checks
-```
+``` c#
 double a=1.0,b=2.0,c=3.0;
 a.If().IsFalse(x => x > b && x < c, "a must be between b and c").ThenThrow();
 ```
 - *Example output: Double a must be between b and c*
 
 short circuit validation (default for isNull check)
-```
+``` c#
 string email = "some text";
   email.If("Email")
     .IsNotValidEmail().StopIfNotValid()
@@ -84,7 +84,7 @@ string email = "some text";
 - *Example output: Email must be a valid email address*
 
 Combine validation output from multiple properties
-```
+``` c#
 DateTime d1 = new DateTime(2014,05,01);
 DateTime d2 = new DateTime(2014,05,10);
 string s1 = "abc";
