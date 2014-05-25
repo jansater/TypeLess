@@ -5,6 +5,8 @@ RS.Assert (Another pragmatic argument validation lib)
 
 **What problem/annoyance is this trying to solve**
 ``` c#
+using RS.Assert;
+...
 public void Login(SomeDTO data) {
     if (data != null) {
         throw new ArgumentNullException("Data is required");
