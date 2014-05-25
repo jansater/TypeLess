@@ -26,7 +26,7 @@ public void Login(SomeDTO data) {
 }
 ```
 
-If you are like me then writing this is tedious!
+####If you are like me then writing that is tedious!####
 
 **Would be easier to write this**
 ``` c#
