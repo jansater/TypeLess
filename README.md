@@ -41,7 +41,7 @@ public SomeMethod(SomeDTO input)
 }
 ```
 
-And that is what you can do with RS.Assert
+####And that is what you do with RS.Assert! Nothing more, nothing less####
 
 **Other example:**
 ``` c#
