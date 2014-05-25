@@ -30,6 +30,8 @@ public void Login(SomeDTO data) {
 
 **Would be easier to write this**
 ``` c#
+using RS.Assert;
+...
 public SomeMethod(SomeDTO input)
 {
     input.If("Input").IsNull().ThenThrow();
@@ -43,6 +45,8 @@ public SomeMethod(SomeDTO input)
 
 **Or if you prefer to put validation in the class where it belongs**
 ``` c#
+using RS.Assert;
+...
 public class SomeDTO {
     public string Name { get; set; }
     public string Email { get; set; }
