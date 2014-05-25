@@ -41,6 +41,27 @@ public SomeMethod(SomeDTO input)
 }
 ```
 
+**Or if you prefer to put validation in the class where it belongs**
+``` c#
+public class SomeDTO {
+    public string Name { get; set; }
+    public string Email { get; set; }
+    public int UserId { get; set; }
+
+    public IEnumerable<IAssertion> IsInvalid() {
+        yield return Name.If().IsNull().IsNotValidEmail();
+        yield return Email.If().IsNull().IsEmptyOrWhitespace();
+        yield return UserId.If().IsSmallerThan(0);
+    }
+}
+
+...
+
+public void Login(SomeDTO input)
+{
+    input.If().IsInvalid().ThenThrow();
+}
+```
 ####And that is what you do with RS.Assert! Nothing more, nothing less####
 
 **Other example:**
