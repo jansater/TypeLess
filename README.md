@@ -158,3 +158,7 @@ ifDateNotValid.Combine(ifStringNotValid).ThenThrow();
 - DoesNotContainDigit
 - IsNotWithin 
 
+###The framework target profile supports###
+- .Net
+- Windows 8
+- Windows Phone 8.1
