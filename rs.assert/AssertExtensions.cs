@@ -60,9 +60,8 @@ namespace RS.Assert
             }
         }
 
-        public static Assertion<T> If<T>(this T source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
-        {
-
+        private static string UpdateName(string name, string file, int? lineNumber) {
+        
             if (String.IsNullOrEmpty(name) && Debugger.IsAttached && file != null && lineNumber.HasValue) {
                 var line = TryReadLine(file, lineNumber.Value);
                 if (line != null) {
@@ -76,6 +75,43 @@ namespace RS.Assert
                 }
             }
 
+            return name;
+
+        }
+
+        public static Assertion<T> StopIfNotValid<T>(this Assertion<T> source)
+        {
+            source.IgnoreFurtherChecks = true;
+            return source;
+        }
+
+        public static EnumerableAssertion If<T>(this List<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            name = UpdateName(name, file, lineNumber);
+            return new EnumerableAssertion(name ?? GetTypeName(typeof(IEnumerable)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+        
+        public static EnumerableAssertion If(this IEnumerable source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            name = UpdateName(name, file, lineNumber);
+            return new EnumerableAssertion(name ?? GetTypeName(typeof(IEnumerable)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static EnumerableAssertion If<T>(this IEnumerable<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            name = UpdateName(name, file, lineNumber);
+            return new EnumerableAssertion(name ?? GetTypeName(typeof(IEnumerable<T>)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static StringAssertion If(this string source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            name = UpdateName(name, file, lineNumber);
+            return new StringAssertion(name ?? GetTypeName(typeof(string)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static Assertion<T> If<T>(this T source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            name = UpdateName(name, file, lineNumber);
             return new Assertion<T>(name ?? GetTypeName(typeof(T)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
@@ -85,7 +121,7 @@ namespace RS.Assert
         /// <typeparam name="T"></typeparam>
         /// <param name="source">The source.</param>
         /// <returns></returns>
-        public static Assertion<T> IsNull<T>(this Assertion<T> source)
+        internal static Assertion<T> IsNull<T>(this Assertion<T> source)
         {
 
             if (source.IgnoreFurtherChecks) {
@@ -96,20 +132,6 @@ namespace RS.Assert
             {
                 source.StopIfNotValid();
                 source.Append("is required");
-            }
-            return source;
-        }
-
-        public static Assertion<string> IsEmpty(this Assertion<string> source)
-        {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            if (source.Item.Length <= 0)
-            {
-                source.Append("must be non empty");
             }
             return source;
         }
@@ -159,72 +181,6 @@ namespace RS.Assert
                 source.Append(msgIfTrue);
             }
             return source;
-        }
-
-        public static Assertion<T> IsEmpty<T>(this Assertion<T> targetObject) where T : IEnumerable
-        {
-            if (targetObject.IgnoreFurtherChecks)
-            {
-                return targetObject;
-            }
-
-            var c = GetCount(targetObject.Item);
-
-            if (c == 0)
-            {
-                targetObject.Append("must be non empty");
-            }
-            return targetObject;
-        }
-
-        private static int GetCount(IEnumerable e) {
-            var asList = e as IList;
-            if (asList != null) {
-                return asList.Count;
-            }
-
-            var enu = e.GetEnumerator();
-            
-            if (!enu.MoveNext()) {
-                return 0;
-            }
-            int i = 1;
-            for (; enu.MoveNext(); i++);
-            return i;
-        }
-
-        public static Assertion<T> ContainsLessThan<T>(this Assertion<T> targetObject, int nElements)
-            where T : IEnumerable
-        {
-            if (targetObject.IgnoreFurtherChecks)
-            {
-                return targetObject;
-            }
-
-            var count = GetCount(targetObject.Item);
-
-            if (count < nElements)
-            {
-                targetObject.Append("must contain more than " + nElements + " items");
-            }
-            return targetObject;
-        }
-
-        public static Assertion<T> ContainsMoreThan<T>(this Assertion<T> targetObject, int nElements)
-            where T : IEnumerable
-        {
-            if (targetObject.IgnoreFurtherChecks)
-            {
-                return targetObject;
-            }
-
-            var count = GetCount(targetObject.Item);
-
-            if (count > nElements)
-            {
-                targetObject.Append("must contain less than " + nElements + " items");
-            }
-            return targetObject;
         }
 
         public static Assertion<T> IsZero<T>(this Assertion<T> targetObject) where T : struct, 
@@ -363,95 +319,6 @@ namespace RS.Assert
             }
 
             return targetObject;
-        }
-
-        public static Assertion<string> IsEmptyOrWhitespace(this Assertion<string> source)
-        {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            if (string.IsNullOrWhiteSpace(source.Item))
-            {
-                source.Append("must not be empty");
-            }
-            return source;
-        }
-
-        public static Assertion<string> IsNotValidEmail(this Assertion<string> source)
-        {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            bool isEmail = Regex.IsMatch(source.Item, @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z");
-            if (string.IsNullOrWhiteSpace(source.Item) || !isEmail)
-            {
-                source.Append("must be a valid email address");
-            }
-            return source;
-        }
-
-        public static Assertion<string> IsShorterThan(this Assertion<string> source, int length)
-        {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            if (source.Item.Length < length)
-            {
-                source.Append(String.Format("must be longer than {0} characters", length - 1));
-            }
-            return source;
-        }
-
-        public static Assertion<string> IsLongerThan(this Assertion<string> source, int length)
-        {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            if (source.Item.Length > length)
-            {
-                source.Append(String.Format("must be shorter than {0} characters", length + 1));
-            }
-            return source;
-        }
-
-        public static Assertion<string> DoesNotContainAlphaChars(this Assertion<string> source)
-        {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            bool isValid = Regex.IsMatch(source.Item, @"\W|_");
-            if (!isValid)
-            {
-                source.Append("must contain alpha numeric characters");
-            }
-
-            return source;
-        }
-
-        public static Assertion<string> DoesNotContainDigit(this Assertion<string> source)
-        {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            bool isValid = Regex.IsMatch(source.Item, @"\d");
-            if (!isValid)
-            {
-                source.Append("must contain at least 1 digit");
-            }
-
-            return source;
         }
 
         public static Assertion<T> IsNotWithin<T>(this Assertion<T> targetObject, T min, T max) where T : struct, 

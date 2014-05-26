@@ -14,7 +14,7 @@ namespace RS.Assert.Tests
             Xunit.Assert.DoesNotThrow(() =>
             {
                 string s = null;
-                var msg = s.If("s").IsNull().ToString();
+                var msg = s.If("s").IsNull.ToString();
 
                 Xunit.Assert.True(msg.Contains("required"));
             });
@@ -28,19 +28,19 @@ namespace RS.Assert.Tests
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = null;
-                s.If("s").IsNull().ThenThrow();
+                s.If("s").IsNull.ThenThrow();
             });
 
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int? s = null;
-                s.If().IsNull().ThenThrow();
+                s.If().IsNull.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 int? s = 1;
-                s.If().IsNull().ThenThrow();
+                s.If().IsNull.ThenThrow();
             });
 
         }
@@ -52,7 +52,7 @@ namespace RS.Assert.Tests
             Xunit.Assert.Throws<ArgumentException>(() =>
             {
                 string s = null;
-                s.If("s").IsNull().ThenThrow<ArgumentException>();
+                s.If("s").IsNull.ThenThrow<ArgumentException>();
             });
 
         }
@@ -64,7 +64,7 @@ namespace RS.Assert.Tests
             Xunit.Assert.DoesNotThrow(() =>
             {
                 string s = null;
-                Xunit.Assert.Equal(1, s.If("s").IsNull().IsEmpty().ErrorCount);
+                Xunit.Assert.Equal(1, s.If("s").IsNull.IsEmpty.ErrorCount);
             });
 
         }
@@ -74,8 +74,9 @@ namespace RS.Assert.Tests
         {
             string s = "";
             Xunit.Assert.Equal(1, s.If("s")
-                .IsEmpty().StopIfNotValid()
-                .IsNotValidEmail().ErrorCount);
+                .IsEmpty
+                .StopIfNotValid
+                .IsNotValidEmail.ErrorCount);
         }
 
         [Fact]
@@ -84,13 +85,13 @@ namespace RS.Assert.Tests
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "";
-                s.If().IsEmpty().ThenThrow();
+                s.If().IsEmpty.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 string s = "d";
-                s.If().IsEmpty().ThenThrow();
+                s.If().IsEmpty.ThenThrow();
             });
         }
 
@@ -134,13 +135,13 @@ namespace RS.Assert.Tests
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 var l = new List<int>();
-                l.If().IsEmpty().ThenThrow();
+                l.If().IsEmpty.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 var l = new List<int>() { 1 };
-                l.If().IsEmpty().ThenThrow();
+                l.If().IsEmpty.ThenThrow();
             });
         }
 
@@ -150,13 +151,13 @@ namespace RS.Assert.Tests
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 var l = new List<int>() as IEnumerable;
-                l.If().IsEmpty().ThenThrow();
+                l.If().IsEmpty.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 var l = new List<int>() { 1 } as IEnumerable;
-                l.If().IsEmpty().ThenThrow();
+                l.If().IsEmpty.ThenThrow();
             });
         }
 
@@ -180,7 +181,6 @@ namespace RS.Assert.Tests
         [Fact]
         public void WhenContainsMoreThanThenThrow()
         {
-
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 var l = new List<int> { 1, 2, 3, 4 };
@@ -366,19 +366,19 @@ namespace RS.Assert.Tests
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "   ";
-                s.If().IsEmptyOrWhitespace().ThenThrow();
+                s.If().IsEmptyOrWhitespace.ThenThrow();
             });
 
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "";
-                s.If().IsEmptyOrWhitespace().ThenThrow();
+                s.If().IsEmptyOrWhitespace.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 string s = "sasd";
-                s.If().IsEmptyOrWhitespace().ThenThrow();
+                s.If().IsEmptyOrWhitespace.ThenThrow();
             });
 
         }
@@ -389,37 +389,37 @@ namespace RS.Assert.Tests
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "asdad@";
-                s.If().IsNotValidEmail().ThenThrow();
+                s.If().IsNotValidEmail.ThenThrow();
             });
 
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "asdad";
-                s.If().IsNotValidEmail().ThenThrow();
+                s.If().IsNotValidEmail.ThenThrow();
             });
 
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "asdad@asd..se";
-                s.If().IsNotValidEmail().ThenThrow();
+                s.If().IsNotValidEmail.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 string s = "asdasd@asdad.se";
-                s.If().IsEmptyOrWhitespace().ThenThrow();
+                s.If().IsEmptyOrWhitespace.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 string s = "asdasd.asdad@asdad.se";
-                s.If().IsEmptyOrWhitespace().ThenThrow();
+                s.If().IsEmptyOrWhitespace.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 string s = "asdasd.asdad@asdad..asdad.se";
-                s.If().IsEmptyOrWhitespace().ThenThrow();
+                s.If().IsEmptyOrWhitespace.ThenThrow();
             });
 
         }
@@ -464,13 +464,13 @@ namespace RS.Assert.Tests
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "asd123";
-                s.If().DoesNotContainAlphaChars().ThenThrow();
+                s.If().DoesNotContainAlphaChars.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 string s = "123@";
-                s.If().DoesNotContainAlphaChars().ThenThrow();
+                s.If().DoesNotContainAlphaChars.ThenThrow();
             });
 
         }
@@ -481,13 +481,13 @@ namespace RS.Assert.Tests
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "asd";
-                s.If().DoesNotContainDigit().ThenThrow();
+                s.If().DoesNotContainDigit.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 string s = "asd123";
-                s.If().DoesNotContainDigit().ThenThrow();
+                s.If().DoesNotContainDigit.ThenThrow();
             });
 
         }
@@ -536,8 +536,8 @@ namespace RS.Assert.Tests
 
             public IEnumerable<IAssertion> IsInvalid()
             {
-                yield return Name.If().IsNull();
-                yield return Number.If().IsNull();
+                yield return Name.If().IsNull;
+                yield return Number.If().IsNull;
             }
         }
 
@@ -563,6 +563,7 @@ namespace RS.Assert.Tests
             Xunit.Assert.Throws<MissingMethodException>(() =>
             {
                 var x = new SomeClassWithoutValidate();
+                
                 x.If().IsInvalid().ThenThrow();
             });
 

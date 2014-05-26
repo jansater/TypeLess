@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace RS.Assert
@@ -119,12 +120,10 @@ namespace RS.Assert
             {
                 return _ignoreFurtherChecks;
             }
-        }
-
-        public Assertion<T> StopIfNotValid()
-        {
-            _ignoreFurtherChecks = true;
-            return this;
+            internal set
+            {
+                _ignoreFurtherChecks = value;
+            }
         }
 
         private int _errorCount;
@@ -156,6 +155,17 @@ namespace RS.Assert
             }
             _isValid = false;
         }
+
+        #region JustForSyntax
+
+        public Assertion<T> IsNull
+        {
+            get {
+                return this.IsNull();
+            }
+        }
+
+        #endregion
 
     }
 }

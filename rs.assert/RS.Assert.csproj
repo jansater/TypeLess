@@ -43,7 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EnumerableAssertExtensions .cs" />
+    <Compile Include="StringAssertExtensions.cs" />
     <Compile Include="AssertExtensions.cs" />
+    <Compile Include="EnumerableAssertion.cs" />
+    <Compile Include="StringAssertion.cs" />
     <Compile Include="Assertion.cs" />
     <Compile Include="IAssertion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
