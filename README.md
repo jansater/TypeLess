@@ -34,9 +34,9 @@ using RS.Assert;
 ...
 public SomeMethod(SomeDTO input)
 {
-    input.If("Input").IsNull().ThenThrow();
-    input.Email.If("Email").IsNull().IsNotValidEmail().ThenThrow();
-    input.Name.If("Name").IsNull().IsEmptyOrWhitespace().ThenThrow();
+    input.If("Input").IsNull.ThenThrow();
+    input.Email.If("Email").IsNull.IsNotValidEmail.ThenThrow();
+    input.Name.If("Name").IsNull.IsEmptyOrWhitespace.ThenThrow();
     input.UserId.If("User id").IsSmallerThan(0).ThenThrow();
     
     ...
@@ -53,8 +53,8 @@ public class SomeDTO {
     public int UserId { get; set; }
 
     public IEnumerable<IAssertion> IsInvalid() {
-        yield return Name.If().IsNull().IsNotValidEmail();
-        yield return Email.If().IsNull().IsEmptyOrWhitespace();
+        yield return Name.If().IsNull.IsNotValidEmail;
+        yield return Email.If().IsNull.IsEmptyOrWhitespace;
         yield return UserId.If().IsSmallerThan(0);
     }
 }
@@ -72,8 +72,8 @@ public void Login(SomeDTO input)
 ``` c#
 string email = "some text";
 email.If("Email")
-  .IsNull()
-  .IsNotValidEmail()
+  .IsNull
+  .IsNotValidEmail
   .IsLongerThan(5).ThenThrow();
 ```
 
@@ -82,11 +82,11 @@ email.If("Email")
 
 or if the parameter name is not important in the exception output
 ``` c#
-email.If().IsNull().IsNotValidEmail().ThenThrow();
+email.If().IsNull.IsNotValidEmail.ThenThrow();
 ```
 ####Use with normal if statement####
 ``` c#
-var precondition = email.If().IsNull().IsNotValidEmail();
+var precondition = email.If().IsNull.IsNotValidEmail;
 if (!precondition.IsValid) {
     //Get errors
     string errors = precondition.ToString();
@@ -103,7 +103,7 @@ a.If().IsFalse(x => x > b && x < c, "a must be between b and c").ThenThrow();
 ``` c#
 string email = "some text";
   email.If("Email")
-    .IsNotValidEmail().StopIfNotValid()
+    .IsNotValidEmail.StopIfNotValid
     .IsLongerThan(5).ThenThrow();
 ```
 - *Example output: Email must be a valid email address*
