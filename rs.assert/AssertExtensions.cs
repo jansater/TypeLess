@@ -22,33 +22,34 @@ namespace RS.Assert
     public static class AssertExtensions 
     {
 
-        private static string TryReadLine(string filePath, int line) {
-            try
-            {
-                using (Stream stream = File.Open(filePath, FileMode.Open))
-                {
-                    using (StreamReader reader = new StreamReader(stream))
-                    {
-                        string row = null;
-                        for (int i = 0; i < line && !reader.EndOfStream; i++)
-                        {
-                            row = reader.ReadLine();
-                        }
+        //private static string TryReadLine(string filePath, int line) {
+        //    try
+        //    {
+        //        using (Stream stream = File.Open(filePath, FileMode.Open))
+        //        {
+        //            using (StreamReader reader = new StreamReader(stream))
+        //            {
+        //                string row = null;
+        //                for (int i = 0; i < line && !reader.EndOfStream; i++)
+        //                {
+        //                    row = reader.ReadLine();
+        //                }
 
-                        return row;
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+        //                return row;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return null;
+        //    }
             
-        }
+        //}
 
         private static string GetTypeName(Type type)
         {
-            if (type.IsGenericType)
+            var genericArgs = type.GenericTypeArguments;
+            if (genericArgs.Any())
             {
                 return String.Format("{0}<{1}>",
                     type.Name,
@@ -60,24 +61,24 @@ namespace RS.Assert
             }
         }
 
-        private static string UpdateName(string name, string file, int? lineNumber) {
+        //private static string UpdateName(string name, string file, int? lineNumber) {
         
-            if (String.IsNullOrEmpty(name) && Debugger.IsAttached && file != null && lineNumber.HasValue) {
-                var line = TryReadLine(file, lineNumber.Value);
-                if (line != null) {
-                    var match = Regex.Match(line, "(?<caller>\\S*?).If\\(");
-                    if (match.Success) {
-                        var callingProperty = match.Result("$1");
-                        if (!String.IsNullOrWhiteSpace(callingProperty)) {
-                            name = callingProperty;
-                        }
-                    }
-                }
-            }
+        //    if (String.IsNullOrEmpty(name) && Debugger.IsAttached && file != null && lineNumber.HasValue) {
+        //        var line = TryReadLine(file, lineNumber.Value);
+        //        if (line != null) {
+        //            var match = Regex.Match(line, "(?<caller>\\S*?).If\\(");
+        //            if (match.Success) {
+        //                var callingProperty = match.Result("$1");
+        //                if (!String.IsNullOrWhiteSpace(callingProperty)) {
+        //                    name = callingProperty;
+        //                }
+        //            }
+        //        }
+        //    }
 
-            return name;
+        //    return name;
 
-        }
+        //}
 
         public static Assertion<T> StopIfNotValid<T>(this Assertion<T> source)
         {
@@ -87,31 +88,31 @@ namespace RS.Assert
 
         public static EnumerableAssertion If<T>(this List<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            name = UpdateName(name, file, lineNumber);
+            //name = UpdateName(name, file, lineNumber);
             return new EnumerableAssertion(name ?? GetTypeName(typeof(IEnumerable)), source, Path.GetFileName(file), lineNumber, caller);
         }
         
         public static EnumerableAssertion If(this IEnumerable source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            name = UpdateName(name, file, lineNumber);
+            //name = UpdateName(name, file, lineNumber);
             return new EnumerableAssertion(name ?? GetTypeName(typeof(IEnumerable)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static EnumerableAssertion If<T>(this IEnumerable<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            name = UpdateName(name, file, lineNumber);
+            //name = UpdateName(name, file, lineNumber);
             return new EnumerableAssertion(name ?? GetTypeName(typeof(IEnumerable<T>)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static StringAssertion If(this string source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            name = UpdateName(name, file, lineNumber);
+            //name = UpdateName(name, file, lineNumber);
             return new StringAssertion(name ?? GetTypeName(typeof(string)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static Assertion<T> If<T>(this T source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            name = UpdateName(name, file, lineNumber);
+            //name = UpdateName(name, file, lineNumber);
             return new Assertion<T>(name ?? GetTypeName(typeof(T)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
@@ -186,7 +187,6 @@ namespace RS.Assert
         public static Assertion<T> IsZero<T>(this Assertion<T> targetObject) where T : struct, 
           IComparable,
           IComparable<T>,
-          IConvertible,
           IEquatable<T>,
           IFormattable
         {
@@ -284,7 +284,6 @@ namespace RS.Assert
         public static Assertion<T> IsPositive<T>(this Assertion<T> targetObject) where T : struct, 
           IComparable,
           IComparable<T>,
-          IConvertible,
           IEquatable<T>,
           IFormattable
         {
@@ -293,7 +292,9 @@ namespace RS.Assert
                 return targetObject;
             }
 
-            if (targetObject.Item.ToDouble(Thread.CurrentThread.CurrentCulture).CompareTo(0.0) > 0.0)
+            dynamic d = targetObject.Item;
+
+            if (d > 0.0)
             {
                 targetObject.Append("must be zero or negative");
             }
@@ -304,7 +305,6 @@ namespace RS.Assert
         public static Assertion<T> IsNegative<T>(this Assertion<T> targetObject) where T : struct, 
           IComparable,
           IComparable<T>,
-          IConvertible,
           IEquatable<T>,
           IFormattable
         {
@@ -313,7 +313,8 @@ namespace RS.Assert
                 return targetObject;
             }
 
-            if (targetObject.Item.ToDouble(Thread.CurrentThread.CurrentCulture).CompareTo(0.0) < 0.0)
+            dynamic d = targetObject.Item;
+            if (d < 0.0)
             {
                 targetObject.Append("must be zero or positive");
             }
@@ -324,7 +325,6 @@ namespace RS.Assert
         public static Assertion<T> IsNotWithin<T>(this Assertion<T> targetObject, T min, T max) where T : struct, 
           IComparable,
           IComparable<T>,
-          IConvertible,
           IEquatable<T>,
           IFormattable
         {
@@ -370,7 +370,7 @@ namespace RS.Assert
                 }
                 catch (RuntimeBinderException)
                 {
-                    throw new MissingMethodException("You must define method public IEnumerable<IAssertion> IsInvalid() {} in class " + typeof(T).Name);
+                    throw new System.MissingMemberException("You must define method public IEnumerable<IAssertion> IsInvalid() {} in class " + typeof(T).Name);
                 }
             }
             

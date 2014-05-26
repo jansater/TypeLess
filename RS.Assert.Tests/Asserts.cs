@@ -560,7 +560,7 @@ namespace RS.Assert.Tests
         public void WhenDTOIsInValidThenThrow()
         {
 
-            Xunit.Assert.Throws<MissingMethodException>(() =>
+            Xunit.Assert.Throws<MissingMemberException>(() =>
             {
                 var x = new SomeClassWithoutValidate();
                 
