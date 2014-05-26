@@ -552,7 +552,7 @@ namespace RS.Assert.Tests
             }
 
             public IEnumerable<IAssertion> IsInvalid() {
-                yield return Prop.If().IsInvalid();
+                yield return Prop.If().IsInvalid;
             }
         }
 
@@ -564,13 +564,13 @@ namespace RS.Assert.Tests
             {
                 var x = new SomeClassWithoutValidate();
                 
-                x.If().IsInvalid().ThenThrow();
+                x.If().IsInvalid.ThenThrow();
             });
 
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 var x = new SomeClassWithValidate();
-                x.If().IsInvalid().ThenThrow();
+                x.If().IsInvalid.ThenThrow();
             });
 
         }

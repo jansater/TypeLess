@@ -349,7 +349,7 @@ namespace RS.Assert
         /// <param name="min">The minimum.</param>
         /// <param name="max">The maximum.</param>
         /// <returns></returns>
-        public static Assertion<T> IsInvalid<T>(this Assertion<T> targetObject) where T : class
+        internal static Assertion<T> IsInvalid<T>(this Assertion<T> targetObject) 
         {
             if (targetObject.IgnoreFurtherChecks)
             {

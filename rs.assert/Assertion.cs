@@ -165,6 +165,22 @@ namespace RS.Assert
             }
         }
 
+        /// <summary>
+        /// Make a call to this class IsValid method to determine whether the specified target object is valid. Normally used to define validation checks in for example dto's. 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="targetObject">The target object.</param>
+        /// <param name="min">The minimum.</param>
+        /// <param name="max">The maximum.</param>
+        /// <returns></returns>
+        public Assertion<T> IsInvalid
+        {
+            get {
+                return AssertExtensions.IsInvalid(this);
+            }
+        }
+
+
         #endregion
 
     }
