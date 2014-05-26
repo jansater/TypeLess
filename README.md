@@ -124,6 +124,7 @@ ifDateNotValid.Combine(ifStringNotValid).ThenThrow();
 ###Features:###
 - Chain validation checks 
 - Short circuit validation 
+- Built as portable library
 - Throw or get errors as text 
 - Merge multiple property validations into a single validation message
 - Examines stack details to return row and file information when running in debug mode
