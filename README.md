@@ -63,7 +63,7 @@ public class SomeDTO {
 
 public void Login(SomeDTO input)
 {
-    input.If().IsInvalid().ThenThrow();
+    input.If().IsInvalid.ThenThrow();
 }
 ```
 ####And that is what you do with RS.Assert! Nothing more, nothing less####
