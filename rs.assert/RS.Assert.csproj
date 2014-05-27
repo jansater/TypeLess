@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="CompilerServiceExtensions.cs" />
     <Compile Include="EnumerableAssertExtensions .cs" />
+    <Compile Include="If.cs" />
     <Compile Include="StringAssertExtensions.cs" />
     <Compile Include="AssertExtensions.cs" />
     <Compile Include="EnumerableAssertion.cs" />

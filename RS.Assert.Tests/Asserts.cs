@@ -37,6 +37,18 @@ namespace RS.Assert.Tests
                 s.If().IsNull.ThenThrow();
             });
 
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                string s = null;
+                s.If().IsNull.ThenThrow();
+            });
+
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                IEnumerable<int> s = null;
+                s.If().IsNull.ThenThrow();
+            });
+
             Xunit.Assert.DoesNotThrow(() =>
             {
                 int? s = 1;

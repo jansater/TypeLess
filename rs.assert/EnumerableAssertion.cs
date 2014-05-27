@@ -13,6 +13,14 @@ namespace RS.Assert
         public EnumerableAssertion(string s, IEnumerable source, string file, int? lineNumber, string caller)
             :base (s, source, file, lineNumber, caller) {}
 
+        public new EnumerableAssertion IsNull
+        {
+            get
+            {
+                return (EnumerableAssertion)(AssertExtensions.IsNull(this));
+            }
+        }
+
         public EnumerableAssertion StopIfNotValid
         {
             get {
