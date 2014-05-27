@@ -66,9 +66,25 @@ public void Login(SomeDTO input)
     input.If().IsInvalid.ThenThrow();
 }
 ```
+####How about this case####
+```
+s1.If("s1").IsNull.ThenThrow();
+s2.If("s2").IsNull.ThenThrow();
+s3.If("s3").IsNull.ThenThrow();
+```
+**If you need to check the same predicates on multiple objects like above then you can do this**
+```
+If.AnyOf(s1, "s1").And(s2, "s2").And(s3, "s3").IsNull.ThenThrow();
+```
+**And of course you can use multiple checks as in the very unreal example below
+```
+If.AnyOf(d1, "1").And(d2, "2").And(d3, "3").IsSmallerThan(5).IsLargerThan(0).ThenThrow();
+```
+
+
 ####And that is what you do with RS.Assert! Nothing more, nothing less####
 
-**Other example:**
+**Example of output:**
 ``` c#
 string email = "some text";
 email.If("Email")
@@ -132,6 +148,7 @@ ifDateNotValid.Combine(ifStringNotValid).ThenThrow();
 - Throw your own exception types
 - Supports nullable types
 - Chain complex property validations
+- Re-use predicates on other objects
 - Can return number of validation errors
 - Kind of fluent...
 
