@@ -66,7 +66,7 @@ public void Login(SomeDTO input)
     input.If().IsInvalid.ThenThrow();
 }
 ```
-####How about this case####
+####How about this case?####
 ```
 s1.If("s1").IsNull.ThenThrow();
 s2.If("s2").IsNull.ThenThrow();
