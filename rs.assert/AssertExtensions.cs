@@ -19,7 +19,7 @@ namespace RS.Assert
 #if !DEBUG
     [DebuggerStepThrough]
 #endif
-    public static class AssertExtensions 
+    public static class AssertExtensions
     {
 
         //private static string TryReadLine(string filePath, int line) {
@@ -43,10 +43,16 @@ namespace RS.Assert
         //    {
         //        return null;
         //    }
-            
+
         //}
 
-        private static string GetTypeName(Type type)
+        public static Assertion<T> And<T, S>(this Assertion<T> source, S obj, string withName = null)
+        {
+            source.Add(obj, withName);
+            return source;
+        }
+
+        internal static string GetTypeName(Type type)
         {
             var genericArgs = type.GenericTypeArguments;
             if (genericArgs.Any())
@@ -62,7 +68,7 @@ namespace RS.Assert
         }
 
         //private static string UpdateName(string name, string file, int? lineNumber) {
-        
+
         //    if (String.IsNullOrEmpty(name) && Debugger.IsAttached && file != null && lineNumber.HasValue) {
         //        var line = TryReadLine(file, lineNumber.Value);
         //        if (line != null) {
@@ -91,7 +97,7 @@ namespace RS.Assert
             //name = UpdateName(name, file, lineNumber);
             return new EnumerableAssertion(name ?? GetTypeName(typeof(IEnumerable)), source, Path.GetFileName(file), lineNumber, caller);
         }
-        
+
         public static EnumerableAssertion If(this IEnumerable source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
             //name = UpdateName(name, file, lineNumber);
@@ -125,7 +131,8 @@ namespace RS.Assert
         internal static Assertion<T> IsNull<T>(this Assertion<T> source)
         {
 
-            if (source.IgnoreFurtherChecks) {
+            if (source.IgnoreFurtherChecks)
+            {
                 return source;
             }
 
@@ -134,12 +141,20 @@ namespace RS.Assert
                 source.StopIfNotValid();
                 source.Append("is required");
             }
+
+            foreach (var child in source.ChildAssertions)
+            {
+                child.ClearErrorMsg();
+                source.Combine(child.IsNull);
+            }
+
             return source;
         }
 
         public static Assertion<T> IsTrue<T>(this Assertion<T> source, Func<T, bool> assertFunc, string msgIfFalse)
         {
-            if (assertFunc == null) {
+            if (assertFunc == null)
+            {
                 throw new ArgumentNullException("assertFunc is null");
             }
 
@@ -157,6 +172,14 @@ namespace RS.Assert
             {
                 source.Append(msgIfFalse);
             }
+
+            foreach (var child in source.ChildAssertions)
+            {
+                var c = child.Cast<T>();
+                c.ClearErrorMsg();
+                source.Combine(c.IsTrue(assertFunc, msgIfFalse.Replace(source.Name, c.Name)));
+            }
+
             return source;
         }
 
@@ -181,191 +204,269 @@ namespace RS.Assert
             {
                 source.Append(msgIfTrue);
             }
+
+            foreach (var child in source.ChildAssertions)
+            {
+                var c = child.Cast<T>();
+                c.ClearErrorMsg();
+                source.Combine(c.IsFalse(assertFunc, msgIfTrue.Replace(source.Name, c.Name)));
+            }
+
             return source;
         }
 
-        public static Assertion<T> IsZero<T>(this Assertion<T> targetObject) where T : struct, 
+        public static Assertion<T> IsZero<T>(this Assertion<T> source) where T : struct, 
           IComparable,
           IComparable<T>,
           IEquatable<T>,
           IFormattable
         {
-            if (targetObject.IgnoreFurtherChecks)
+            if (source.IgnoreFurtherChecks)
             {
-                return targetObject;
+                return source;
             }
 
-            dynamic d = targetObject.Item;
+            dynamic d = source.Item;
             if (d == 0)
             {
-                targetObject.Append("must be non zero");
+                source.Append("must be non zero");
             }
-            return targetObject;
+
+            foreach (var child in source.ChildAssertions)
+            {
+                var c = child.Cast<T>();
+                c.ClearErrorMsg();
+                source.Combine(c.IsZero());
+            }
+
+            return source;
         }
 
-        public static Assertion<T> IsNotEqualTo<T>(this Assertion<T> targetObject, T comparedTo) where T : IComparable<T>
+        public static Assertion<T> IsNotEqualTo<T>(this Assertion<T> source, T comparedTo) where T : IComparable<T>
         {
-            if (targetObject.IgnoreFurtherChecks)
+            if (source.IgnoreFurtherChecks)
             {
-                return targetObject;
+                return source;
             }
 
-            if (targetObject.Item == null)
+            try
             {
-                if (comparedTo != null)
+                if (source.Item == null)
                 {
-                    targetObject.Append("must not be equal to " + comparedTo.ToString());
-                   
+                    if (comparedTo != null)
+                    {
+                        source.Append("must not be equal to " + comparedTo.ToString());
+
+                    }
+                    return source;
                 }
-                return targetObject;
-            }
 
-            if (targetObject.Item.CompareTo(comparedTo) != 0)
-            {
-                targetObject.Append(string.Format("must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
-            }
-            return targetObject;
-        }
-
-        public static Assertion<T> IsEqualTo<T>(this Assertion<T> targetObject, T comparedTo) where T : IComparable<T>
-        {
-            if (targetObject.IgnoreFurtherChecks)
-            {
-                return targetObject;
-            }
-
-            if (targetObject.Item == null)
-            {
-                if (comparedTo == null)
+                if (source.Item.CompareTo(comparedTo) != 0)
                 {
-                    targetObject.Append("must be equal to " + comparedTo.ToString());
-
+                    source.Append(string.Format("must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
                 }
-                return targetObject;
+                return source;
+            }
+            finally
+            {
+                foreach (var child in source.ChildAssertions)
+                {
+                    var c = child.Cast<T>();
+                    c.ClearErrorMsg();
+                    source.Combine(c.IsNotEqualTo(comparedTo));
+                }
             }
 
-            if (targetObject.Item.CompareTo(comparedTo) == 0)
-            {
-                targetObject.Append(string.Format("must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
-            }
-            return targetObject;
         }
 
-        public static Assertion<T> IsSmallerThan<T>(this Assertion<T> targetObject, T comparedTo) where T : IComparable<T>
+        public static Assertion<T> IsEqualTo<T>(this Assertion<T> source, T comparedTo) where T : IComparable<T>
         {
-            if (targetObject.IgnoreFurtherChecks)
+            if (source.IgnoreFurtherChecks)
             {
-                return targetObject;
+                return source;
             }
 
-            if (targetObject.Item.CompareTo(comparedTo) <= 0)
+            try
             {
-                targetObject.Append("must be larger than " + comparedTo);
-            }
+                if (source.Item == null)
+                {
+                    if (comparedTo == null)
+                    {
+                        source.Append("must be equal to " + comparedTo.ToString());
 
-            return targetObject;
+                    }
+                    return source;
+                }
+
+                if (source.Item.CompareTo(comparedTo) == 0)
+                {
+                    source.Append(string.Format("must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
+                }
+                return source;
+            }
+            finally
+            {
+                foreach (var child in source.ChildAssertions)
+                {
+                    var c = child.Cast<T>();
+                    c.ClearErrorMsg();
+                    source.Combine(c.IsEqualTo(comparedTo));
+                }
+            }
         }
 
-        public static Assertion<T> IsLargerThan<T>(this Assertion<T> targetObject, T comparedTo) where T : IComparable<T>
+        public static Assertion<T> IsSmallerThan<T>(this Assertion<T> source, T comparedTo) where T : IComparable<T>
         {
-            if (targetObject.IgnoreFurtherChecks)
+            if (source.IgnoreFurtherChecks)
             {
-                return targetObject;
+                return source;
             }
 
-            if (targetObject.Item.CompareTo(comparedTo) >= 0)
+            if (source.Item.CompareTo(comparedTo) <= 0)
             {
-                targetObject.Append("must be smaller than " + comparedTo);
+                source.Append("must be larger than " + comparedTo);
             }
 
-            return targetObject;
+            foreach (var child in source.ChildAssertions)
+            {
+                var c = child.Cast<T>();
+                c.ClearErrorMsg();
+                source.Combine(c.IsSmallerThan(comparedTo));
+            }
+
+            return source;
         }
 
-        public static Assertion<T> IsPositive<T>(this Assertion<T> targetObject) where T : struct, 
+        public static Assertion<T> IsLargerThan<T>(this Assertion<T> source, T comparedTo) where T : IComparable<T>
+        {
+            if (source.IgnoreFurtherChecks)
+            {
+                return source;
+            }
+
+            if (source.Item.CompareTo(comparedTo) >= 0)
+            {
+                source.Append("must be smaller than " + comparedTo);
+            }
+
+            foreach (var child in source.ChildAssertions)
+            {
+                var c = child.Cast<T>();
+                c.ClearErrorMsg();
+                source.Combine(c.IsLargerThan(comparedTo));
+            }
+
+            return source;
+        }
+
+        public static Assertion<T> IsPositive<T>(this Assertion<T> source) where T : struct, 
           IComparable,
           IComparable<T>,
           IEquatable<T>,
           IFormattable
         {
-            if (targetObject.IgnoreFurtherChecks)
+            if (source.IgnoreFurtherChecks)
             {
-                return targetObject;
+                return source;
             }
 
-            dynamic d = targetObject.Item;
+            dynamic d = source.Item;
 
             if (d > 0.0)
             {
-                targetObject.Append("must be zero or negative");
+                source.Append("must be zero or negative");
             }
 
-            return targetObject;
+            foreach (var child in source.ChildAssertions)
+            {
+                var c = child.Cast<T>();
+                c.ClearErrorMsg();
+                source.Combine(c.IsPositive());
+            }
+
+            return source;
         }
 
-        public static Assertion<T> IsNegative<T>(this Assertion<T> targetObject) where T : struct, 
+        public static Assertion<T> IsNegative<T>(this Assertion<T> source) where T : struct, 
           IComparable,
           IComparable<T>,
           IEquatable<T>,
           IFormattable
         {
-            if (targetObject.IgnoreFurtherChecks)
+            if (source.IgnoreFurtherChecks)
             {
-                return targetObject;
+                return source;
             }
 
-            dynamic d = targetObject.Item;
+            dynamic d = source.Item;
             if (d < 0.0)
             {
-                targetObject.Append("must be zero or positive");
+                source.Append("must be zero or positive");
             }
 
-            return targetObject;
+            foreach (var child in source.ChildAssertions)
+            {
+                var c = child.Cast<T>();
+                c.ClearErrorMsg();
+                source.Combine(c.IsNegative());
+            }
+
+            return source;
         }
 
-        public static Assertion<T> IsNotWithin<T>(this Assertion<T> targetObject, T min, T max) where T : struct, 
+        public static Assertion<T> IsNotWithin<T>(this Assertion<T> source, T min, T max) where T : struct, 
           IComparable,
           IComparable<T>,
           IEquatable<T>,
           IFormattable
         {
-            if (targetObject.IgnoreFurtherChecks)
+            if (source.IgnoreFurtherChecks)
             {
-                return targetObject;
+                return source;
             }
 
-            dynamic d = targetObject.Item;
+            dynamic d = source.Item;
             if (d < min || d > max)
             {
-                targetObject.Append(String.Format("must be within {0} and {1}", min, max));
+                source.Append(String.Format("must be within {0} and {1}", min, max));
             }
-            return targetObject;
+
+            foreach (var child in source.ChildAssertions)
+            {
+                var c = child.Cast<T>();
+                c.ClearErrorMsg();
+                source.Combine(c.IsNotWithin(min, max));
+            }
+
+            return source;
         }
 
         /// <summary>
         /// Make a call to this class IsValid method to determine whether the specified target object is valid. Normally used to define validation checks in for example dto's. 
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="targetObject">The target object.</param>
+        /// <param name="source">The target object.</param>
         /// <param name="min">The minimum.</param>
         /// <param name="max">The maximum.</param>
         /// <returns></returns>
-        internal static Assertion<T> IsInvalid<T>(this Assertion<T> targetObject) 
+        internal static Assertion<T> IsInvalid<T>(this Assertion<T> source)
         {
-            if (targetObject.IgnoreFurtherChecks)
+            if (source.IgnoreFurtherChecks)
             {
-                return targetObject;
+                return source;
             }
 
-            targetObject = targetObject.IsNull();
+            source = source.IsNull();
 
-            if (targetObject.Item != null) {
-                dynamic d = targetObject.Item;
+            if (source.Item != null)
+            {
+                dynamic d = source.Item;
                 try
                 {
                     var classAssertions = d.IsInvalid() as IEnumerable<IAssertion>;
                     foreach (var item in classAssertions)
                     {
-                        targetObject = targetObject.Combine(item);
+                        source = source.Combine(item);
                     }
                 }
                 catch (RuntimeBinderException)
@@ -373,8 +474,15 @@ namespace RS.Assert
                     throw new System.MissingMemberException("You must define method public IEnumerable<IAssertion> IsInvalid() {} in class " + typeof(T).Name);
                 }
             }
-            
-            return targetObject;
+
+            foreach (var child in source.ChildAssertions)
+            {
+                var c = child.Cast<T>();
+                c.ClearErrorMsg();
+                source.Combine(c.IsInvalid());
+            }
+
+            return source;
         }
 
     }

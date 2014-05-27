@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
@@ -10,8 +11,18 @@ namespace RS.Assert
 #endif
     public class EnumerableAssertion : Assertion<IEnumerable>
     {
+        private List<EnumerableAssertion> _childAssertions = new List<EnumerableAssertion>();
+
         public EnumerableAssertion(string s, IEnumerable source, string file, int? lineNumber, string caller)
             :base (s, source, file, lineNumber, caller) {}
+
+        internal new List<EnumerableAssertion> ChildAssertions
+        {
+            get
+            {
+                return _childAssertions;
+            }
+        }
 
         public new EnumerableAssertion IsNull
         {

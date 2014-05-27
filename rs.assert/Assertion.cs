@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -10,7 +11,6 @@ namespace RS.Assert
 #endif
     public class Assertion<T> : IAssertion
     {
-
         private StringBuilder _sb { get; set; }
         public T Item { get; set; }
 
@@ -19,6 +19,7 @@ namespace RS.Assert
         private string _file;
         private int? _lineNr;
         private string _caller;
+        private List<Assertion<object>> _childAssertions = new List<Assertion<object>>();
 
         public Assertion(string s, T source, string file, int? lineNumber, string caller)
         {
@@ -29,6 +30,39 @@ namespace RS.Assert
             _file = file;
             _lineNr = lineNumber;
             _caller = caller;
+        }
+
+        internal void Add(object obj, string name) {
+            _childAssertions.Add(obj.If(name));
+        }
+
+        internal Assertion<S> Cast<S>()  {
+            var item = this.Item as object;
+            if (!(item is S)) {
+                throw new InvalidCastException("You can't mix types " + typeof(S).Name + " and " + typeof(T));
+            }
+            var s = (S)item;
+
+            return new Assertion<S>(Name, s, null, null, null) { 
+                _sb = this._sb,
+                _caller = this._caller,
+                _file = this._file,
+                _childAssertions = this._childAssertions,
+                _errorCount = this._errorCount,
+                _ignoreFurtherChecks = this._ignoreFurtherChecks,
+                _isValid = this._isValid,
+                _lineNr = this._lineNr,
+            };
+        }
+
+        internal void ClearErrorMsg() {
+            _sb.Clear();
+        }
+
+        internal List<Assertion<object>> ChildAssertions {
+            get {
+                return _childAssertions;
+            }
         }
 
         public Assertion<T> Combine(IAssertion otherAssertion) {
@@ -109,7 +143,13 @@ namespace RS.Assert
 
         private string AppendTrace()
         {
-            return String.Format("{0} at {1}, line number {2} in file {3} ", _sb.ToString(), _caller, _lineNr, _file);
+            if (_caller == null || _file == null || !_lineNr.HasValue)
+            {
+                return _sb.ToString();
+            }
+            else {
+                return String.Format("{0} at {1}, line number {2} in file {3} ", _sb.ToString(), _caller, _lineNr, _file);
+            }
         }
 
         private bool _ignoreFurtherChecks = false;
@@ -149,8 +189,11 @@ namespace RS.Assert
             {
                 _sb.Append(" ").Append(s);
             }
-            else
+            else if (ChildAssertions.Count > 0)
             {
+                _sb.AppendFormat(" and {0} ", Name).Append(s);
+            }
+            else {
                 _sb.Append(" and ").Append(s);
             }
             _isValid = false;
@@ -169,7 +212,7 @@ namespace RS.Assert
         /// Make a call to this class IsValid method to determine whether the specified target object is valid. Normally used to define validation checks in for example dto's. 
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="targetObject">The target object.</param>
+        /// <param name="source">The target object.</param>
         /// <param name="min">The minimum.</param>
         /// <param name="max">The maximum.</param>
         /// <returns></returns>

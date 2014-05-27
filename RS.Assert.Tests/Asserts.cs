@@ -120,7 +120,7 @@ namespace RS.Assert.Tests
             {
                 string s = "d";
                 s.If().IsTrue(x => false, "").ThenThrow();
-            
+
             });
         }
 
@@ -176,10 +176,10 @@ namespace RS.Assert.Tests
         [Fact]
         public void WhenContainsLessThanThenThrow()
         {
-            
+
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
-                var l = new List<int> { 1,2 };
+                var l = new List<int> { 1, 2 };
                 l.If().ContainsLessThan(3).ThenThrow();
             });
 
@@ -510,7 +510,7 @@ namespace RS.Assert.Tests
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int i = 5;
-                i.If().IsNotWithin(1,4).ThenThrow();
+                i.If().IsNotWithin(1, 4).ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
@@ -536,8 +536,9 @@ namespace RS.Assert.Tests
 
         }
 
-        public class SomeClassWithoutValidate {
-            
+        public class SomeClassWithoutValidate
+        {
+
 
         }
 
@@ -553,7 +554,8 @@ namespace RS.Assert.Tests
             }
         }
 
-        public class SomeClassWithValidate {
+        public class SomeClassWithValidate
+        {
             public string Name { get; set; }
             public int Number { get; set; }
             public SomeClassWithValidateB Prop { get; set; }
@@ -563,7 +565,8 @@ namespace RS.Assert.Tests
                 Prop = new SomeClassWithValidateB();
             }
 
-            public IEnumerable<IAssertion> IsInvalid() {
+            public IEnumerable<IAssertion> IsInvalid()
+            {
                 yield return Prop.If().IsInvalid;
             }
         }
@@ -575,7 +578,7 @@ namespace RS.Assert.Tests
             Xunit.Assert.Throws<MissingMemberException>(() =>
             {
                 var x = new SomeClassWithoutValidate();
-                
+
                 x.If().IsInvalid.ThenThrow();
             });
 
@@ -584,6 +587,45 @@ namespace RS.Assert.Tests
                 var x = new SomeClassWithValidate();
                 x.If().IsInvalid.ThenThrow();
             });
+
+        }
+
+        public class SomeClass
+        {
+
+        }
+
+        [Fact]
+        public void WhenAssertingMultipleItemsInOneAssertThenYouGetXAssertsEvenIfShortCircuit()
+        {
+            SomeClass s1 = null;
+            SomeClass s2 = null;
+            SomeClass s3 = null;
+
+
+            var errMsg = If.AnyOf(s1, "some object 1")
+                .And(s2, "some object 2")
+                .And(s3, "some object 3").IsNull.ToString();
+
+            Xunit.Assert.True(errMsg.Contains("1") && errMsg.Contains("2") && errMsg.Contains("3"));
+
+            double d1 = 1;
+            double d2 = 3;
+            double d3 = 4;
+            
+            If.AnyOf(d1).And(d2).And(d3).IsSmallerThan(5).IsLargerThan(0).ThenThrow();
+        }
+
+        [Fact]
+        public void AnyAssertWorksForDoubles()
+        {
+            
+            double d1 = 1;
+            double d2 = 3;
+            double d3 = 4;
+
+            var errMsg = If.AnyOf(d1, "1").And(d2, "2").And(d3, "3").IsSmallerThan(5).IsLargerThan(0).ToString();
+            Xunit.Assert.True(errMsg.Contains("1") && errMsg.Contains("2") && errMsg.Contains("3"));
 
         }
 
