@@ -76,7 +76,7 @@ s3.If("s3").IsNull.ThenThrow();
 ```
 If.AnyOf(s1, "s1").And(s2, "s2").And(s3, "s3").IsNull.ThenThrow();
 ```
-**And of course you can use multiple checks as in the very unreal example below
+**And of course you can use multiple checks as in the very unreal example below**
 ```
 If.AnyOf(d1, "1").And(d2, "2").And(d3, "3").IsSmallerThan(5).IsLargerThan(0).ThenThrow();
 ```
