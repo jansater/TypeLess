@@ -505,6 +505,57 @@ namespace RS.Assert.Tests
         }
 
         [Fact]
+        public void WhenDoesNotContainTextThenThrow()
+        {
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                string s = "asd";
+                s.If().DoesNotContain("e").ThenThrow();
+            });
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                string s = "asd123";
+                s.If().DoesNotContain("asd").ThenThrow();
+            });
+
+        }
+
+        [Fact]
+        public void WhenDoesNotStartWithTextThenThrow()
+        {
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                string s = "asd";
+                s.If().DoesNotStartWith("sd").ThenThrow();
+            });
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                string s = "asd123";
+                s.If().DoesNotStartWith("asd").ThenThrow();
+            });
+
+        }
+
+        [Fact]
+        public void WhenDoesNotEndWithTextThenThrow()
+        {
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                string s = "asd";
+                s.If().DoesNotEndWith("as").ThenThrow();
+            });
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                string s = "asd123";
+                s.If().DoesNotEndWith("123").ThenThrow();
+            });
+
+        }
+
+        [Fact]
         public void WhenNotWithinThenThrow()
         {
             Xunit.Assert.Throws<ArgumentNullException>(() =>
@@ -602,18 +653,12 @@ namespace RS.Assert.Tests
             SomeClass s2 = null;
             SomeClass s3 = null;
 
-
-            var errMsg = If.AnyOf(s1, "some object 1")
-                .And(s2, "some object 2")
-                .And(s3, "some object 3").IsNull.ToString();
+            var errMsg = If.AnyOf(s1, "s1")
+                .And(s2, "s2")
+                .And(s3, "s3").IsNull.ToString();
 
             Xunit.Assert.True(errMsg.Contains("1") && errMsg.Contains("2") && errMsg.Contains("3"));
 
-            double d1 = 1;
-            double d2 = 3;
-            double d3 = 4;
-            
-            If.AnyOf(d1).And(d2).And(d3).IsSmallerThan(5).IsLargerThan(0).ThenThrow();
         }
 
         [Fact]
