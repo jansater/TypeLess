@@ -70,6 +70,7 @@
     <Compile Include="StringAssertExtensions.cs" />
     <Compile Include="AssertExtensions.cs" />
     <Compile Include="EnumerableAssertion.cs" />
+    <Compile Include="BoolAssertion.cs" />
     <Compile Include="StringAssertion.cs" />
     <Compile Include="Assertion.cs" />
     <Compile Include="IAssertion.cs" />

@@ -92,6 +92,12 @@ namespace RS.Assert
             return source;
         }
 
+        public static BoolAssertion If(this bool source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new BoolAssertion(name ?? GetTypeName(typeof(bool)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
         public static EnumerableAssertion If<T>(this List<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
             //name = UpdateName(name, file, lineNumber);

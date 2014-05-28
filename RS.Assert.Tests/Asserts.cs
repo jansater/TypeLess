@@ -674,5 +674,36 @@ namespace RS.Assert.Tests
 
         }
 
+        [Fact]
+        public void WhenBoolIsFalseThenThrow()
+        {
+
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                (1 == 0).If("expr").IsFalse.ThenThrow();
+            });
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                (1 == 1).If("expr").IsFalse.ThenThrow();   
+            });
+
+        }
+
+        [Fact]
+        public void WhenBoolIsTrueThenThrow()
+        {
+
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                (1 == 1).If("expr").IsTrue.ThenThrow();
+            });
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                (1 == 0).If("expr").IsTrue.ThenThrow();
+            });
+
+        }
     }
 }
