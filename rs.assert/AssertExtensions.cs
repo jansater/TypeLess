@@ -46,7 +46,7 @@ namespace RS.Assert
 
         //}
 
-        public static Assertion<T> And<T, S>(this Assertion<T> source, S obj, string withName = null)
+        public static Assertion<T> Or<T, S>(this Assertion<T> source, S obj, string withName = null)
         {
             source.Add(obj, withName);
             return source;

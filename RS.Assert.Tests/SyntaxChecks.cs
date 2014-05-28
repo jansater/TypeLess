@@ -18,7 +18,7 @@ namespace RS.Assert.Tests
             d.If().IsZero().ThenThrow();
             d.If().IsSmallerThan(5).ThenThrow();
             d.If().IsLargerThan(5).ThenThrow();
-            d.If().And("", "").ThenThrow(); //this should not be available
+            d.If().Or("", "").ThenThrow(); //this should not be available
             d.If().Append(null); //this should not be available
             d.If().IsEqualTo(5).ThenThrow();
             d.If().IsFalse(x => true, "is not false").ThenThrow();
@@ -29,7 +29,7 @@ namespace RS.Assert.Tests
             double d2 = 3;
             double d3 = 4;
 
-            If.AnyOf(d).And(d2).And(d3).IsLargerThan(5).ThenThrow();
+            If.AnyOf(d).Or(d2).Or(d3).IsLargerThan(5).ThenThrow();
 
 
             (1 > 0).If("Some bool").IsTrue.ThenThrow();

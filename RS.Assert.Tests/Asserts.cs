@@ -654,8 +654,8 @@ namespace RS.Assert.Tests
             SomeClass s3 = null;
 
             var errMsg = If.AnyOf(s1, "s1")
-                .And(s2, "s2")
-                .And(s3, "s3").IsNull.ToString();
+                .Or(s2, "s2")
+                .Or(s3, "s3").IsNull.ToString();
 
             Xunit.Assert.True(errMsg.Contains("1") && errMsg.Contains("2") && errMsg.Contains("3"));
 
@@ -669,7 +669,7 @@ namespace RS.Assert.Tests
             double d2 = 3;
             double d3 = 4;
 
-            var errMsg = If.AnyOf(d1, "1").And(d2, "2").And(d3, "3").IsSmallerThan(5).IsLargerThan(0).ToString();
+            var errMsg = If.AnyOf(d1, "1").Or(d2, "2").Or(d3, "3").IsSmallerThan(5).IsLargerThan(0).ToString();
             Xunit.Assert.True(errMsg.Contains("1") && errMsg.Contains("2") && errMsg.Contains("3"));
 
         }
