@@ -46,12 +46,6 @@ namespace RS.Assert
 
         //}
 
-        public static Assertion<T> Or<T, S>(this Assertion<T> source, S obj, string withName = null)
-        {
-            source.Add(obj, withName);
-            return source;
-        }
-
         internal static string GetTypeName(Type type)
         {
             var genericArgs = type.GenericTypeArguments;
@@ -86,78 +80,145 @@ namespace RS.Assert
 
         //}
 
-        public static Assertion<T> StopIfNotValid<T>(this Assertion<T> source)
+
+        #region Numbers
+
+        public static INumberAssertion<byte> If(this byte source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            source.IgnoreFurtherChecks = true;
-            return source;
+            //name = UpdateName(name, file, lineNumber);
+            return new NumberAssertion<byte>(name ?? GetTypeName(typeof(byte)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
-        public static BoolAssertion If(this bool source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        public static INumberAssertion<sbyte> If(this sbyte source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new NumberAssertion<sbyte>(name ?? GetTypeName(typeof(sbyte)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static INumberAssertion<ushort> If(this ushort source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new NumberAssertion<ushort>(name ?? GetTypeName(typeof(ushort)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static INumberAssertion<uint> If(this uint source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new NumberAssertion<uint>(name ?? GetTypeName(typeof(uint)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static INumberAssertion<ulong> If(this ulong source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new NumberAssertion<ulong>(name ?? GetTypeName(typeof(ulong)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static INumberAssertion<short> If(this short source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new NumberAssertion<short>(name ?? GetTypeName(typeof(short)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static INumberAssertion<long> If(this long source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new NumberAssertion<long>(name ?? GetTypeName(typeof(long)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static INumberAssertion<char> If(this char source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new NumberAssertion<char>(name ?? GetTypeName(typeof(char)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static INumberAssertion<int> If(this int source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new NumberAssertion<int>(name ?? GetTypeName(typeof(int)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static INumberAssertion<decimal> If(this decimal source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new NumberAssertion<decimal>(name ?? GetTypeName(typeof(decimal)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static INumberAssertion<float> If(this float source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new NumberAssertion<float>(name ?? GetTypeName(typeof(float)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static INumberAssertion<double> If(this double source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new NumberAssertion<double>(name ?? GetTypeName(typeof(double)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+
+        #endregion
+
+        public static INullableAssertion<T> If<T>(this Nullable<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null) where T : struct
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new NullableAssertion<T>(name ?? GetTypeName(typeof(T)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static ITimeSpanAssertion If(this TimeSpan source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new TimeSpanAssertion(name ?? GetTypeName(typeof(TimeSpan)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static IDateTimeAssertion If(this DateTime source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new DateTimeAssertion(name ?? GetTypeName(typeof(DateTime)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static IBoolAssertion If(this bool source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
             //name = UpdateName(name, file, lineNumber);
             return new BoolAssertion(name ?? GetTypeName(typeof(bool)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
-        public static EnumerableAssertion If<T>(this List<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        public static IEnumerableAssertion If<T>(this List<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
             //name = UpdateName(name, file, lineNumber);
             return new EnumerableAssertion(name ?? GetTypeName(typeof(IEnumerable)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
-        public static EnumerableAssertion If(this IEnumerable source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        public static IEnumerableAssertion If(this IEnumerable source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
             //name = UpdateName(name, file, lineNumber);
             return new EnumerableAssertion(name ?? GetTypeName(typeof(IEnumerable)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
-        public static EnumerableAssertion If<T>(this IEnumerable<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        public static IEnumerableAssertion If<T>(this IEnumerable<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
             //name = UpdateName(name, file, lineNumber);
             return new EnumerableAssertion(name ?? GetTypeName(typeof(IEnumerable<T>)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
-        public static StringAssertion If(this string source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        public static IStringAssertion If(this string source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
             //name = UpdateName(name, file, lineNumber);
             return new StringAssertion(name ?? GetTypeName(typeof(string)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
-        public static Assertion<T> If<T>(this T source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        public static IClassAssertion<T> If<T>(this T source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null) where T : class
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new ClassAssertion<T>(name ?? GetTypeName(typeof(T)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        internal static Assertion<T> CreateAssert<T>(this T source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null) where T : class
         {
             //name = UpdateName(name, file, lineNumber);
             return new Assertion<T>(name ?? GetTypeName(typeof(T)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
-        /// <summary>
-        /// Determines whether the specified source is null. Automatically stops further processing if source is null
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        internal static Assertion<T> IsNull<T>(this Assertion<T> source)
-        {
-
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            if (source.Item == null)
-            {
-                source.StopIfNotValid();
-                source.Append("is required");
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                source.Combine(child.IsNull);
-            }
-
-            return source;
-        }
-
-        public static Assertion<T> IsTrue<T>(this Assertion<T> source, Func<T, bool> assertFunc, string msgIfFalse)
+        internal static IAssertion<T> IsTrue<T>(this Assertion<T> source, Func<T, bool> assertFunc, string msgIfFalse)
         {
             if (assertFunc == null)
             {
@@ -189,7 +250,7 @@ namespace RS.Assert
             return source;
         }
 
-        public static Assertion<T> IsFalse<T>(this Assertion<T> source, Func<T, bool> assertFunc, string msgIfTrue)
+        internal static IAssertion<T> IsFalse<T>(this Assertion<T> source, Func<T, bool> assertFunc, string msgIfTrue)
         {
             if (assertFunc == null)
             {
@@ -221,34 +282,7 @@ namespace RS.Assert
             return source;
         }
 
-        public static Assertion<T> IsZero<T>(this Assertion<T> source) where T : struct, 
-          IComparable,
-          IComparable<T>,
-          IEquatable<T>,
-          IFormattable
-        {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            dynamic d = source.Item;
-            if (d == 0)
-            {
-                source.Append("must be non zero");
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                var c = child.Cast<T>();
-                c.ClearErrorMsg();
-                source.Combine(c.IsZero());
-            }
-
-            return source;
-        }
-
-        public static Assertion<T> IsNotEqualTo<T>(this Assertion<T> source, T comparedTo) where T : IComparable<T>
+        internal static IAssertion<T> IsNotEqualTo<T>(this Assertion<T> source, T comparedTo) 
         {
             if (source.IgnoreFurtherChecks)
             {
@@ -261,15 +295,15 @@ namespace RS.Assert
                 {
                     if (comparedTo != null)
                     {
-                        source.Append("must not be equal to " + comparedTo.ToString());
+                        source.Append("must be equal to " + comparedTo.ToString());
 
                     }
                     return source;
                 }
 
-                if (source.Item.CompareTo(comparedTo) != 0)
+                if (!source.Item.Equals(comparedTo))
                 {
-                    source.Append(string.Format("must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
+                    source.Append(string.Format("must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
                 }
                 return source;
             }
@@ -285,7 +319,7 @@ namespace RS.Assert
 
         }
 
-        public static Assertion<T> IsEqualTo<T>(this Assertion<T> source, T comparedTo) where T : IComparable<T>
+        internal static IAssertion<T> IsEqualTo<T>(this Assertion<T> source, T comparedTo)
         {
             if (source.IgnoreFurtherChecks)
             {
@@ -298,15 +332,15 @@ namespace RS.Assert
                 {
                     if (comparedTo == null)
                     {
-                        source.Append("must be equal to " + comparedTo.ToString());
+                        source.Append("must not be equal to " + comparedTo.ToString());
 
                     }
                     return source;
                 }
 
-                if (source.Item.CompareTo(comparedTo) == 0)
+                if (source.Item.Equals(comparedTo))
                 {
-                    source.Append(string.Format("must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
+                    source.Append(string.Format("must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
                 }
                 return source;
             }
@@ -321,175 +355,6 @@ namespace RS.Assert
             }
         }
 
-        public static Assertion<T> IsSmallerThan<T>(this Assertion<T> source, T comparedTo) where T : IComparable<T>
-        {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            if (source.Item.CompareTo(comparedTo) <= 0)
-            {
-                source.Append("must be larger than " + comparedTo);
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                var c = child.Cast<T>();
-                c.ClearErrorMsg();
-                source.Combine(c.IsSmallerThan(comparedTo));
-            }
-
-            return source;
-        }
-
-        public static Assertion<T> IsLargerThan<T>(this Assertion<T> source, T comparedTo) where T : IComparable<T>
-        {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            if (source.Item.CompareTo(comparedTo) >= 0)
-            {
-                source.Append("must be smaller than " + comparedTo);
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                var c = child.Cast<T>();
-                c.ClearErrorMsg();
-                source.Combine(c.IsLargerThan(comparedTo));
-            }
-
-            return source;
-        }
-
-        public static Assertion<T> IsPositive<T>(this Assertion<T> source) where T : struct, 
-          IComparable,
-          IComparable<T>,
-          IEquatable<T>,
-          IFormattable
-        {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            dynamic d = source.Item;
-
-            if (d > 0.0)
-            {
-                source.Append("must be zero or negative");
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                var c = child.Cast<T>();
-                c.ClearErrorMsg();
-                source.Combine(c.IsPositive());
-            }
-
-            return source;
-        }
-
-        public static Assertion<T> IsNegative<T>(this Assertion<T> source) where T : struct, 
-          IComparable,
-          IComparable<T>,
-          IEquatable<T>,
-          IFormattable
-        {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            dynamic d = source.Item;
-            if (d < 0.0)
-            {
-                source.Append("must be zero or positive");
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                var c = child.Cast<T>();
-                c.ClearErrorMsg();
-                source.Combine(c.IsNegative());
-            }
-
-            return source;
-        }
-
-        public static Assertion<T> IsNotWithin<T>(this Assertion<T> source, T min, T max) where T : struct, 
-          IComparable,
-          IComparable<T>,
-          IEquatable<T>,
-          IFormattable
-        {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            dynamic d = source.Item;
-            if (d < min || d > max)
-            {
-                source.Append(String.Format("must be within {0} and {1}", min, max));
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                var c = child.Cast<T>();
-                c.ClearErrorMsg();
-                source.Combine(c.IsNotWithin(min, max));
-            }
-
-            return source;
-        }
-
-        /// <summary>
-        /// Make a call to this class IsValid method to determine whether the specified target object is valid. Normally used to define validation checks in for example dto's. 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="source">The target object.</param>
-        /// <param name="min">The minimum.</param>
-        /// <param name="max">The maximum.</param>
-        /// <returns></returns>
-        internal static Assertion<T> IsInvalid<T>(this Assertion<T> source)
-        {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            source = source.IsNull();
-
-            if (source.Item != null)
-            {
-                dynamic d = source.Item;
-                try
-                {
-                    var classAssertions = d.IsInvalid() as IEnumerable<IAssertion>;
-                    foreach (var item in classAssertions)
-                    {
-                        source = source.Combine(item);
-                    }
-                }
-                catch (RuntimeBinderException)
-                {
-                    throw new System.MissingMemberException("You must define method public IEnumerable<IAssertion> IsInvalid() {} in class " + typeof(T).Name);
-                }
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                var c = child.Cast<T>();
-                c.ClearErrorMsg();
-                source.Combine(c.IsInvalid());
-            }
-
-            return source;
-        }
 
     }
 }

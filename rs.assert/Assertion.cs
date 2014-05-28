@@ -6,15 +6,38 @@ using System.Text;
 
 namespace RS.Assert
 {
+
+    public interface IAssertion
+    {
+        int ErrorCount { get; }
+        bool IgnoreFurtherChecks { get; }
+        bool IsValid { get; }
+        void ThenThrow();
+        void ThenThrow<E>() where E : Exception;
+        string ToString();
+       
+    }
+
+    public interface IAssertion<T> : IAssertion
+    {
+        IAssertion Combine(IAssertion otherAssertion);
+        //IAssertion<T> Or<S>(S obj, string withName = null);
+        IAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse);
+        IAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue);
+        IAssertion<T> IsNotEqualTo(T comparedTo);
+        IAssertion<T> IsEqualTo(T comparedTo);
+    }
+
+
 #if !DEBUG
     [DebuggerStepThrough]
 #endif
-    public class Assertion<T> : IAssertion
+    internal class Assertion<T> : RS.Assert.IAssertion<T>
     {
         private StringBuilder _sb { get; set; }
-        public T Item { get; set; }
+        internal T Item { get; set; }
 
-        public string Name { get; set; }
+        internal string Name { get; set; }
 
         private string _file;
         private int? _lineNr;
@@ -32,18 +55,50 @@ namespace RS.Assert
             _caller = caller;
         }
 
-        internal void Add(object obj, string name) {
-            _childAssertions.Add(obj.If(name));
+        internal Assertion<object> Add(object obj, string name) {
+            //todo re add this
+
+            var assert = AssertExtensions.CreateAssert(obj, name);
+            var tObj = this.Cast<object>();
+            assert._childAssertions.Add(tObj);
+            return assert;
         }
 
-        internal Assertion<S> Cast<S>()  {
+        public Assertion<T> StopIfNotValid
+        {
+            get {
+                IgnoreFurtherChecks = true;
+                return this;
+            }
+            
+        }
+
+        internal Assertion<S> Cast<S>()
+        {
+            if (this.Item == null) { 
+                return new Assertion<S>(Name, default(S), null, null, null)
+                {
+                    _sb = this._sb,
+                    _caller = this._caller,
+                    _file = this._file,
+                    _childAssertions = this._childAssertions,
+                    _errorCount = this._errorCount,
+                    _ignoreFurtherChecks = this._ignoreFurtherChecks,
+                    _isValid = this._isValid,
+                    _lineNr = this._lineNr,
+                };
+            }
+            
             var item = this.Item as object;
-            if (!(item is S)) {
+
+            if (!(item is S))
+            {
                 throw new InvalidCastException("You can't mix types " + typeof(S).Name + " and " + typeof(T));
             }
             var s = (S)item;
 
-            return new Assertion<S>(Name, s, null, null, null) { 
+            return new Assertion<S>(Name, s, null, null, null)
+            {
                 _sb = this._sb,
                 _caller = this._caller,
                 _file = this._file,
@@ -65,7 +120,7 @@ namespace RS.Assert
             }
         }
 
-        public Assertion<T> Combine(IAssertion otherAssertion) {
+        public IAssertion Combine(IAssertion otherAssertion) {
 
             if (otherAssertion == null || otherAssertion.IsValid) {
                 return this;
@@ -167,6 +222,7 @@ namespace RS.Assert
         }
 
         private int _errorCount;
+        
         /// <summary>
         /// The number if validation errors.
         /// </summary>
@@ -177,7 +233,7 @@ namespace RS.Assert
             }
         }
 
-        public void Append(string s)
+        internal void Append(string s)
         {
             if (_errorCount == 0) {
                 _sb.Append(Name);
@@ -199,32 +255,26 @@ namespace RS.Assert
             _isValid = false;
         }
 
-        #region JustForSyntax
+        
 
-        public Assertion<T> IsNull
+        public IAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse)
         {
-            get {
-                return this.IsNull();
-            }
+            return AssertExtensions.IsTrue(this, assertFunc, msgIfFalse);
         }
 
-        /// <summary>
-        /// Make a call to this class IsValid method to determine whether the specified target object is valid. Normally used to define validation checks in for example dto's. 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="source">The target object.</param>
-        /// <param name="min">The minimum.</param>
-        /// <param name="max">The maximum.</param>
-        /// <returns></returns>
-        public Assertion<T> IsInvalid
+        public IAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue)
         {
-            get {
-                return AssertExtensions.IsInvalid(this);
-            }
+            return AssertExtensions.IsFalse(this, assertFunc, msgIfTrue);
         }
 
+        public IAssertion<T> IsNotEqualTo(T comparedTo) 
+        {
+            return AssertExtensions.IsNotEqualTo(this, comparedTo);
+        }
 
-        #endregion
-
+        public IAssertion<T> IsEqualTo(T comparedTo) 
+        {
+            return AssertExtensions.IsEqualTo(this, comparedTo);
+        }
     }
 }

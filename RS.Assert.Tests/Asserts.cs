@@ -212,25 +212,25 @@ namespace RS.Assert.Tests
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int i = 0;
-                i.If().IsZero().ThenThrow();
+                i.If().IsZero.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 int i = 1;
-                i.If().IsZero().ThenThrow();
+                i.If().IsZero.ThenThrow();
             });
 
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 double d = 0.0;
-                d.If().IsZero().ThenThrow();
+                d.If().IsZero.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 double d = 0.0001;
-                d.If().IsZero().ThenThrow();
+                d.If().IsZero.ThenThrow();
             });
 
         }
@@ -309,19 +309,19 @@ namespace RS.Assert.Tests
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int i = 3;
-                i.If().IsPositive().ThenThrow();
+                i.If().IsPositive.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 int i = 0;
-                i.If().IsPositive().ThenThrow();
+                i.If().IsPositive.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 int i = -1;
-                i.If().IsPositive().ThenThrow();
+                i.If().IsPositive.ThenThrow();
             });
 
         }
@@ -332,19 +332,19 @@ namespace RS.Assert.Tests
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int i = -1;
-                i.If().IsNegative().ThenThrow();
+                i.If().IsNegative.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 int i = 0;
-                i.If().IsNegative().ThenThrow();
+                i.If().IsNegative.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 int i = 1;
-                i.If().IsNegative().ThenThrow();
+                i.If().IsNegative.ThenThrow();
             });
 
         }
@@ -355,19 +355,19 @@ namespace RS.Assert.Tests
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int i = -1;
-                i.If().IsNegative().ThenThrow();
+                i.If().IsNegative.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 int i = 0;
-                i.If().IsNegative().ThenThrow();
+                i.If().IsNegative.ThenThrow();
             });
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 int i = 1;
-                i.If().IsNegative().ThenThrow();
+                i.If().IsNegative.ThenThrow();
             });
 
         }
@@ -601,7 +601,7 @@ namespace RS.Assert.Tests
             public IEnumerable<IAssertion> IsInvalid()
             {
                 yield return Name.If().IsNull;
-                yield return Number.If().IsNull;
+                yield return Number.If().IsEqualTo(4);
             }
         }
 
@@ -653,7 +653,7 @@ namespace RS.Assert.Tests
             SomeClass s2 = null;
             SomeClass s3 = null;
 
-            var errMsg = If.AnyOf(s1, "s1")
+            var errMsg = s1.If("s1")
                 .Or(s2, "s2")
                 .Or(s3, "s3").IsNull.ToString();
 
@@ -669,7 +669,7 @@ namespace RS.Assert.Tests
             double d2 = 3;
             double d3 = 4;
 
-            var errMsg = If.AnyOf(d1, "1").Or(d2, "2").Or(d3, "3").IsSmallerThan(5).IsLargerThan(0).ToString();
+            var errMsg = d1.If("1").Or(d2, "2").Or(d3, "3").IsSmallerThan(5).IsLargerThan(0).ToString();
             Xunit.Assert.True(errMsg.Contains("1") && errMsg.Contains("2") && errMsg.Contains("3"));
 
         }

@@ -64,6 +64,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassAssertion.cs" />
+    <Compile Include="NumberAssertion.cs" />
+    <Compile Include="TimeSpanAssertion.cs" />
+    <Compile Include="DateTimeAssertion.cs" />
+    <Compile Include="NullableAssertion.cs" />
     <Compile Include="CompilerServiceExtensions.cs" />
     <Compile Include="EnumerableAssertExtensions .cs" />
     <Compile Include="If.cs" />
@@ -73,7 +78,6 @@
     <Compile Include="BoolAssertion.cs" />
     <Compile Include="StringAssertion.cs" />
     <Compile Include="Assertion.cs" />
-    <Compile Include="IAssertion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

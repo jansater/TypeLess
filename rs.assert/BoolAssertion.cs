@@ -5,20 +5,26 @@ using System.Text;
 
 namespace RS.Assert
 {
-    public interface IFinalBoolAssertion : IAssertion {
-        void ThenThrow();
-        void ThenThrow<T>() where T : Exception;
+    public interface IBoolAssertion : IAssertion<bool> {
+        new IBoolAssertion IsTrue { get; }
+        new IBoolAssertion IsFalse { get; }
+        IBoolAssertion Or(bool obj, string withName = null);
     }
 
 #if !DEBUG
     [DebuggerStepThrough]
 #endif
-    public class BoolAssertion : Assertion<bool>, IFinalBoolAssertion
+    internal class BoolAssertion : Assertion<bool>, IBoolAssertion
     {
         private List<BoolAssertion> _childAssertions = new List<BoolAssertion>();
 
         public BoolAssertion(string s, bool source, string file, int? lineNumber, string caller)
             :base (s, source, file, lineNumber, caller) {}
+
+        public IBoolAssertion Combine(IBoolAssertion otherAssertion)
+        {
+            return (IBoolAssertion)base.Combine(otherAssertion);
+        }
 
         internal new List<BoolAssertion> ChildAssertions
         {
@@ -28,7 +34,7 @@ namespace RS.Assert
             }
         }
 
-        public BoolAssertion StopIfNotValid
+        public IBoolAssertion StopIfNotValid
         {
             get {
                 base.IgnoreFurtherChecks = true;
@@ -36,7 +42,7 @@ namespace RS.Assert
             }
         }
 
-        public IFinalBoolAssertion IsTrue {
+        public IBoolAssertion IsTrue {
             get {
                 
                 if (Item)
@@ -54,7 +60,7 @@ namespace RS.Assert
             }
         }
 
-        public IFinalBoolAssertion IsFalse
+        public IBoolAssertion IsFalse
         {
             get
             {
@@ -72,7 +78,13 @@ namespace RS.Assert
 
                 return this;
             }
-        } 
+        }
+
+        public new IBoolAssertion Or(bool obj, string withName = null)
+        {
+            this.ChildAssertions.Add(new BoolAssertion(withName, obj, null, null, null));
+            return this;
+        }
 
     }
 }
