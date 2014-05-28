@@ -74,7 +74,7 @@ s3.If("s3").IsNull.ThenThrow();
 ```
 **If you need to check the same predicates on multiple objects like above then you can do this**
 ```
-If.AnyOf(s1, "s1").And(s2, "s2").And(s3, "s3").IsNull.ThenThrow();
+If.AnyOf(s1, "s1").Or(s2, "s2").Or(s3, "s3").IsNull.ThenThrow();
 ```
 **And of course you can use multiple checks as in the very unreal example below**
 ```
