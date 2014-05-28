@@ -174,6 +174,9 @@ ifDateNotValid.Combine(ifStringNotValid).ThenThrow();
 - DoesNotContainAlphaChars
 - DoesNotContainDigit
 - IsNotWithin 
+- DoesNotContain text
+- DoesNotStartWith
+- DoesNotEndWith
 
 ###The framework target profile supports###
 - .Net
