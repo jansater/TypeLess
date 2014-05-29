@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -30,23 +31,13 @@ namespace TypeLess
     }
 
 
-    public interface IAssertion : IFluentInterface
+    public interface IAssertionU : IFluentInterface
     {
         bool IsValid { get; }
     }
 
-    public interface ICompleteAssertion
+    public interface IAssertionU<T> : IAssertionU
     {
-        int ErrorCount { get; }
-        bool IgnoreFurtherChecks { get; }
-        void ThenThrow();
-        void ThenThrow<E>() where E : Exception;
-        string ToString();
-    }
-
-    public interface IAssertion<T> : IAssertion
-    {
-        IAssertion Combine(IAssertion otherAssertion);
         //IAssertion<T> Or<S>(S obj, string withName = null);
         IAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse);
         IAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue);
@@ -54,11 +45,27 @@ namespace TypeLess
         IAssertion<T> IsEqualTo(T comparedTo);
     }
 
+    public interface IAssertion : IAssertionU
+    {
+        int ErrorCount { get; }
+        bool IgnoreFurtherChecks { get; }
+        void ThenThrow();
+        void ThenThrow<E>() where E : Exception;
+        string ToString();
+        IAssertion Combine(IAssertion otherAssertion);
+    }
+
+    public interface IAssertion<T> : IAssertion, IAssertionU<T>
+    {
+        void Then(Action<T> action);
+        S ThenReturn<S>(Func<T, S> func);
+    }
+
 
 #if !DEBUG
     [DebuggerStepThrough]
 #endif
-    internal class Assertion<T> : TypeLess.IAssertion<T>
+    internal class Assertion<T> : TypeLess.IAssertion<T>, IAssertion
     {
         private StringBuilder _sb { get; set; }
         internal T Item { get; set; }
@@ -241,7 +248,7 @@ namespace TypeLess
             }
             else
             {
-                return String.Format("{0} at {1}, line number {2} in file {3} ", _sb.ToString(), _caller, _lineNr, _file);
+                return String.Format(CultureInfo.InvariantCulture, "{0} at {1}, line number {2} in file {3} ", _sb.ToString(), _caller, _lineNr, _file);
             }
         }
 
@@ -288,7 +295,7 @@ namespace TypeLess
             }
             else if (ChildAssertions.Count > 0)
             {
-                _sb.AppendFormat(" and {0} ", Name).Append(s);
+                _sb.AppendFormat(CultureInfo.InvariantCulture, " and {0} ", Name).Append(s);
             }
             else
             {
@@ -317,6 +324,27 @@ namespace TypeLess
         public IAssertion<T> IsEqualTo(T comparedTo)
         {
             return AssertExtensions.IsEqualTo(this, comparedTo);
+        }
+
+        public void Then(Action<T> action)
+        {
+            action.If().IsNull.ThenThrow();
+
+            if (IsValid)
+            {
+                return;
+            }
+            action(Item);
+        }
+
+        public S ThenReturn<S>(Func<T, S> func)
+        {
+            if (IsValid)
+            {
+                return default(S);
+            }
+
+            return func(Item);
         }
     }
 }

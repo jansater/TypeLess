@@ -12,12 +12,14 @@ namespace TypeLess.Tests
         public DoubleSyntaxChecks()
         {
             double d = 2;
+            
+            d.If().IsPositive.Combine(d.If().IsPositive);
             d.If().IsPositive.ThenThrow();
             d.If().IsNegative.ThenThrow();
             d.If().IsZero.ThenThrow();
             d.If().IsSmallerThan(5).ThenThrow();
             d.If().IsLargerThan(5).ThenThrow();
-            d.If().Or(2.0, "").ThenThrow(); //this should not be available
+            d.If().Or(2.0, "").ThenThrow(); 
             d.If().IsEqualTo(5).ThenThrow();
             d.If().IsFalse(x => true, "is not false").ThenThrow();
             d.If().IsTrue(x => false, "is not true").ThenThrow();

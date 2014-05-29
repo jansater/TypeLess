@@ -626,12 +626,12 @@ namespace TypeLess.Tests
         public void WhenDTOIsInValidThenThrow()
         {
 
-            Xunit.Assert.Throws<MissingMemberException>(() =>
-            {
-                var x = new SomeClassWithoutValidate();
+            //Xunit.Assert.Throws<MissingMemberException>(() =>
+            //{
+            //    var x = new SomeClassWithoutValidate();
 
-                x.If().IsInvalid.ThenThrow();
-            });
+            //    x.If().IsInvalid.ThenThrow();
+            //});
 
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {

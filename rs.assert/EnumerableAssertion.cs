@@ -6,7 +6,7 @@ using System.Text;
 
 namespace TypeLess
 {
-    public interface IEnumerableAssertionU : IAssertion<IEnumerable> {
+    public interface IEnumerableAssertionU : IAssertionU<IEnumerable> {
         IEnumerableAssertion IsNull { get; }
         IEnumerableAssertion IsEmpty { get; }
         IEnumerableAssertion ContainsLessThan(int nElements);
@@ -19,7 +19,7 @@ namespace TypeLess
         new IEnumerableAssertion IsEqualTo(IEnumerable comparedTo);
     }
 
-    public interface IEnumerableAssertion : IEnumerableAssertionU, ICompleteAssertion
+    public interface IEnumerableAssertion : IEnumerableAssertionU, IAssertion<IEnumerable>
     { 
         
     }

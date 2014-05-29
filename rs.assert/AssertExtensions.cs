@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -19,6 +20,7 @@ namespace TypeLess
 #if !DEBUG
     [DebuggerStepThrough]
 #endif
+#pragma warning disable 0436,1685
     public static class AssertExtensions
     {
 
@@ -51,7 +53,7 @@ namespace TypeLess
             var genericArgs = type.GenericTypeArguments;
             if (genericArgs.Any())
             {
-                return String.Format("{0}<{1}>",
+                return String.Format(CultureInfo.InvariantCulture, "{0}<{1}>",
                     type.Name,
                     String.Join<string>(",", type.GenericTypeArguments.Select(x => GetTypeName(x)).ToArray()));
             }
@@ -303,7 +305,7 @@ namespace TypeLess
 
                 if (!source.Item.Equals(comparedTo))
                 {
-                    source.Append(string.Format("must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
+                    source.Append(string.Format(CultureInfo.InvariantCulture,"must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
                 }
                 return source;
             }
@@ -340,7 +342,7 @@ namespace TypeLess
 
                 if (source.Item.Equals(comparedTo))
                 {
-                    source.Append(string.Format("must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
+                    source.Append(string.Format(CultureInfo.InvariantCulture, "must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
                 }
                 return source;
             }

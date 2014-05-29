@@ -5,16 +5,17 @@ using System.Text;
 
 namespace TypeLess
 {
-    public interface IBoolAssertionU : IAssertion<bool>
+    public interface IBoolAssertionU : IAssertionU<bool>
     {
         new IBoolAssertion IsTrue { get; }
         new IBoolAssertion IsFalse { get; }
         IBoolAssertion Or(bool obj, string withName = null);
         new IBoolAssertion IsNotEqualTo(bool comparedTo);
         new IBoolAssertion IsEqualTo(bool comparedTo);
+        
     }
 
-    public interface IBoolAssertion : IBoolAssertionU, ICompleteAssertion {
+    public interface IBoolAssertion : IBoolAssertionU, IAssertion<bool> {
         
     }
 
@@ -41,7 +42,7 @@ namespace TypeLess
             }
         }
 
-        public IBoolAssertion StopIfNotValid
+        public new IBoolAssertion StopIfNotValid
         {
             get {
                 base.IgnoreFurtherChecks = true;

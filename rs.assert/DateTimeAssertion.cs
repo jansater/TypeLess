@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 
 namespace TypeLess
 {
-    public interface IDateTimeAssertionU : IAssertion<DateTime>
+    public interface IDateTimeAssertionU : IAssertionU<DateTime>
     {
         IDateTimeAssertion IsNotWithin(DateTime min, DateTime max);
         IDateTimeAssertion IsBefore(DateTime date);
@@ -17,7 +18,7 @@ namespace TypeLess
         new IDateTimeAssertion IsEqualTo(DateTime comparedTo);
     }
 
-    public interface IDateTimeAssertion : IDateTimeAssertionU, ICompleteAssertion
+    public interface IDateTimeAssertion : IDateTimeAssertionU, IAssertion<DateTime>
     {
         
     }
@@ -45,7 +46,7 @@ namespace TypeLess
             return (IDateTimeAssertion)base.Combine(otherAssertion);
         }
 
-        public IDateTimeAssertion StopIfNotValid
+        public new IDateTimeAssertion StopIfNotValid
         {
             get {
                 base.IgnoreFurtherChecks = true;
@@ -63,7 +64,7 @@ namespace TypeLess
             dynamic d = Item;
             if (d < min || d > max)
             {
-                Append(String.Format("must be within {0} and {1}", min, max));
+                Append(String.Format(CultureInfo.InvariantCulture, "must be within {0} and {1}", min, max));
             }
 
             foreach (var child in ChildAssertions)
@@ -117,7 +118,7 @@ namespace TypeLess
             return this;
         }
 
-        public new IDateTimeAssertion Or(DateTime obj, string withName = null)
+        public IDateTimeAssertion Or(DateTime obj, string withName = null)
         {
             this.ChildAssertions.Add(new DateTimeAssertion(withName, obj, null, null, null));
             return this; 
