@@ -1,5 +1,6 @@
-RS.Assert (Another pragmatic argument validation lib)
+TypeLess 
 =========
+##More code - less typing##
 
 ###Available on nuget: PM> Install-Package RS.Assert###
 
