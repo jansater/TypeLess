@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Xunit;
 
-namespace RS.Assert.Tests
+namespace TypeLess.Tests
 {
     public class Asserts
     {

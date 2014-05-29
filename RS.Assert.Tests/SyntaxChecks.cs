@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TypeLess;
 
-namespace RS.Assert.Tests
+namespace TypeLess.Tests
 {
     public class DoubleSyntaxChecks
     {
         public DoubleSyntaxChecks()
         {
             double d = 2;
-            
             d.If().IsPositive.ThenThrow();
             d.If().IsNegative.ThenThrow();
             d.If().IsZero.ThenThrow();

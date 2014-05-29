@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace RS.Assert
+namespace TypeLess
 {
-    public interface IBoolAssertion : IAssertion<bool> {
+    public interface IBoolAssertionU : IAssertion<bool>
+    {
         new IBoolAssertion IsTrue { get; }
         new IBoolAssertion IsFalse { get; }
         IBoolAssertion Or(bool obj, string withName = null);
+        new IBoolAssertion IsNotEqualTo(bool comparedTo);
+        new IBoolAssertion IsEqualTo(bool comparedTo);
+    }
+
+    public interface IBoolAssertion : IBoolAssertionU, ICompleteAssertion {
+        
     }
 
 #if !DEBUG
@@ -42,7 +49,7 @@ namespace RS.Assert
             }
         }
 
-        public IBoolAssertion IsTrue {
+        public new IBoolAssertion IsTrue {
             get {
                 
                 if (Item)
@@ -60,7 +67,7 @@ namespace RS.Assert
             }
         }
 
-        public IBoolAssertion IsFalse
+        public new IBoolAssertion IsFalse
         {
             get
             {
@@ -80,10 +87,20 @@ namespace RS.Assert
             }
         }
 
-        public new IBoolAssertion Or(bool obj, string withName = null)
+        public IBoolAssertion Or(bool obj, string withName = null)
         {
             this.ChildAssertions.Add(new BoolAssertion(withName, obj, null, null, null));
             return this;
+        }
+
+        public new IBoolAssertion IsNotEqualTo(bool comparedTo)
+        {
+            return (IBoolAssertion)base.IsNotEqualTo(comparedTo);
+        }
+
+        public new IBoolAssertion IsEqualTo(bool comparedTo)
+        {
+            return (IBoolAssertion)base.IsEqualTo(comparedTo);
         }
 
     }

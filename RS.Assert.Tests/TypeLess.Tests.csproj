@@ -7,8 +7,8 @@
     <ProjectGuid>{3E7BC930-B404-4668-B6BA-1044C8E9E7CB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RS.Assert.Tests</RootNamespace>
-    <AssemblyName>RS.Assert.Tests</AssemblyName>
+    <RootNamespace>TypeLess.Tests</RootNamespace>
+    <AssemblyName>TypeLess.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -50,9 +50,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\rs.assert\RS.Assert.csproj">
+    <ProjectReference Include="..\rs.assert\TypeLess.csproj">
       <Project>{01bd2432-e1fb-4c96-9607-653b45950669}</Project>
-      <Name>RS.Assert</Name>
+      <Name>TypeLess</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,21 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace RS.Assert
+namespace TypeLess
 {
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public interface IFluentInterface
+    {
+        /// <summary>
+        /// Redeclaration that hides the <see cref="object.GetType()"/> method from IntelliSense.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        Type GetType();
 
-    public interface IAssertion
+        /// <summary>
+        /// Redeclaration that hides the <see cref="object.GetHashCode()"/> method from IntelliSense.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        int GetHashCode();
+
+        /// <summary>
+        /// Redeclaration that hides the <see cref="object.Equals(object)"/> method from IntelliSense.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        bool Equals(object obj);
+    }
+
+
+    public interface IAssertion : IFluentInterface
+    {
+        bool IsValid { get; }
+    }
+
+    public interface ICompleteAssertion
     {
         int ErrorCount { get; }
         bool IgnoreFurtherChecks { get; }
-        bool IsValid { get; }
         void ThenThrow();
         void ThenThrow<E>() where E : Exception;
         string ToString();
-       
     }
 
     public interface IAssertion<T> : IAssertion
@@ -32,7 +58,7 @@ namespace RS.Assert
 #if !DEBUG
     [DebuggerStepThrough]
 #endif
-    internal class Assertion<T> : RS.Assert.IAssertion<T>
+    internal class Assertion<T> : TypeLess.IAssertion<T>
     {
         private StringBuilder _sb { get; set; }
         internal T Item { get; set; }
@@ -55,7 +81,8 @@ namespace RS.Assert
             _caller = caller;
         }
 
-        internal Assertion<object> Add(object obj, string name) {
+        internal Assertion<object> Add(object obj, string name)
+        {
             //todo re add this
 
             var assert = AssertExtensions.CreateAssert(obj, name);
@@ -66,16 +93,18 @@ namespace RS.Assert
 
         public Assertion<T> StopIfNotValid
         {
-            get {
+            get
+            {
                 IgnoreFurtherChecks = true;
                 return this;
             }
-            
+
         }
 
         internal Assertion<S> Cast<S>()
         {
-            if (this.Item == null) { 
+            if (this.Item == null)
+            {
                 return new Assertion<S>(Name, default(S), null, null, null)
                 {
                     _sb = this._sb,
@@ -88,7 +117,7 @@ namespace RS.Assert
                     _lineNr = this._lineNr,
                 };
             }
-            
+
             var item = this.Item as object;
 
             if (!(item is S))
@@ -110,19 +139,24 @@ namespace RS.Assert
             };
         }
 
-        internal void ClearErrorMsg() {
+        internal void ClearErrorMsg()
+        {
             _sb.Clear();
         }
 
-        internal List<Assertion<object>> ChildAssertions {
-            get {
+        internal List<Assertion<object>> ChildAssertions
+        {
+            get
+            {
                 return _childAssertions;
             }
         }
 
-        public IAssertion Combine(IAssertion otherAssertion) {
+        public IAssertion Combine(IAssertion otherAssertion)
+        {
 
-            if (otherAssertion == null || otherAssertion.IsValid) {
+            if (otherAssertion == null || otherAssertion.IsValid)
+            {
                 return this;
             }
 
@@ -131,11 +165,12 @@ namespace RS.Assert
                 _isValid &= otherAssertion.IsValid;
                 _sb.Append(otherAssertion.ToString());
             }
-            else {
+            else
+            {
                 _isValid &= otherAssertion.IsValid;
                 _sb.Append(". ").AppendLine(otherAssertion.ToString());
             }
-            
+
             return this;
         }
 
@@ -150,10 +185,11 @@ namespace RS.Assert
             {
                 throw (Exception)Activator.CreateInstance(typeof(E), new object[] { AppendTrace() });
             }
-            else {
+            else
+            {
                 throw (Exception)Activator.CreateInstance(typeof(E), new object[] { _sb.ToString() });
             }
-            
+
         }
 
         /// <summary>
@@ -188,7 +224,8 @@ namespace RS.Assert
             {
                 return AppendTrace();
             }
-            else {
+            else
+            {
                 return _sb.ToString();
             }
         }
@@ -202,7 +239,8 @@ namespace RS.Assert
             {
                 return _sb.ToString();
             }
-            else {
+            else
+            {
                 return String.Format("{0} at {1}, line number {2} in file {3} ", _sb.ToString(), _caller, _lineNr, _file);
             }
         }
@@ -222,23 +260,26 @@ namespace RS.Assert
         }
 
         private int _errorCount;
-        
+
         /// <summary>
         /// The number if validation errors.
         /// </summary>
         /// <returns></returns>
-        public int ErrorCount {
-            get {
+        public int ErrorCount
+        {
+            get
+            {
                 return _errorCount;
             }
         }
 
         internal void Append(string s)
         {
-            if (_errorCount == 0) {
+            if (_errorCount == 0)
+            {
                 _sb.Append(Name);
             }
-            
+
             _errorCount++;
 
             if (_isValid)
@@ -249,13 +290,14 @@ namespace RS.Assert
             {
                 _sb.AppendFormat(" and {0} ", Name).Append(s);
             }
-            else {
+            else
+            {
                 _sb.Append(" and ").Append(s);
             }
             _isValid = false;
         }
 
-        
+
 
         public IAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse)
         {
@@ -267,12 +309,12 @@ namespace RS.Assert
             return AssertExtensions.IsFalse(this, assertFunc, msgIfTrue);
         }
 
-        public IAssertion<T> IsNotEqualTo(T comparedTo) 
+        public IAssertion<T> IsNotEqualTo(T comparedTo)
         {
             return AssertExtensions.IsNotEqualTo(this, comparedTo);
         }
 
-        public IAssertion<T> IsEqualTo(T comparedTo) 
+        public IAssertion<T> IsEqualTo(T comparedTo)
         {
             return AssertExtensions.IsEqualTo(this, comparedTo);
         }

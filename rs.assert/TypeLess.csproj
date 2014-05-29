@@ -7,8 +7,8 @@
     <ProjectGuid>{01BD2432-E1FB-4C96-9607-653B45950669}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RS.Assert</RootNamespace>
-    <AssemblyName>RS.Assert</AssemblyName>
+    <RootNamespace>TypeLess</RootNamespace>
+    <AssemblyName>TypeLess</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -71,7 +71,6 @@
     <Compile Include="NullableAssertion.cs" />
     <Compile Include="CompilerServiceExtensions.cs" />
     <Compile Include="EnumerableAssertExtensions .cs" />
-    <Compile Include="If.cs" />
     <Compile Include="StringAssertExtensions.cs" />
     <Compile Include="AssertExtensions.cs" />
     <Compile Include="EnumerableAssertion.cs" />

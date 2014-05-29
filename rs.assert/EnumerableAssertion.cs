@@ -4,15 +4,24 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace RS.Assert
+namespace TypeLess
 {
-    public interface IEnumerableAssertion : IAssertion<IEnumerable>
-    { 
+    public interface IEnumerableAssertionU : IAssertion<IEnumerable> {
         IEnumerableAssertion IsNull { get; }
         IEnumerableAssertion IsEmpty { get; }
         IEnumerableAssertion ContainsLessThan(int nElements);
         IEnumerableAssertion ContainsMoreThan(int nElements);
         IEnumerableAssertion Or(IEnumerable obj, string withName = null);
+
+        new IEnumerableAssertion IsTrue(Func<IEnumerable, bool> assertFunc, string msgIfFalse);
+        new IEnumerableAssertion IsFalse(Func<IEnumerable, bool> assertFunc, string msgIfTrue);
+        new IEnumerableAssertion IsNotEqualTo(IEnumerable comparedTo);
+        new IEnumerableAssertion IsEqualTo(IEnumerable comparedTo);
+    }
+
+    public interface IEnumerableAssertion : IEnumerableAssertionU, ICompleteAssertion
+    { 
+        
     }
 
 #if !DEBUG
@@ -79,6 +88,25 @@ namespace RS.Assert
             return this;
         }
 
+        public new IEnumerableAssertion IsTrue(Func<IEnumerable, bool> assertFunc, string msgIfFalse)
+        {
+            return (IEnumerableAssertion)base.IsTrue(assertFunc, msgIfFalse);
+        }
+
+        public new IEnumerableAssertion IsFalse(Func<IEnumerable, bool> assertFunc, string msgIfTrue)
+        {
+            return (IEnumerableAssertion)base.IsFalse(assertFunc, msgIfTrue);
+        }
+
+        public new IEnumerableAssertion IsNotEqualTo(IEnumerable comparedTo)
+        {
+            return (IEnumerableAssertion)base.IsNotEqualTo(comparedTo);
+        }
+
+        public new IEnumerableAssertion IsEqualTo(IEnumerable comparedTo)
+        {
+            return (IEnumerableAssertion)base.IsEqualTo(comparedTo);
+        }
 
     }
 }

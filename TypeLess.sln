@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RS.Assert", "rs.assert\RS.Assert.csproj", "{01BD2432-E1FB-4C96-9607-653B45950669}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeLess", "rs.assert\TypeLess.csproj", "{01BD2432-E1FB-4C96-9607-653B45950669}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RS.Assert.Tests", "RS.Assert.Tests\RS.Assert.Tests.csproj", "{3E7BC930-B404-4668-B6BA-1044C8E9E7CB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeLess.Tests", "RS.Assert.Tests\TypeLess.Tests.csproj", "{3E7BC930-B404-4668-B6BA-1044C8E9E7CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
