@@ -2,7 +2,7 @@ TypeLess
 =========
 ##More code - less typing##
 
-###Available on nuget: PM> Install-Package RS.Assert###
+###Available on nuget: PM> Install-Package TypeLess###
 
 **What problem/annoyance is this trying to solve**
 ``` c#
@@ -31,7 +31,7 @@ public void Login(SomeDTO data) {
 
 **Would be easier to write this**
 ``` c#
-using RS.Assert;
+using TypeLess;
 ...
 public SomeMethod(SomeDTO input)
 {
@@ -46,7 +46,7 @@ public SomeMethod(SomeDTO input)
 
 **Or if you prefer to put validation in the class where it belongs**
 ``` c#
-using RS.Assert;
+using TypeLess;
 ...
 public class SomeDTO {
     public string Name { get; set; }
@@ -75,11 +75,11 @@ s3.If("s3").IsNull.ThenThrow();
 ```
 **If you need to check the same predicates on multiple objects like above then you can do this**
 ```
-If.AnyOf(s1, "s1").Or(s2, "s2").Or(s3, "s3").IsNull.ThenThrow();
+s1.If("s1").Or(s2, "s2").Or(s3, "s3").IsNull.ThenThrow();
 ```
 **And of course you can use multiple checks as in the very unreal example below**
 ```
-If.AnyOf(d1, "1").And(d2, "2").And(d3, "3").IsSmallerThan(5).IsLargerThan(0).ThenThrow();
+d1.If("1").Or(d2, "2").Or(d3, "3").IsSmallerThan(5).IsLargerThan(0).ThenThrow();
 ```
 
 
