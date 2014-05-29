@@ -43,6 +43,9 @@ namespace TypeLess
         IAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue);
         IAssertion<T> IsNotEqualTo(T comparedTo);
         IAssertion<T> IsEqualTo(T comparedTo);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        void Extend(Func<T, string> assertFunc, Func<IAssertion, IAssertion> self);
     }
 
     public interface IAssertion : IAssertionU
@@ -53,12 +56,14 @@ namespace TypeLess
         void ThenThrow<E>() where E : Exception;
         string ToString();
         IAssertion Combine(IAssertion otherAssertion);
+
     }
 
     public interface IAssertion<T> : IAssertion, IAssertionU<T>
     {
         void Then(Action<T> action);
         S ThenReturn<S>(Func<T, S> func);
+        
     }
 
 
@@ -345,6 +350,28 @@ namespace TypeLess
             }
 
             return func(Item);
+        }
+
+        public void Extend(Func<T, string> assertFunc, Func<IAssertion, IAssertion> selfFunc)
+        {
+            if (IgnoreFurtherChecks)
+            {
+                return;
+            }
+
+            var s = assertFunc(Item);
+
+            if (!String.IsNullOrEmpty(s))
+            {
+                Append(s);
+            }
+            
+            foreach (var child in ChildAssertions)
+            {
+                child.ClearErrorMsg();
+                Combine(selfFunc(child));
+            }
+
         }
     }
 }
