@@ -451,6 +451,18 @@ namespace TypeLess.Tests
                 s.If().IsShorterThan(4).ThenThrow();
             });
 
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                var span = TimeSpan.FromHours(2);
+                span.If().IsShorterThan(TimeSpan.FromHours(3)).ThenThrow();
+            });
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                var span = TimeSpan.FromHours(2);
+                span.If().IsShorterThan(TimeSpan.FromHours(1)).ThenThrow();
+            });
+
         }
 
         [Fact]
@@ -466,6 +478,18 @@ namespace TypeLess.Tests
             {
                 string s = "123";
                 s.If().IsLongerThan(3).ThenThrow();
+            });
+
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                var span = TimeSpan.FromHours(2);
+                span.If().IsLongerThan(TimeSpan.FromHours(1)).ThenThrow();
+            });
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                var span = TimeSpan.FromHours(2);
+                span.If().IsLongerThan(TimeSpan.FromHours(3)).ThenThrow();
             });
 
         }
@@ -704,6 +728,42 @@ namespace TypeLess.Tests
                 (1 == 0).If("expr").IsTrue.ThenThrow();
             });
 
+        }
+
+        [Fact]
+        public void WhenOnSameDayThenThrow()
+        {
+
+            DateTime d = DateTime.Now;
+            DateTime d2 = DateTime.Now.Date.AddHours(2);
+
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                d.If().SameDayAs(d2).ThenThrow();
+            });
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                d.If().SameDayAs(d2.AddDays(1)).ThenThrow();
+            });
+        }
+
+        [Fact]
+        public void WhenNotOnSameDayThenThrow()
+        {
+
+            DateTime d = DateTime.Now;
+            DateTime d2 = DateTime.Now.Date.AddHours(2).AddDays(1);
+
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                d.If().NotSameDayAs(d2).ThenThrow();
+            });
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                d.If().NotSameDayAs(d2.AddDays(-1)).ThenThrow();
+            });
         }
     }
 }

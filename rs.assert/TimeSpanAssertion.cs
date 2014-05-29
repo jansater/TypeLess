@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 
 namespace TypeLess
@@ -12,6 +13,8 @@ namespace TypeLess
         new ITimeSpanAssertion IsFalse(Func<TimeSpan, bool> assertFunc, string msgIfTrue);
         new ITimeSpanAssertion IsNotEqualTo(TimeSpan comparedTo);
         new ITimeSpanAssertion IsEqualTo(TimeSpan comparedTo);
+        ITimeSpanAssertion IsLongerThan(TimeSpan span);
+        ITimeSpanAssertion IsShorterThan(TimeSpan span);
     }
 
     public interface ITimeSpanAssertion : ITimeSpanAssertionU, IAssertion<TimeSpan>
@@ -74,6 +77,47 @@ namespace TypeLess
         public new ITimeSpanAssertion IsEqualTo(TimeSpan comparedTo)
         {
             return (ITimeSpanAssertion)base.IsEqualTo(comparedTo);
+        }
+
+        public ITimeSpanAssertion IsShorterThan(TimeSpan span)
+        {
+            if (IgnoreFurtherChecks)
+            {
+                return this;
+            }
+
+            if (Item.Ticks < span.Ticks)
+            {
+                Append(String.Format(CultureInfo.InvariantCulture, "must be longer than {0:c}", span));
+            }
+
+            foreach (var child in ChildAssertions)
+            {
+                child.ClearErrorMsg();
+                Combine(child.IsShorterThan(span));
+            }
+            return this;
+        }
+
+        public ITimeSpanAssertion IsLongerThan(TimeSpan span)
+        {
+            if (IgnoreFurtherChecks)
+            {
+                return this;
+            }
+
+            if (Item.Ticks > span.Ticks)
+            {
+                Append(String.Format(CultureInfo.InvariantCulture, "must be shorter than {0:c}", span));
+            }
+
+            foreach (var child in ChildAssertions)
+            {
+                child.ClearErrorMsg();
+                Combine(child.IsLongerThan(span));
+            }
+
+            return this;
         }
 
     }

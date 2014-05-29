@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TypeLess;
 
@@ -25,6 +26,7 @@ namespace TypeLess.Tests
             d.If().IsTrue(x => false, "is not true").ThenThrow();
             d.If().IsNotEqualTo(5).ThenThrow();
             d.If().IsNotWithin(3, 5).ThenThrow();
+           
 
             double d2 = 3;
             double d3 = 4;
@@ -32,8 +34,10 @@ namespace TypeLess.Tests
             d.If().Or(d2).Or(d3).IsLargerThan(5).ThenThrow();
 
             (1 > 0).If("Some bool").IsTrue.ThenThrow();
-            
 
+            string s = "";
+
+            s.If().Match("").ThenReturnResultOf("${1}");
         }
 
     }
