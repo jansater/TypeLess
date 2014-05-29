@@ -178,6 +178,14 @@ ifDateNotValid.Combine(ifStringNotValid).ThenThrow();
 - DoesNotContain text
 - DoesNotStartWith
 - DoesNotEndWith
+- SameDayAs + Not
+- SameMonthAs + Not
+- SameYearAs + Not
+- SameHourAs + Not
+- SameMinuteAs + Not
+- SameSecondAs + Not
+- SameWeekDayAs + Not
+- Match + Not (regex matching)
 
 ###The framework target profile supports###
 - .Net
