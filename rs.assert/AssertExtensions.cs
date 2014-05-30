@@ -184,10 +184,46 @@ namespace TypeLess
             return new BoolAssertion(name ?? GetTypeName(typeof(bool)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
+        public static IDictionaryAssertionU<T, T2> If<T, T2>(this IDictionary<T, T2> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new DictionaryAssertion<T, T2>(name ?? GetTypeName(typeof(IDictionary<T, T2>)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static IDictionaryAssertionU<T, T2> If<T, T2>(this Dictionary<T, T2> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new DictionaryAssertion<T, T2>(name ?? GetTypeName(typeof(Dictionary<T, T2>)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static IEnumerableAssertionU If<T>(this T[] source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new EnumerableAssertion(name ?? GetTypeName(typeof(T[])), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static IEnumerableAssertionU If<T>(this Stack<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new EnumerableAssertion(name ?? GetTypeName(typeof(Stack<T>)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static IEnumerableAssertionU If<T>(this Queue<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new EnumerableAssertion(name ?? GetTypeName(typeof(Queue<T>)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static IEnumerableAssertionU If<T>(this IList<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            //name = UpdateName(name, file, lineNumber);
+            return new EnumerableAssertion(name ?? GetTypeName(typeof(IList<T>)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
         public static IEnumerableAssertionU If<T>(this List<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
             //name = UpdateName(name, file, lineNumber);
-            return new EnumerableAssertion(name ?? GetTypeName(typeof(IEnumerable)), source, Path.GetFileName(file), lineNumber, caller);
+            return new EnumerableAssertion(name ?? GetTypeName(typeof(List<T>)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static IEnumerableAssertionU If(this IEnumerable source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
@@ -297,7 +333,7 @@ namespace TypeLess
                 {
                     if (comparedTo != null)
                     {
-                        source.Append("must be equal to " + comparedTo.ToString());
+                        source.Append("must be equal to " + comparedTo);
 
                     }
                     return source;
@@ -334,7 +370,7 @@ namespace TypeLess
                 {
                     if (comparedTo == null)
                     {
-                        source.Append("must not be equal to " + comparedTo.ToString());
+                        source.Append("must not be equal to " + comparedTo);
 
                     }
                     return source;

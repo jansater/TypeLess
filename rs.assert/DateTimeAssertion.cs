@@ -12,7 +12,7 @@ namespace TypeLess
         IDateTimeAssertion IsWithin(DateTime min, DateTime max);
         IDateTimeAssertion IsBefore(DateTime date);
         IDateTimeAssertion IsAfter(DateTime date);
-        IDateTimeAssertion Or(DateTime obj, string withName = null);
+        IDateTimeAssertionU Or(DateTime obj, string withName = null);
         new IDateTimeAssertion IsTrue(Func<DateTime, bool> assertFunc, string msgIfFalse);
         new IDateTimeAssertion IsFalse(Func<DateTime, bool> assertFunc, string msgIfTrue);
         new IDateTimeAssertion IsNotEqualTo(DateTime comparedTo);
@@ -159,7 +159,7 @@ namespace TypeLess
             return this;
         }
 
-        public IDateTimeAssertion Or(DateTime obj, string withName = null)
+        public IDateTimeAssertionU Or(DateTime obj, string withName = null)
         {
             this.ChildAssertions.Add(new DateTimeAssertion(withName, obj, null, null, null));
             return this; 

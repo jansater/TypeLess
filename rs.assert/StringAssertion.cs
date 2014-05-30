@@ -25,7 +25,7 @@ namespace TypeLess
         IStringAssertion DoesNotContain(string text);
         IStringAssertion DoesNotStartWith(string text);
         IStringAssertion DoesNotEndWith(string text);
-        IStringAssertion Or(string obj, string withName = null);
+        IStringAssertionU Or(string obj, string withName = null);
 
         IRegexAssertion Match(string regex, RegexOptions options = RegexOptions.None);
         IStringAssertion DoesNotMatch(string regex, RegexOptions options = RegexOptions.None);
@@ -63,7 +63,7 @@ namespace TypeLess
             }
         }
 
-        public new IStringAssertion Or(string obj, string withName = null)
+        public new IStringAssertionU Or(string obj, string withName = null)
         {
             this.ChildAssertions.Add(new StringAssertion(withName, obj, null, null, null));
             return this;

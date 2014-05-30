@@ -68,9 +68,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassAssertion.cs" />
+    <Compile Include="DictionaryAssertion.cs" />
     <Compile Include="Extensions\Shipping\ImoValidator.cs" />
     <Compile Include="Extensions\Shipping\ShippingExtensions.cs" />
     <Compile Include="NumberAssertion.cs" />
+    <Compile Include="ObjectAssertion.cs" />
     <Compile Include="TimeSpanAssertion.cs" />
     <Compile Include="DateTimeAssertion.cs" />
     <Compile Include="NullableAssertion.cs" />

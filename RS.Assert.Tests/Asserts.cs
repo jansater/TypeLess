@@ -622,10 +622,11 @@ namespace TypeLess.Tests
             public string Name { get; set; }
             public int Number { get; set; }
 
-            public IEnumerable<IAssertion> IsInvalid()
+            public ObjectAssertion IsInvalid()
             {
-                yield return Name.If().IsNull;
-                yield return Number.If().IsEqualTo(4);
+                return ObjectAssertion.New(
+                    Name.If().IsNull, 
+                    Number.If().IsEqualTo(4));
             }
         }
 
@@ -640,9 +641,9 @@ namespace TypeLess.Tests
                 Prop = new SomeClassWithValidateB();
             }
 
-            public IEnumerable<IAssertion> IsInvalid()
+            public ObjectAssertion IsInvalid()
             {
-                yield return Prop.If().IsInvalid;
+                return ObjectAssertion.New(Prop.If().IsInvalid);
             }
         }
 

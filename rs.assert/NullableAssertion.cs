@@ -9,7 +9,7 @@ namespace TypeLess
     {
         INullableAssertion<T> IsNull { get; }
         INullableAssertion<T> IsNotNull { get; }
-        INullableAssertion<T> Or(T? obj, string withName = null);
+        INullableAssertionU<T> Or(T? obj, string withName = null);
 
         new INullableAssertion<T> IsTrue(Func<T?, bool> assertFunc, string msgIfFalse);
         new INullableAssertion<T> IsFalse(Func<T?, bool> assertFunc, string msgIfTrue);
@@ -111,7 +111,7 @@ namespace TypeLess
 
         }
 
-        public INullableAssertion<T> Or(T? obj, string withName = null)
+        public INullableAssertionU<T> Or(T? obj, string withName = null)
         {
             this.ChildAssertions.Add(new NullableAssertion<T>(withName, obj, null, null, null));
             return this;

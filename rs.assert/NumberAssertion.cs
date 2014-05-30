@@ -18,7 +18,7 @@ namespace TypeLess
         INumberAssertion<T> IsWithin(T min, T max);
         INumberAssertion<T> IsSmallerThan(T comparedTo);
         INumberAssertion<T> IsLargerThan(T comparedTo);
-        INumberAssertion<T> Or(T obj, string withName = null);
+        INumberAssertionU<T> Or(T obj, string withName = null);
 
         new INumberAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse);
         new INumberAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue);
@@ -229,7 +229,7 @@ namespace TypeLess
         }
 
 
-        public INumberAssertion<T> Or(T obj, string withName = null)
+        public INumberAssertionU<T> Or(T obj, string withName = null)
         {
             this.ChildAssertions.Add(new NumberAssertion<T>(withName, obj, null, null, null));
             return this;

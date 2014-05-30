@@ -9,7 +9,7 @@ namespace TypeLess
     {
         new IBoolAssertion IsTrue { get; }
         new IBoolAssertion IsFalse { get; }
-        IBoolAssertion Or(bool obj, string withName = null);
+        IBoolAssertionU Or(bool obj, string withName = null);
         new IBoolAssertion IsNotEqualTo(bool comparedTo);
         new IBoolAssertion IsEqualTo(bool comparedTo);
         
@@ -88,7 +88,7 @@ namespace TypeLess
             }
         }
 
-        public IBoolAssertion Or(bool obj, string withName = null)
+        public IBoolAssertionU Or(bool obj, string withName = null)
         {
             this.ChildAssertions.Add(new BoolAssertion(withName, obj, null, null, null));
             return this;

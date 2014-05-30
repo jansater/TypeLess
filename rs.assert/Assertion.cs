@@ -52,11 +52,15 @@ namespace TypeLess
     {
         int ErrorCount { get; }
         bool IgnoreFurtherChecks { get; }
-        void ThenThrow();
-        void ThenThrow<E>() where E : Exception;
+        IAssertionOW ThenThrow();
+        IAssertionOW ThenThrow<E>() where E : Exception;
         string ToString();
         IAssertion Combine(IAssertion otherAssertion);
+    }
 
+    public interface IAssertionOW
+    {
+        void Otherwise(Action action);
     }
 
     public interface IAssertion<T> : IAssertion, IAssertionU<T>
@@ -70,7 +74,7 @@ namespace TypeLess
 #if !DEBUG
     [DebuggerStepThrough]
 #endif
-    internal class Assertion<T> : TypeLess.IAssertion<T>, IAssertion
+    internal class Assertion<T> : TypeLess.IAssertion<T>, IAssertion, IAssertionOW
     {
         private StringBuilder _sb { get; set; }
         internal T Item { get; set; }
@@ -186,11 +190,11 @@ namespace TypeLess
             return this;
         }
 
-        public void ThenThrow<E>() where E : Exception
+        public IAssertionOW ThenThrow<E>() where E : Exception
         {
             if (IsValid)
             {
-                return;
+                return this;
             }
 
             if (Debugger.IsAttached)
@@ -208,11 +212,11 @@ namespace TypeLess
         /// Throws arg null instead of arg exception just because of the message created
         /// </summary>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public void ThenThrow()
+        public IAssertionOW ThenThrow()
         {
             if (IsValid)
             {
-                return;
+                return this;
             }
 
             if (Debugger.IsAttached && _errorCount != 0)
@@ -372,6 +376,13 @@ namespace TypeLess
                 Combine(selfFunc(child));
             }
 
+        }
+
+        public void Otherwise(Action action)
+        {
+            action.If("action").IsNull.ThenThrow();
+
+            action();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace TypeLess
 {
     public interface ITimeSpanAssertionU : IAssertionU<TimeSpan> {
         ITimeSpanAssertion StopIfNotValid { get; }
-        ITimeSpanAssertion Or(TimeSpan obj, string withName = null);
+        ITimeSpanAssertionU Or(TimeSpan obj, string withName = null);
         new ITimeSpanAssertion IsTrue(Func<TimeSpan, bool> assertFunc, string msgIfFalse);
         new ITimeSpanAssertion IsFalse(Func<TimeSpan, bool> assertFunc, string msgIfTrue);
         new ITimeSpanAssertion IsNotEqualTo(TimeSpan comparedTo);
@@ -45,7 +45,7 @@ namespace TypeLess
             return (ITimeSpanAssertion)base.Combine(otherAssertion);
         }
 
-        public ITimeSpanAssertion Or(TimeSpan obj, string withName = null)
+        public ITimeSpanAssertionU Or(TimeSpan obj, string withName = null)
         {
             this.ChildAssertions.Add(new TimeSpanAssertion(withName, obj, null, null, null));
             return this;

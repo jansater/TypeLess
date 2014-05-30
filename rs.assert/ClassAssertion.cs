@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 
 namespace TypeLess
@@ -11,11 +12,13 @@ namespace TypeLess
         IClassAssertion<T> IsInvalid { get; }
         IClassAssertion<T> IsNull { get; }
         IClassAssertion<T> IsNotNull { get; }
-        IClassAssertion<T> Or(T obj, string withName = null);
+        IClassAssertionU<T> Or<S>(S obj, string withName = null);
         new IClassAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse);
         new IClassAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue);
         new IClassAssertion<T> IsNotEqualTo(T comparedTo);
         new IClassAssertion<T> IsEqualTo(T comparedTo);
+        new IClassAssertion<T> IsNotEqualTo<S>(S comparedTo);
+        new IClassAssertion<T> IsEqualTo<S>(S comparedTo);
     }
 
     public interface IClassAssertion<T> : IClassAssertionU<T>, IAssertion<T>
@@ -28,12 +31,12 @@ namespace TypeLess
 #endif
     internal class ClassAssertion<T> : Assertion<T>, IClassAssertion<T> where T : class
     {
-        private List<ClassAssertion<T>> _childAssertions = new List<ClassAssertion<T>>();
+        private List<ClassAssertion<object>> _childAssertions = new List<ClassAssertion<object>>();
 
         public ClassAssertion(string s, T source, string file, int? lineNumber, string caller)
             :base (s, source, file, lineNumber, caller) {}
 
-        internal new List<ClassAssertion<T>> ChildAssertions
+        internal new List<ClassAssertion<object>> ChildAssertions
         {
             get
             {
@@ -136,9 +139,9 @@ namespace TypeLess
                     try
                     {
                         var inv = d.IsInvalid();
-                        var classAssertions = inv as IEnumerable<IAssertion>;
+                        var classAssertions = inv as ObjectAssertion;
                         if (classAssertions != null) {
-                            foreach (var item in classAssertions)
+                            foreach (var item in classAssertions.Assertions)
                             {
                                 Combine(item);
                             }
@@ -146,7 +149,7 @@ namespace TypeLess
                     }
                     catch (RuntimeBinderException)
                     {
-                        throw new System.MissingMemberException("You must define method public IEnumerable<IAssertion> IsInvalid() {} in class " + typeof(T).Name);
+                        throw new System.MissingMemberException("You must define method public ObjectAssertion IsInvalid() {} in class " + typeof(T).Name);
                     }
                 }
 
@@ -161,9 +164,9 @@ namespace TypeLess
 
         }
 
-        public IClassAssertion<T> Or(T obj, string withName = null)
+        public IClassAssertionU<T> Or<S>(S obj, string withName = null)
         {
-            this.ChildAssertions.Add(new ClassAssertion<T>(withName, obj, null, null, null));
+            this.ChildAssertions.Add(new ClassAssertion<object>(withName, obj, null, null, null));
             return this;
         }
 
@@ -185,6 +188,77 @@ namespace TypeLess
         public new IClassAssertion<T> IsEqualTo(T comparedTo)
         {
             return (IClassAssertion<T>)base.IsEqualTo(comparedTo);
+        }
+
+
+        public IClassAssertion<T> IsNotEqualTo<S>(S comparedTo)
+        {
+            if (IgnoreFurtherChecks)
+            {
+                return this;
+            }
+
+            try
+            {
+                if (Item == null)
+                {
+                    if (comparedTo != null)
+                    {
+                        Append("must be equal to " + comparedTo);
+
+                    }
+                    return this;
+                }
+
+                if (!Item.Equals(comparedTo))
+                {
+                    Append(string.Format(CultureInfo.InvariantCulture, "must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
+                }
+                return this;
+            }
+            finally
+            {
+                foreach (var child in ChildAssertions)
+                {
+                    child.ClearErrorMsg();
+                    Combine(child.IsNotEqualTo(comparedTo));
+                }
+            }
+        }
+
+        public IClassAssertion<T> IsEqualTo<S>(S comparedTo)
+        {
+            if (IgnoreFurtherChecks)
+            {
+                return this;
+            }
+
+            try
+            {
+                if (Item == null)
+                {
+                    if (comparedTo == null)
+                    {
+                        Append("must not be equal to " + comparedTo);
+
+                    }
+                    return this;
+                }
+
+                if (Item.Equals(comparedTo))
+                {
+                    Append(string.Format(CultureInfo.InvariantCulture, "must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
+                }
+                return this;
+            }
+            finally
+            {
+                foreach (var child in ChildAssertions)
+                {
+                    child.ClearErrorMsg();
+                    Combine(child.IsEqualTo(comparedTo));
+                }
+            }
         }
     }
 }

@@ -11,12 +11,11 @@ namespace TypeLess
         IEnumerableAssertion IsEmpty { get; }
         IEnumerableAssertion ContainsLessThan(int nElements);
         IEnumerableAssertion ContainsMoreThan(int nElements);
-        IEnumerableAssertion Or(IEnumerable obj, string withName = null);
+        IEnumerableAssertionU Or(IEnumerable obj, string withName = null);
 
         new IEnumerableAssertion IsTrue(Func<IEnumerable, bool> assertFunc, string msgIfFalse);
         new IEnumerableAssertion IsFalse(Func<IEnumerable, bool> assertFunc, string msgIfTrue);
-        new IEnumerableAssertion IsNotEqualTo(IEnumerable comparedTo);
-        new IEnumerableAssertion IsEqualTo(IEnumerable comparedTo);
+       
     }
 
     public interface IEnumerableAssertion : IEnumerableAssertionU, IAssertion<IEnumerable>
@@ -82,7 +81,7 @@ namespace TypeLess
             return EnumerableAssertExtensions.ContainsMoreThan(this, nElements);
         }
 
-        public new IEnumerableAssertion Or(IEnumerable obj, string withName = null)
+        public new IEnumerableAssertionU Or(IEnumerable obj, string withName = null)
         {
             this.ChildAssertions.Add(new EnumerableAssertion(withName, obj, null, null, null));
             return this;
