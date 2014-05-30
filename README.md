@@ -53,10 +53,11 @@ public class SomeDTO {
     public string Email { get; set; }
     public int UserId { get; set; }
 
-    public IEnumerable<IAssertion> IsInvalid() {
-        yield return Name.If().IsNull.IsNotValidEmail;
-        yield return Email.If().IsNull.IsEmptyOrWhitespace;
-        yield return UserId.If().IsSmallerThan(0);
+    public ObjectAssertion IsInvalid() {
+        return ObjectAssertion.New(
+            Name.If().IsNull.IsNotValidEmail,
+            Email.If().IsNull.IsEmptyOrWhitespace,
+            UserId.If().IsSmallerThan(0));
     }
 }
 
@@ -75,15 +76,14 @@ s3.If("s3").IsNull.ThenThrow();
 ```
 **If you need to check the same predicates on multiple objects like above then you can do this**
 ```
-s1.If("s1").Or(s2, "s2").Or(s3, "s3").IsNull.ThenThrow();
+s1.If("s1").Or(s2, "s2").Or(s3, "s3").IsNull.ThenThrow().Otherwise(() => {...});
 ```
 **And of course you can use multiple checks as in the very unreal example below**
 ```
 d1.If("1").Or(d2, "2").Or(d3, "3").IsSmallerThan(5).IsLargerThan(0).ThenThrow();
 ```
 
-
-####And that is what you do with RS.Assert! Nothing more, nothing less####
+####And that is what you do with TypeLess! Nothing more, nothing less####
 
 **Example of output:**
 ``` c#
