@@ -46,7 +46,7 @@ namespace TypeLess.Tests
             Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "some 2 string";
-                s.If().Match("\\d").ThenThrow();
+                s.If().Match("\\d").ThenThrow("s must contain digits");
             });
 
             Assert.DoesNotThrow(() =>

@@ -766,5 +766,41 @@ namespace TypeLess.Tests
                 d.If().NotSameDayAs(d2.AddDays(-1)).ThenThrow();
             });
         }
+
+        [Fact]
+        public void WhenDoesNotContainKeyThenThrow()
+        {
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                Dictionary<string, int> d = new Dictionary<string, int>();
+                d.If().DoesNotContainKey("some key").ThenThrow();
+            });
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                Dictionary<string, int> d = new Dictionary<string, int>();
+                d.Add("some key", 1);
+                d.If().DoesNotContainKey("some key").ThenThrow();
+            });
+
+        }
+
+        [Fact]
+        public void WhenContainKeyThenThrow()
+        {
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                Dictionary<string, int> d = new Dictionary<string, int>();
+                d.Add("some key", 1);
+                d.If().ContainsKey("some key").ThenThrow();
+            });
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                Dictionary<string, int> d = new Dictionary<string, int>();
+                d.If().ContainsKey("some key").ThenThrow();
+            });
+
+        }
     }
 }

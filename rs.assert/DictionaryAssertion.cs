@@ -14,12 +14,14 @@ namespace TypeLess
 
         new IDictionaryAssertion<T1, T2> IsTrue(Func<IDictionary<T1, T2>, bool> assertFunc, string msgIfFalse);
         new IDictionaryAssertion<T1, T2> IsFalse(Func<IDictionary<T1, T2>, bool> assertFunc, string msgIfTrue);
-       
+
+        IDictionaryAssertion<T1, T2> ContainsKey(T1 key);
+        IDictionaryAssertion<T1, T2> DoesNotContainKey(T1 key);
     }
 
     public interface IDictionaryAssertion<T1, T2> : IDictionaryAssertionU<T1, T2>, IAssertion<IDictionary<T1, T2>>
-    { 
-        
+    {
+
     }
 
 #if !DEBUG
@@ -30,7 +32,7 @@ namespace TypeLess
         private List<DictionaryAssertion<T1, T2>> _childAssertions = new List<DictionaryAssertion<T1, T2>>();
 
         public DictionaryAssertion(string s, IDictionary<T1, T2> source, string file, int? lineNumber, string caller)
-            :base (s, source, file, lineNumber, caller) {}
+            : base(s, source, file, lineNumber, caller) { }
 
         public IDictionaryAssertion<T1, T2> Combine(IDictionaryAssertion<T1, T2> otherAssertion)
         {
@@ -63,9 +65,10 @@ namespace TypeLess
             }
         }
 
-        public IDictionaryAssertion<T1, T2> IsEmpty 
+        public IDictionaryAssertion<T1, T2> IsEmpty
         {
-            get {
+            get
+            {
                 if (IgnoreFurtherChecks)
                 {
                     return this;
@@ -102,7 +105,36 @@ namespace TypeLess
             return (IDictionaryAssertion<T1, T2>)base.IsFalse(assertFunc, msgIfTrue);
         }
 
-       
+        public IDictionaryAssertion<T1, T2> ContainsKey(T1 key)
+        {
+            Extend(x => {
+                if (x.ContainsKey(key))
+                {
+                    return String.Format("must not contain key {0}", key);
+                }
+                else {
+                    return null;
+                }
+            }, x => this);
 
+            return this;
+        }
+
+        public IDictionaryAssertion<T1, T2> DoesNotContainKey(T1 key)
+        {
+            Extend(x =>
+            {
+                if (!x.ContainsKey(key))
+                {
+                    return String.Format("must not contain key {0}", key);
+                }
+                else
+                {
+                    return null;
+                }
+            }, x => this);
+
+            return this;
+        }
     }
 }

@@ -52,8 +52,8 @@ namespace TypeLess
     {
         int ErrorCount { get; }
         bool IgnoreFurtherChecks { get; }
-        IAssertionOW ThenThrow();
-        IAssertionOW ThenThrow<E>() where E : Exception;
+        IAssertionOW ThenThrow(string errorMsg = null);
+        IAssertionOW ThenThrow<E>(string errorMsg = null) where E : Exception;
         string ToString();
         IAssertion Combine(IAssertion otherAssertion);
     }
@@ -190,7 +190,7 @@ namespace TypeLess
             return this;
         }
 
-        public IAssertionOW ThenThrow<E>() where E : Exception
+        public IAssertionOW ThenThrow<E>(string errorMsg = null) where E : Exception
         {
             if (IsValid)
             {
@@ -199,7 +199,7 @@ namespace TypeLess
 
             if (Debugger.IsAttached)
             {
-                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { AppendTrace() });
+                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { AppendTrace(_sb.ToString()) });
             }
             else
             {
@@ -212,7 +212,7 @@ namespace TypeLess
         /// Throws arg null instead of arg exception just because of the message created
         /// </summary>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public IAssertionOW ThenThrow()
+        public IAssertionOW ThenThrow(string errorMsg = null)
         {
             if (IsValid)
             {
@@ -221,11 +221,11 @@ namespace TypeLess
 
             if (Debugger.IsAttached && _errorCount != 0)
             {
-                throw new ArgumentNullException("", AppendTrace());
+                throw new ArgumentNullException("", AppendTrace(errorMsg == null ? _sb.ToString() : errorMsg));
             }
             else
             {
-                throw new ArgumentNullException("", _sb.ToString());
+                throw new ArgumentNullException("", errorMsg == null ? _sb.ToString() : errorMsg);
             }
         }
 
@@ -238,7 +238,7 @@ namespace TypeLess
 
             if (Debugger.IsAttached && _errorCount != 0)
             {
-                return AppendTrace();
+                return AppendTrace(_sb.ToString());
             }
             else
             {
@@ -249,15 +249,15 @@ namespace TypeLess
         private bool _isValid = true;
         public bool IsValid { get { return _isValid; } }
 
-        private string AppendTrace()
+        private string AppendTrace(string msg)
         {
             if (_caller == null || _file == null || !_lineNr.HasValue)
             {
-                return _sb.ToString();
+                return msg;
             }
             else
             {
-                return String.Format(CultureInfo.InvariantCulture, "{0} at {1}, line number {2} in file {3} ", _sb.ToString(), _caller, _lineNr, _file);
+                return String.Format(CultureInfo.InvariantCulture, "{0} at {1}, line number {2} in file {3} ", msg, _caller, _lineNr, _file);
             }
         }
 
