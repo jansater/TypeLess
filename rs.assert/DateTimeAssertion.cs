@@ -52,14 +52,6 @@ namespace TypeLess
         public DateTimeAssertion(string s, DateTime source, string file, int? lineNumber, string caller)
             : base(s, source, file, lineNumber, caller) { }
 
-        internal new List<DateTimeAssertion> ChildAssertions
-        {
-            get
-            {
-                return _childAssertions;
-            }
-        }
-
         public IDateTimeAssertion Combine(IDateTimeAssertion otherAssertion)
         {
             return (IDateTimeAssertion)base.Combine(otherAssertion);
@@ -116,7 +108,7 @@ namespace TypeLess
 
         public IDateTimeAssertionU Or(DateTime obj, string withName = null)
         {
-            this.ChildAssertions.Add(new DateTimeAssertion(withName, obj, null, null, null));
+            Add(new DateTimeAssertion(withName, obj, null, null, null));
             return this;
         }
 

@@ -8,6 +8,7 @@ namespace TypeLess
 {
     public interface IDictionaryAssertionU<T1, T2> : IAssertionU<IDictionary<T1, T2>>
     {
+        
         IDictionaryAssertion<T1, T2> IsNull { get; }
         IDictionaryAssertion<T1, T2> IsEmpty { get; }
         IDictionaryAssertionU<T1, T2> Or(IDictionary<T1, T2> obj, string withName = null);
@@ -39,14 +40,6 @@ namespace TypeLess
             return (IDictionaryAssertion<T1, T2>)base.Combine(otherAssertion);
         }
 
-        internal new List<DictionaryAssertion<T1, T2>> ChildAssertions
-        {
-            get
-            {
-                return _childAssertions;
-            }
-        }
-
         public new IDictionaryAssertion<T1, T2> StopIfNotValid
         {
             get
@@ -76,7 +69,7 @@ namespace TypeLess
 
         public IDictionaryAssertionU<T1, T2> Or(IDictionary<T1, T2> obj, string withName = null)
         {
-            this.ChildAssertions.Add(new DictionaryAssertion<T1, T2>(withName, obj, null, null, null));
+            Add(new DictionaryAssertion<T1, T2>(withName, obj, null, null, null));
             return this;
         }
 

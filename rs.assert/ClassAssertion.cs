@@ -7,8 +7,9 @@ using System.Text;
 
 namespace TypeLess
 {
-    public interface IClassAssertionU<T> : IAssertionU<T>
+    public interface IClassAssertionU<T> : IAssertionU<T> where T : class
     {
+        IClassAssertion<T> Or(T obj, string withName = null);
         IClassAssertion<T> IsInvalid { get; }
         IClassAssertion<T> IsNull { get; }
         IClassAssertion<T> IsNotNull { get; }
@@ -20,7 +21,7 @@ namespace TypeLess
         IClassAssertion<T> IsEqualTo<S>(S comparedTo);
     }
 
-    public interface IClassAssertion<T> : IClassAssertionU<T>, IAssertion<T>
+    public interface IClassAssertion<T> : IClassAssertionU<T>, IAssertion<T> where T : class
     { 
         
     }
@@ -30,18 +31,9 @@ namespace TypeLess
 #endif
     internal class ClassAssertion<T> : Assertion<T>, IClassAssertion<T> where T : class
     {
-        
-
+     
         public ClassAssertion(string s, T source, string file, int? lineNumber, string caller)
             :base (s, source, file, lineNumber, caller) {}
-
-        //internal new List<ClassAssertion<object>> ChildAssertions
-        //{
-        //    get
-        //    {
-        //        return _childAssertions;
-        //    }
-        //}
 
         public IClassAssertion<T> Combine(IClassAssertion<T> otherAssertion)
         {
@@ -54,6 +46,12 @@ namespace TypeLess
                 base.IgnoreFurtherChecks = true;
                 return this;
             }
+        }
+
+        public IClassAssertion<T> Or(T obj, string withName = null) {
+            var ca = new ClassAssertion<T>(withName, obj, null, null, null);
+            Add(ca);
+            return this;
         }
 
         /// <summary>

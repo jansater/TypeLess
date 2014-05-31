@@ -32,14 +32,6 @@ namespace TypeLess
         public NullableAssertion(string s, Nullable<T> source, string file, int? lineNumber, string caller)
             :base (s, source, file, lineNumber, caller) {}
 
-        internal new List<NullableAssertion<T>> ChildAssertions
-        {
-            get
-            {
-                return _childAssertions;
-            }
-        }
-
         public INullableAssertion<T> Combine(INullableAssertion<T> otherAssertion)
         {
             return (INullableAssertion<T>)base.Combine(otherAssertion);
@@ -97,7 +89,7 @@ namespace TypeLess
 
         public INullableAssertionU<T> Or(T? obj, string withName = null)
         {
-            this.ChildAssertions.Add(new NullableAssertion<T>(withName, obj, null, null, null));
+            Add(new NullableAssertion<T>(withName, obj, null, null, null));
             return this;
         }
 

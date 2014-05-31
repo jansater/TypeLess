@@ -32,14 +32,6 @@ namespace TypeLess
         public TimeSpanAssertion(string s, TimeSpan source, string file, int? lineNumber, string caller)
             :base (s, source, file, lineNumber, caller) {}
 
-        internal new List<TimeSpanAssertion> ChildAssertions
-        {
-            get
-            {
-                return _childAssertions;
-            }
-        }
-
         public ITimeSpanAssertion Combine(ITimeSpanAssertion otherAssertion)
         {
             return (ITimeSpanAssertion)base.Combine(otherAssertion);
@@ -47,7 +39,7 @@ namespace TypeLess
 
         public ITimeSpanAssertionU Or(TimeSpan obj, string withName = null)
         {
-            this.ChildAssertions.Add(new TimeSpanAssertion(withName, obj, null, null, null));
+            Add(new TimeSpanAssertion(withName, obj, null, null, null));
             return this;
         }
 

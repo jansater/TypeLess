@@ -41,14 +41,7 @@ namespace TypeLess
         public NumberAssertion(string s, T source, string file, int? lineNumber, string caller)
             : base(s, source, file, lineNumber, caller) { }
 
-        internal new List<NumberAssertion<T>> ChildAssertions
-        {
-            get
-            {
-                return _childAssertions;
-            }
-        }
-
+        
         public INumberAssertion<T> Combine(INumberAssertion<T> otherAssertion)
         {
             return (INumberAssertion<T>)base.Combine(otherAssertion);
@@ -163,7 +156,7 @@ namespace TypeLess
 
         public INumberAssertionU<T> Or(T obj, string withName = null)
         {
-            this.ChildAssertions.Add(new NumberAssertion<T>(withName, obj, null, null, null));
+            Add(new NumberAssertion<T>(withName, obj, null, null, null));
             return this;
         }
 

@@ -34,14 +34,6 @@ namespace TypeLess
             return (IBoolAssertion)base.Combine(otherAssertion);
         }
 
-        internal new List<BoolAssertion> ChildAssertions
-        {
-            get
-            {
-                return _childAssertions;
-            }
-        }
-
         public new IBoolAssertion StopIfNotValid
         {
             get {
@@ -69,7 +61,7 @@ namespace TypeLess
 
         public IBoolAssertionU Or(bool obj, string withName = null)
         {
-            this.ChildAssertions.Add(new BoolAssertion(withName, obj, null, null, null));
+            Add(new BoolAssertion(withName, obj, null, null, null));
             return this;
         }
 

@@ -38,14 +38,6 @@ namespace TypeLess
             return (IEnumerableAssertion)base.Combine(otherAssertion);
         }
 
-        internal new List<EnumerableAssertion> ChildAssertions
-        {
-            get
-            {
-                return _childAssertions;
-            }
-        }
-
         public new IEnumerableAssertion StopIfNotValid
         {
             get
@@ -83,7 +75,7 @@ namespace TypeLess
 
         public IEnumerableAssertionU Or(IEnumerable obj, string withName = null)
         {
-            this.ChildAssertions.Add(new EnumerableAssertion(withName, obj, null, null, null));
+            Add(new EnumerableAssertion(withName, obj, null, null, null));
             return this;
         }
 

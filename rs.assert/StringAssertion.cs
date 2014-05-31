@@ -56,17 +56,9 @@ namespace TypeLess
         public StringAssertion(string s, string source, string file, int? lineNumber, string caller)
             : base(s, source, file, lineNumber, caller) { }
 
-        internal new List<StringAssertion> ChildAssertions
-        {
-            get
-            {
-                return _childAssertions;
-            }
-        }
-
         public IStringAssertionU Or(string obj, string withName = null)
         {
-            this.ChildAssertions.Add(new StringAssertion(withName, obj, null, null, null));
+            Add(new StringAssertion(withName, obj, null, null, null));
             return this;
         }
 

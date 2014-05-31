@@ -40,7 +40,7 @@ namespace TypeLess
 
     public interface IAssertionU<T> : IAssertionU
     {
-        IAssertion<T> Or<S>(S obj, string withName = null);
+        IMixedTypeAssertionU<T, S> Or<S>(S obj, string withName = null) where S : class;
         IAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse);
         IAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue);
         IAssertion<T> IsNotEqualTo(T comparedTo);
@@ -99,18 +99,23 @@ namespace TypeLess
             _caller = caller;
         }
 
-        public IAssertion<T> Or<S>(S obj, string withName = null)
+        public IMixedTypeAssertionU<T, S> Or<S>(S obj, string withName = null) where S : class
         {
-            if (obj is T)
+            var mixed = new MixedTypeAssertion<T, S>(withName, Item, obj)
             {
-                _children.Add(AssertExtensions.CreateAssert<T>((T)obj, withName, null, null, null));
-            }
-            else {
-                _children.Add(new MixedTypeAssertion<T, S>(obj, withName));    
-            }
-            return this;
+                _sb = this._sb,
+                _caller = this._caller,
+                _file = this._file,
+                _children = this._children,
+                _errorCount = this._errorCount,
+                _ignoreFurtherChecks = this._ignoreFurtherChecks,
+                _isValid = this._isValid,
+                _lineNr = this._lineNr,
+            };
+            mixed._children.Add(this);
+            return mixed;
         }
-
+        
         internal void Add(Assertion<T> assertion)
         {
             assertion.If("assertion").IsNull.ThenThrow();

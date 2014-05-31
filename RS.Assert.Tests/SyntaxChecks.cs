@@ -8,6 +8,7 @@ using TypeLess;
 
 namespace TypeLess.Tests
 {
+    
     public class ClassSyntaxChecks
     {
         public ClassSyntaxChecks()
@@ -15,7 +16,7 @@ namespace TypeLess.Tests
             ListSyntaxChecks o = new ListSyntaxChecks();
             DoubleSyntaxChecks o2 = new DoubleSyntaxChecks();
             DictionaryChecks o3 = new DictionaryChecks();
-
+            
             o.If().IsFalse(x => true, "is not false").ThenThrow();
             o.If().IsTrue(x => false, "is not true").ThenThrow();
             o.If().Or(o2).Or(o3).IsNull.ThenThrow(); //this should not be possible

@@ -8,18 +8,16 @@ using System.Text;
 namespace TypeLess
 {
     public interface IMixedTypeAssertionU<T, U> : IAssertionU<T> 
-        where T : class 
         where U : class
     {
-        IClassAssertion<T> IsInvalid { get; }
-        IClassAssertion<T> IsNull { get; }
-        IClassAssertion<T> IsNotNull { get; }
-        IClassAssertion<T> IsNotEqualTo<S>(S comparedTo);
-        IClassAssertion<T> IsEqualTo<S>(S comparedTo);
+        IMixedTypeAssertion<T, U> IsInvalid { get; }
+        IMixedTypeAssertion<T, U> IsNull { get; }
+        IMixedTypeAssertion<T, U> IsNotNull { get; }
+        IMixedTypeAssertion<T, U> IsNotEqualTo<S>(S comparedTo);
+        IMixedTypeAssertion<T, U> IsEqualTo<S>(S comparedTo);
     }
 
     public interface IMixedTypeAssertion<T, U> : IMixedTypeAssertionU<T, U>, IAssertion<T>
-        where T : class
         where U : class
     { 
         
@@ -29,11 +27,14 @@ namespace TypeLess
     [DebuggerStepThrough]
 #endif
     internal class MixedTypeAssertion<T, U> : Assertion<T>, IMixedTypeAssertion<T, U>
-        where T : class
         where U : class
     {
-        public MixedTypeAssertion(string s, T source, string file, int? lineNumber, string caller)
-            :base (s, source, file, lineNumber, caller) {}
+        private U _newType = null;
+
+        public MixedTypeAssertion(string s, T source, U source2)
+            :base (s, source, null, null, null) {
+                _newType = source2;
+        }
 
         public IMixedTypeAssertion<T, U> Combine(IMixedTypeAssertion<T, U> otherAssertion)
         {
@@ -176,5 +177,6 @@ namespace TypeLess
             });
             return this;
         }
+
     }
 }
