@@ -205,7 +205,7 @@ namespace TypeLess
             return new ClassAssertion<T>(name ?? GetTypeName(typeof(T)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
-        internal static Assertion<T> CreateAssert<T>(this T source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null) where T : class
+        internal static Assertion<T> CreateAssert<T>(this T source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null) //where T : class
         {
             //name = UpdateName(name, file, lineNumber);
             return new Assertion<T>(name ?? GetTypeName(typeof(T)), source, Path.GetFileName(file), lineNumber, caller);
@@ -230,7 +230,7 @@ namespace TypeLess
                     return msgIfFalse;
                 }
                 return null;
-            }, x => source);
+            });
             return source;
         }
 
@@ -253,7 +253,7 @@ namespace TypeLess
                     return msgIfTrue;
                 }
                 return null;
-            }, x => source);
+            });
             return source;
         }
 
@@ -274,7 +274,7 @@ namespace TypeLess
                     return string.Format(CultureInfo.InvariantCulture, "must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
                 }
                 return null;
-            }, x => source);
+            });
             return source;
         }
 
@@ -297,10 +297,9 @@ namespace TypeLess
                     return string.Format(CultureInfo.InvariantCulture, "must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
                 }
                 return null;
-            }, x => source);
+            });
             return source;
         }
-
 
     }
 }

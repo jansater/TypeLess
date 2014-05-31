@@ -71,7 +71,7 @@ namespace TypeLess
                         return "is required";
                     }
                     return null;
-                }, x => this);
+                });
                 return this;
             }
             
@@ -89,7 +89,7 @@ namespace TypeLess
                         return "must be null";
                     }
                     return null;
-                }, x => this);
+                });
                 return this;
             }
 

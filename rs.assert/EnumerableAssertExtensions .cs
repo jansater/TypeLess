@@ -33,7 +33,7 @@ namespace TypeLess
                     return "must be non empty";
                 }
                 return null;
-            }, x => source);
+            });
             return source;
         }
 
@@ -67,7 +67,7 @@ namespace TypeLess
                     return "must contain more than " + nElements + " items";
                 }
                 return null;
-            }, x => source);
+            });
             return source;
         }
 
@@ -82,7 +82,7 @@ namespace TypeLess
                     return "must contain less than " + nElements + " items";
                 }
                 return null;
-            }, x => source);
+            });
             return source;
         }
 

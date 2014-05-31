@@ -84,7 +84,7 @@ namespace TypeLess
                     return String.Format(CultureInfo.InvariantCulture, "must be within {0} and {1}", min, max);
                 }
                 return null;
-            }, x => this);
+            });
             return this;
         }
 
@@ -98,21 +98,19 @@ namespace TypeLess
                     return String.Format(CultureInfo.InvariantCulture, "must not be within {0} and {1}", min, max);
                 }
                 return null;
-            }, x => this);
+            });
             return this;
         }
 
         public IDateTimeAssertion IsBefore(DateTime date)
         {
-            Extend(x => x.CompareTo(date) <= 0 ? "must be larger than " + date : null,
-                x => this);
+            Extend(x => x.CompareTo(date) <= 0 ? "must be larger than " + date : null);
             return this;
         }
 
         public IDateTimeAssertion IsAfter(DateTime date)
         {
-            Extend(x => x.CompareTo(date) >= 0 ? "must be smaller than " + date : null,
-                x => this);
+            Extend(x => x.CompareTo(date) >= 0 ? "must be smaller than " + date : null);
             return this;
         }
 
@@ -144,8 +142,7 @@ namespace TypeLess
 
         public IDateTimeAssertion SameDayAs(DateTime date)
         {
-            Extend(x => (x.Date - date.Date).TotalDays == 0.0 ? String.Format(CultureInfo.InvariantCulture, "must not be on same day as {0}", date.ToString("yyyy-MM-dd")) : null,
-                x => this);
+            Extend(x => (x.Date - date.Date).TotalDays == 0.0 ? String.Format(CultureInfo.InvariantCulture, "must not be on same day as {0}", date.ToString("yyyy-MM-dd")) : null);
             return this;
         }
 
@@ -161,7 +158,7 @@ namespace TypeLess
                     return String.Format(CultureInfo.InvariantCulture, "must not be on same month as {0}", date.ToString("yyyy-MM"));
                 }
                 return null;
-            }, x => this);
+            });
             return this;
         }
 
@@ -176,7 +173,7 @@ namespace TypeLess
                     return String.Format(CultureInfo.InvariantCulture, "must not be on same year as {0}", date.ToString("yyyy"));
                 }
                 return null;
-            }, x => this);
+            });
             return this;
         }
 
@@ -191,7 +188,7 @@ namespace TypeLess
                     return String.Format(CultureInfo.InvariantCulture, "must not be on same hour as {0}", date.ToString("yyyy-MM-dd HH"));
                 }
                 return null;
-            }, x => this);
+            });
             return this;
         }
 
@@ -206,7 +203,7 @@ namespace TypeLess
                     return String.Format(CultureInfo.InvariantCulture, "must not be on same minute as {0}", date.ToString("yyyy-MM-dd HH:mm"));
                 }
                 return null;
-            }, x => this);
+            });
             return this;
         }
 
@@ -221,13 +218,13 @@ namespace TypeLess
                     return String.Format(CultureInfo.InvariantCulture, "must not be on same second as {0}", date.ToString("yyyy-MM-dd HH:mm:ss"));
                 }
                 return null;
-            }, x => this);
+            });
             return this;
         }
 
         public IDateTimeAssertion NotSameDayAs(DateTime date)
         {
-            Extend(x => (x.Date - date.Date).TotalDays != 0.0 ? String.Format(CultureInfo.InvariantCulture, "must be on same day as {0}", date.ToString("yyyy-MM-dd")) : null, x => this);
+            Extend(x => (x.Date - date.Date).TotalDays != 0.0 ? String.Format(CultureInfo.InvariantCulture, "must be on same day as {0}", date.ToString("yyyy-MM-dd")) : null);
             return this;
         }
 
@@ -243,7 +240,7 @@ namespace TypeLess
                     return String.Format(CultureInfo.InvariantCulture, "must be on same month as {0}", date.ToString("yyyy-MM"));
                 }
                 return null;
-            }, x => this);
+            });
             return this;
         }
 
@@ -258,7 +255,7 @@ namespace TypeLess
                     return String.Format(CultureInfo.InvariantCulture, "must be on same year as {0}", date.ToString("yyyy"));
                 }
                 return null;
-            }, x => this);
+            });
             return this;
         }
 
@@ -273,7 +270,7 @@ namespace TypeLess
                     return String.Format(CultureInfo.InvariantCulture, "must be on same hour as {0}", date.ToString("yyyy-MM-dd HH"));
                 }
                 return null;
-            }, x => this);
+            });
             return this;
         }
 
@@ -288,7 +285,7 @@ namespace TypeLess
                     return String.Format(CultureInfo.InvariantCulture, "must be on same minute as {0}", date.ToString("yyyy-MM-dd HH:mm"));
                 }
                 return null;
-            }, x => this);
+            });
             return this;
         }
 
@@ -303,20 +300,20 @@ namespace TypeLess
                     return String.Format(CultureInfo.InvariantCulture, "must be on same second as {0}", date.ToString("yyyy-MM-dd HH:mm:ss"));
                 }
                 return null;
-            }, x => this);
+            });
             return this;
         }
 
 
         public IDateTimeAssertion SameWeekDayAs(DateTime date)
         {
-            Extend(x => date.DayOfWeek == date.DayOfWeek ? String.Format(CultureInfo.InvariantCulture, "must not be on same week day as {0}", date.DayOfWeek.ToString()) : null, x => this);
+            Extend(x => date.DayOfWeek == date.DayOfWeek ? String.Format(CultureInfo.InvariantCulture, "must not be on same week day as {0}", date.DayOfWeek.ToString()) : null);
             return this;
         }
 
         public IDateTimeAssertion NotSameWeekDayAs(DateTime date)
         {
-            Extend(x => date.DayOfWeek != date.DayOfWeek ? String.Format(CultureInfo.InvariantCulture, "must be on same week day as {0}", date.DayOfWeek.ToString()) : null, x => this);
+            Extend(x => date.DayOfWeek != date.DayOfWeek ? String.Format(CultureInfo.InvariantCulture, "must be on same week day as {0}", date.DayOfWeek.ToString()) : null);
             return this;
         }
     }

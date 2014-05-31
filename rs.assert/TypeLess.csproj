@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MixedTypeAssertion.cs" />
     <Compile Include="ClassAssertion.cs" />
     <Compile Include="DictionaryAssertion.cs" />
     <Compile Include="Extensions\Shipping\ImoValidator.cs" />

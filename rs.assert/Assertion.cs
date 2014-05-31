@@ -34,18 +34,20 @@ namespace TypeLess
     public interface IAssertionU : IFluentInterface
     {
         bool IsValid { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        void ClearErrorMsg();
     }
 
     public interface IAssertionU<T> : IAssertionU
     {
-        //IAssertion<T> Or<S>(S obj, string withName = null);
+        IAssertion<T> Or<S>(S obj, string withName = null);
         IAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse);
         IAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue);
         IAssertion<T> IsNotEqualTo(T comparedTo);
         IAssertion<T> IsEqualTo(T comparedTo);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        void Extend(Func<T, string> assertFunc, Func<IAssertion, IAssertion> self);
+        void Extend(Func<T, string> assertFunc);
     }
 
     public interface IAssertion : IAssertionU
@@ -67,7 +69,7 @@ namespace TypeLess
     {
         void Then(Action<T> action);
         S ThenReturn<S>(Func<T, S> func);
-        
+
     }
 
 
@@ -84,7 +86,7 @@ namespace TypeLess
         private string _file;
         private int? _lineNr;
         private string _caller;
-        private List<Assertion<object>> _childAssertions = new List<Assertion<object>>();
+        private List<Assertion<T>> _children = new List<Assertion<T>>();
 
         public Assertion(string s, T source, string file, int? lineNumber, string caller)
         {
@@ -97,15 +99,33 @@ namespace TypeLess
             _caller = caller;
         }
 
-        internal Assertion<object> Add(object obj, string name)
+        public IAssertion<T> Or<S>(S obj, string withName = null)
         {
-            //todo re add this
-
-            var assert = AssertExtensions.CreateAssert(obj, name);
-            var tObj = this.Cast<object>();
-            assert._childAssertions.Add(tObj);
-            return assert;
+            if (obj is T)
+            {
+                _children.Add(AssertExtensions.CreateAssert<T>((T)obj, withName, null, null, null));
+            }
+            else {
+                _children.Add(new MixedTypeAssertion<T, S>(obj, withName));    
+            }
+            return this;
         }
+
+        internal void Add(Assertion<T> assertion)
+        {
+            assertion.If("assertion").IsNull.ThenThrow();
+            _children.Add(assertion);
+        }
+
+        //internal Assertion<object> Add(object obj, string name)
+        //{
+        //    //todo re add this
+
+        //    var assert = AssertExtensions.CreateAssert(obj, name);
+        //    var tObj = this.Cast<object>();
+        //    assert._childAssertions.Add(tObj);
+        //    return assert;
+        //}
 
         public Assertion<T> StopIfNotValid
         {
@@ -117,56 +137,56 @@ namespace TypeLess
 
         }
 
-        internal Assertion<S> Cast<S>()
-        {
-            if (this.Item == null)
-            {
-                return new Assertion<S>(Name, default(S), null, null, null)
-                {
-                    _sb = this._sb,
-                    _caller = this._caller,
-                    _file = this._file,
-                    _childAssertions = this._childAssertions,
-                    _errorCount = this._errorCount,
-                    _ignoreFurtherChecks = this._ignoreFurtherChecks,
-                    _isValid = this._isValid,
-                    _lineNr = this._lineNr,
-                };
-            }
+        //internal Assertion<S> Cast<S>()
+        //{
+        //    if (this.Item == null)
+        //    {
+        //        return new Assertion<S>(Name, default(S), null, null, null)
+        //        {
+        //            _sb = this._sb,
+        //            _caller = this._caller,
+        //            _file = this._file,
+        //            _childAssertions = this._childAssertions,
+        //            _errorCount = this._errorCount,
+        //            _ignoreFurtherChecks = this._ignoreFurtherChecks,
+        //            _isValid = this._isValid,
+        //            _lineNr = this._lineNr,
+        //        };
+        //    }
 
-            var item = this.Item as object;
+        //    var item = this.Item as object;
 
-            if (!(item is S))
-            {
-                throw new InvalidCastException("You can't mix types " + typeof(S).Name + " and " + typeof(T));
-            }
-            var s = (S)item;
+        //    if (!(item is S))
+        //    {
+        //        throw new InvalidCastException("You can't mix types " + typeof(S).Name + " and " + typeof(T));
+        //    }
+        //    var s = (S)item;
 
-            return new Assertion<S>(Name, s, null, null, null)
-            {
-                _sb = this._sb,
-                _caller = this._caller,
-                _file = this._file,
-                _childAssertions = this._childAssertions,
-                _errorCount = this._errorCount,
-                _ignoreFurtherChecks = this._ignoreFurtherChecks,
-                _isValid = this._isValid,
-                _lineNr = this._lineNr,
-            };
-        }
+        //    return new Assertion<S>(Name, s, null, null, null)
+        //    {
+        //        _sb = this._sb,
+        //        _caller = this._caller,
+        //        _file = this._file,
+        //        _childAssertions = this._childAssertions,
+        //        _errorCount = this._errorCount,
+        //        _ignoreFurtherChecks = this._ignoreFurtherChecks,
+        //        _isValid = this._isValid,
+        //        _lineNr = this._lineNr,
+        //    };
+        //}
 
-        internal void ClearErrorMsg()
+        public void ClearErrorMsg()
         {
             _sb.Clear();
         }
 
-        internal List<Assertion<object>> ChildAssertions
-        {
-            get
-            {
-                return _childAssertions;
-            }
-        }
+        //internal List<Assertion<object>> ChildAssertions
+        //{
+        //    get
+        //    {
+        //        return _childAssertions;
+        //    }
+        //}
 
         public IAssertion Combine(IAssertion otherAssertion)
         {
@@ -302,7 +322,7 @@ namespace TypeLess
             {
                 _sb.Append(" ").Append(s);
             }
-            else if (ChildAssertions.Count > 0)
+            else if (_children.Count > 0)
             {
                 _sb.AppendFormat(CultureInfo.InvariantCulture, " and {0} ", Name).Append(s);
             }
@@ -356,7 +376,8 @@ namespace TypeLess
             return func(Item);
         }
 
-        public void Extend(Func<T, string> assertFunc, Func<IAssertion, IAssertion> selfFunc)
+
+        public void Extend(Func<T, string> assertFunc) //Func<IAssertionU, IAssertion> selfFunc
         {
             if (IgnoreFurtherChecks)
             {
@@ -369,11 +390,20 @@ namespace TypeLess
             {
                 Append(s);
             }
-            
-            foreach (var child in ChildAssertions)
+
+            foreach (var child in _children)
             {
-                child.ClearErrorMsg();
-                Combine(selfFunc(child));
+                if (child is Assertion<T>)
+                {
+                    var childAssertion = (Assertion<T>)child;
+                    string res = assertFunc(childAssertion.Item);
+
+                    if (res != null)
+                    {
+                        _isValid = false;
+                        _sb.Append(". ").Append(childAssertion.Name).Append(" ").AppendLine(res);
+                    }
+                }
             }
 
         }

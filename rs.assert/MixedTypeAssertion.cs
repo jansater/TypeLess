@@ -7,20 +7,20 @@ using System.Text;
 
 namespace TypeLess
 {
-    public interface IClassAssertionU<T> : IAssertionU<T>
+    public interface IMixedTypeAssertionU<T, U> : IAssertionU<T> 
+        where T : class 
+        where U : class
     {
         IClassAssertion<T> IsInvalid { get; }
         IClassAssertion<T> IsNull { get; }
         IClassAssertion<T> IsNotNull { get; }
-        new IClassAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse);
-        new IClassAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue);
-        new IClassAssertion<T> IsNotEqualTo(T comparedTo);
-        new IClassAssertion<T> IsEqualTo(T comparedTo);
         IClassAssertion<T> IsNotEqualTo<S>(S comparedTo);
         IClassAssertion<T> IsEqualTo<S>(S comparedTo);
     }
 
-    public interface IClassAssertion<T> : IClassAssertionU<T>, IAssertion<T>
+    public interface IMixedTypeAssertion<T, U> : IMixedTypeAssertionU<T, U>, IAssertion<T>
+        where T : class
+        where U : class
     { 
         
     }
@@ -28,27 +28,19 @@ namespace TypeLess
 #if !DEBUG
     [DebuggerStepThrough]
 #endif
-    internal class ClassAssertion<T> : Assertion<T>, IClassAssertion<T> where T : class
+    internal class MixedTypeAssertion<T, U> : Assertion<T>, IMixedTypeAssertion<T, U>
+        where T : class
+        where U : class
     {
-        
-
-        public ClassAssertion(string s, T source, string file, int? lineNumber, string caller)
+        public MixedTypeAssertion(string s, T source, string file, int? lineNumber, string caller)
             :base (s, source, file, lineNumber, caller) {}
 
-        //internal new List<ClassAssertion<object>> ChildAssertions
-        //{
-        //    get
-        //    {
-        //        return _childAssertions;
-        //    }
-        //}
-
-        public IClassAssertion<T> Combine(IClassAssertion<T> otherAssertion)
+        public IMixedTypeAssertion<T, U> Combine(IMixedTypeAssertion<T, U> otherAssertion)
         {
-            return (IClassAssertion<T>)base.Combine(otherAssertion);
+            return (IMixedTypeAssertion<T, U>)base.Combine(otherAssertion);
         }
 
-        public new IClassAssertion<T> StopIfNotValid
+        public new IMixedTypeAssertion<T, U> StopIfNotValid
         {
             get {
                 base.IgnoreFurtherChecks = true;
@@ -62,7 +54,7 @@ namespace TypeLess
         /// <typeparam name="T"></typeparam>
         /// <param name="source">The source.</param>
         /// <returns></returns>
-        public IClassAssertion<T> IsNull
+        public IMixedTypeAssertion<T, U> IsNull
         {
             get
             {
@@ -80,7 +72,7 @@ namespace TypeLess
 
         }
 
-        public IClassAssertion<T> IsNotNull
+        public IMixedTypeAssertion<T, U> IsNotNull
         {
             get
             {
@@ -106,7 +98,7 @@ namespace TypeLess
         /// <param name="min">The minimum.</param>
         /// <param name="max">The maximum.</param>
         /// <returns></returns>
-        public IClassAssertion<T> IsInvalid
+        public IMixedTypeAssertion<T, U> IsInvalid
         {
             get {
                 Extend(x =>
@@ -140,30 +132,7 @@ namespace TypeLess
 
         }
 
-        
-
-        public new IClassAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse)
-        {
-            return (IClassAssertion<T>)base.IsTrue(assertFunc, msgIfFalse);
-        }
-
-        public new IClassAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue)
-        {
-            return (IClassAssertion<T>)base.IsFalse(assertFunc, msgIfTrue);
-        }
-
-        public new IClassAssertion<T> IsNotEqualTo(T comparedTo)
-        {
-            return (IClassAssertion<T>)base.IsNotEqualTo(comparedTo);
-        }
-
-        public new IClassAssertion<T> IsEqualTo(T comparedTo)
-        {
-            return (IClassAssertion<T>)base.IsEqualTo(comparedTo);
-        }
-
-
-        public IClassAssertion<T> IsNotEqualTo<S>(S comparedTo)
+        public IMixedTypeAssertion<T, U> IsNotEqualTo<S>(S comparedTo)
         {
             Extend(x =>
             {
@@ -186,7 +155,7 @@ namespace TypeLess
             return this;
         }
 
-        public IClassAssertion<T> IsEqualTo<S>(S comparedTo)
+        public IMixedTypeAssertion<T, U> IsEqualTo<S>(S comparedTo)
         {
             Extend(x =>
             {

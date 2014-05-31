@@ -10,17 +10,17 @@ namespace TypeLess.Extensions.Shipping
     public static class ShippingExtensions
     {
 
-        public static IStringAssertion IsNotValidImoNr<T>(this T source) where T : IStringAssertionU
+        public static IStringAssertion IsNotValidImoNr(this IStringAssertionU source)
         {
-            source.Extend((s) =>
+            source.Extend(x =>
             {
-                if (!ImoValidator.IsValid(s))
+                if (!ImoValidator.IsValid(x))
                 {
                     return String.Format(CultureInfo.InvariantCulture, "must be a valid IMO number");
                 }
                 
                 return null;
-            }, (s) => IsNotValidImoNr((IStringAssertion)s));
+            });
 
             return (IStringAssertion)source;
         }

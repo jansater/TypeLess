@@ -75,7 +75,7 @@ namespace TypeLess
                         return "must be non zero";
                     }
                     return null;
-                }, x => this);
+                });
                 return this;
             }
 
@@ -94,7 +94,7 @@ namespace TypeLess
                         return "must be zero or negative";
                     }
                     return null;
-                }, x => this);
+                });
 
                 return this;
             }
@@ -113,7 +113,7 @@ namespace TypeLess
                         return "must be zero or positive";
                     }
                     return null;
-                }, x => this);
+                });
                 return this;
             }
 
@@ -129,7 +129,7 @@ namespace TypeLess
                     return String.Format(CultureInfo.InvariantCulture, "must be within {0} and {1}", min, max);
                 }
                 return null;
-            }, x => this);
+            });
             return this;
         }
 
@@ -143,21 +143,21 @@ namespace TypeLess
                     return String.Format(CultureInfo.InvariantCulture, "must not be within {0} and {1}", min, max);
                 }
                 return null;
-            }, x => this);
+            });
 
             return this;
         }
 
         public INumberAssertion<T> IsSmallerThan(T comparedTo)
         {
-            Extend(x => x.CompareTo(comparedTo) <= 0 ? "must be larger than " + comparedTo : null, x => this);
+            Extend(x => x.CompareTo(comparedTo) <= 0 ? "must be larger than " + comparedTo : null);
 
             return this;
         }
 
         public INumberAssertion<T> IsLargerThan(T comparedTo)
         {
-            Extend(x => x.CompareTo(comparedTo) >= 0 ? "must be smaller than " + comparedTo : null, x => this);
+            Extend(x => x.CompareTo(comparedTo) >= 0 ? "must be smaller than " + comparedTo : null);
             return this;
         }
 

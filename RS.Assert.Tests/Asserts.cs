@@ -676,11 +676,11 @@ namespace TypeLess.Tests
         {
             SomeClass s1 = null;
             SomeClass s2 = null;
-            SomeClass s3 = null;
+            string d = "";
 
             var errMsg = s1.If("s1")
                 .Or(s2, "s2")
-                .Or(s3, "s3").IsNull.ToString();
+                .Or(d, "s3").IsNull.ToString();
 
             Xunit.Assert.True(errMsg.Contains("1") && errMsg.Contains("2") && errMsg.Contains("3"));
 

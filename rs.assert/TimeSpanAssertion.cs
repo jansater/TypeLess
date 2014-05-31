@@ -81,16 +81,14 @@ namespace TypeLess
 
         public ITimeSpanAssertion IsShorterThan(TimeSpan span)
         {
-            Extend(x => x.Ticks < span.Ticks ? String.Format(CultureInfo.InvariantCulture, "must be longer than {0:c}", span) : null,
-                x => this);
+            Extend(x => x.Ticks < span.Ticks ? String.Format(CultureInfo.InvariantCulture, "must be longer than {0:c}", span) : null);
 
             return this;
         }
 
         public ITimeSpanAssertion IsLongerThan(TimeSpan span)
         {
-            Extend(x => x.Ticks > span.Ticks ? String.Format(CultureInfo.InvariantCulture, "must be shorter than {0:c}", span) : null,
-                x => this);
+            Extend(x => x.Ticks > span.Ticks ? String.Format(CultureInfo.InvariantCulture, "must be shorter than {0:c}", span) : null);
             return this;
         }
 

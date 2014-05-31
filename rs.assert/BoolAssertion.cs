@@ -53,7 +53,7 @@ namespace TypeLess
         public new IBoolAssertion IsTrue {
             get {
 
-                Extend(x => x ? "must be false" : null, x => this);
+                Extend(x => x ? "must be false" : null);
                 return this;
             }
         }
@@ -62,7 +62,7 @@ namespace TypeLess
         {
             get
             {
-                Extend(x => !x ? "must be true" : null, x => this);
+                Extend(x => !x ? "must be true" : null);
                 return this;
             }
         }

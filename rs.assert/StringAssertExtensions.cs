@@ -25,15 +25,13 @@ namespace TypeLess
 
         internal static StringAssertion IsEmpty(this StringAssertion source)
         {
-            source.Extend(x => x.Length <= 0 ? "must be non empty" : null,
-                x => source);
+            source.Extend(x => x.Length <= 0 ? "must be non empty" : null);
             return source;
         }
 
         internal static StringAssertion IsEmptyOrWhitespace(this StringAssertion source)
         {
-            source.Extend(x => string.IsNullOrWhiteSpace(x) ? "must not be empty" : null,
-                x => source);
+            source.Extend(x => string.IsNullOrWhiteSpace(x) ? "must not be empty" : null);
             return source;
         }
 
@@ -47,20 +45,20 @@ namespace TypeLess
                     return "must be a valid email address";
                 }
                 return null;
-            }, x => source);
+            });
 
             return source;
         }
 
         internal static StringAssertion IsShorterThan(this StringAssertion source, int length)
         {
-            source.Extend(x => x.Length < length ? String.Format(CultureInfo.InvariantCulture, "must be longer than {0} characters", length - 1) : null, x => source);
+            source.Extend(x => x.Length < length ? String.Format(CultureInfo.InvariantCulture, "must be longer than {0} characters", length - 1) : null);
             return source;
         }
 
         internal static StringAssertion IsLongerThan(this StringAssertion source, int length)
         {
-            source.Extend(x => x.Length > length ? "must be shorter than {0} characters" : null, x => source);
+            source.Extend(x => x.Length > length ? "must be shorter than {0} characters" : null);
 
             return source;
         }
@@ -75,7 +73,7 @@ namespace TypeLess
                     return "must contain alpha numeric characters";
                 }
                 return null;
-            }, x => source);
+            });
             return source;
         }
 
@@ -89,21 +87,20 @@ namespace TypeLess
                     return "must contain at least 1 digit";
                 }
                 return null;
-            }, x => source);
+            });
             return source;
         }
 
         internal static IStringAssertion DoesNotContain(this StringAssertion source, string text)
         {
-            source.Extend(x => !x.Contains(text) ? "must contain text " + text : null,
-                x => source);
+            source.Extend(x => !x.Contains(text) ? "must contain text " + text : null);
 
             return source;
         }
 
         internal static IStringAssertion DoesNotStartWith(this StringAssertion source, string text)
         {
-            source.Extend(x => !x.StartsWith(text, StringComparison.CurrentCultureIgnoreCase) ? "must start with text " + text : null, x => source);
+            source.Extend(x => !x.StartsWith(text, StringComparison.CurrentCultureIgnoreCase) ? "must start with text " + text : null);
 
             return source;
 
@@ -112,8 +109,7 @@ namespace TypeLess
         internal static IStringAssertion DoesNotEndWith(this StringAssertion source, string text)
         {
             source.Extend(x => !x.EndsWith(text, StringComparison.CurrentCultureIgnoreCase)
-                ? "must start with text " + text : null,
-                x => source);
+                ? "must start with text " + text : null);
 
             return source;
         }

@@ -183,7 +183,7 @@ namespace TypeLess
                     return String.Format(CultureInfo.InvariantCulture, "must not match regular expression {0}", regex);
                 }
                 return null;
-            }, x => this);
+            });
 
             return this;
         }
@@ -198,7 +198,7 @@ namespace TypeLess
                     return String.Format(CultureInfo.InvariantCulture, "must match regular expression {0}", regex);
                 }
                 return null;
-            }, x => this);
+            });
 
             return this;
         }

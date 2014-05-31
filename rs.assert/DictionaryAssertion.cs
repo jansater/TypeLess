@@ -69,7 +69,7 @@ namespace TypeLess
         {
             get
             {
-                Extend(x => x.Count == 0 ? "must be non empty" : null, x => this);
+                Extend(x => x.Count == 0 ? "must be non empty" : null);
                 return this;
             }
         }
@@ -100,7 +100,7 @@ namespace TypeLess
                 else {
                     return null;
                 }
-            }, x => this);
+            });
 
             return this;
         }
@@ -117,7 +117,7 @@ namespace TypeLess
                 {
                     return null;
                 }
-            }, x => this);
+            });
 
             return this;
         }
