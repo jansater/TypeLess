@@ -63,7 +63,7 @@ namespace TypeLess
             }
         }
 
-        public new IStringAssertionU Or(string obj, string withName = null)
+        public IStringAssertionU Or(string obj, string withName = null)
         {
             this.ChildAssertions.Add(new StringAssertion(withName, obj, null, null, null));
             return this;

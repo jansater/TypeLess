@@ -17,8 +17,8 @@ namespace TypeLess
         new IClassAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue);
         new IClassAssertion<T> IsNotEqualTo(T comparedTo);
         new IClassAssertion<T> IsEqualTo(T comparedTo);
-        new IClassAssertion<T> IsNotEqualTo<S>(S comparedTo);
-        new IClassAssertion<T> IsEqualTo<S>(S comparedTo);
+        IClassAssertion<T> IsNotEqualTo<S>(S comparedTo);
+        IClassAssertion<T> IsEqualTo<S>(S comparedTo);
     }
 
     public interface IClassAssertion<T> : IClassAssertionU<T>, IAssertion<T>

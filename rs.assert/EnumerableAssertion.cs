@@ -81,7 +81,7 @@ namespace TypeLess
             return EnumerableAssertExtensions.ContainsMoreThan(this, nElements);
         }
 
-        public new IEnumerableAssertionU Or(IEnumerable obj, string withName = null)
+        public IEnumerableAssertionU Or(IEnumerable obj, string withName = null)
         {
             this.ChildAssertions.Add(new EnumerableAssertion(withName, obj, null, null, null));
             return this;
