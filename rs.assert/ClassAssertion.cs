@@ -67,23 +67,15 @@ namespace TypeLess
         {
             get
             {
-                if (IgnoreFurtherChecks)
+                Extend(x =>
                 {
-                    return this;
-                }
-
-                if (Item == null)
-                {
-                    var x = StopIfNotValid;
-                    Append("is required");
-                }
-
-                foreach (var child in ChildAssertions)
-                {
-                    child.ClearErrorMsg();
-                    Combine(child.IsNull);
-                }
-
+                    if (x == null)
+                    {
+                        var temp = StopIfNotValid;
+                        return "is required";
+                    }
+                    return null;
+                }, x => this);
                 return this;
             }
 
@@ -93,23 +85,15 @@ namespace TypeLess
         {
             get
             {
-                if (IgnoreFurtherChecks)
+                Extend(x =>
                 {
-                    return this;
-                }
-
-                if (Item != null)
-                {
-                    var x = StopIfNotValid;
-                    Append("must be null");
-                }
-
-                foreach (var child in ChildAssertions)
-                {
-                    child.ClearErrorMsg();
-                    Combine(child.IsNotNull);
-                }
-
+                    if (x != null)
+                    {
+                        var temp = StopIfNotValid;
+                        return "must be null";
+                    }
+                    return null;
+                }, x => this);
                 return this;
             }
 
@@ -166,8 +150,9 @@ namespace TypeLess
 
         public IClassAssertionU<T> Or<S>(S obj, string withName = null)
         {
-            this.ChildAssertions.Add(new ClassAssertion<object>(withName, obj, null, null, null));
-            return this;
+            var newAssert = new ClassAssertion<object>(withName, obj, null, null, null);
+            newAssert.ChildAssertions.Add(this);
+            return newAssert;
         }
 
         public new IClassAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse)
@@ -193,72 +178,47 @@ namespace TypeLess
 
         public IClassAssertion<T> IsNotEqualTo<S>(S comparedTo)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
-
-            try
-            {
-                if (Item == null)
+                if (x == null)
                 {
                     if (comparedTo != null)
                     {
-                        Append("must be equal to " + comparedTo);
+                        return "must be equal to " + comparedTo;
 
                     }
-                    return this;
+                    return null;
                 }
 
-                if (!Item.Equals(comparedTo))
+                if (!x.Equals(comparedTo))
                 {
-                    Append(string.Format(CultureInfo.InvariantCulture, "must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
+                    return string.Format(CultureInfo.InvariantCulture, "must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
                 }
-                return this;
-            }
-            finally
-            {
-                foreach (var child in ChildAssertions)
-                {
-                    child.ClearErrorMsg();
-                    Combine(child.IsNotEqualTo(comparedTo));
-                }
-            }
+                return null;
+            }, x => this);
+            return this;
         }
 
         public IClassAssertion<T> IsEqualTo<S>(S comparedTo)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
-
-            try
-            {
-                if (Item == null)
+                if (x == null)
                 {
                     if (comparedTo == null)
                     {
-                        Append("must not be equal to " + comparedTo);
-
+                        return "must not be equal to " + comparedTo;
                     }
-                    return this;
+                    return null;
                 }
 
-                if (Item.Equals(comparedTo))
+                if (x.Equals(comparedTo))
                 {
-                    Append(string.Format(CultureInfo.InvariantCulture, "must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
+                    return string.Format(CultureInfo.InvariantCulture, "must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
                 }
-                return this;
-            }
-            finally
-            {
-                foreach (var child in ChildAssertions)
-                {
-                    child.ClearErrorMsg();
-                    Combine(child.IsEqualTo(comparedTo));
-                }
-            }
+                return null;
+            }, x => this);
+            return this;
         }
     }
 }

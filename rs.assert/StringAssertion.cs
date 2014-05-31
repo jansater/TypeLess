@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
@@ -38,7 +39,7 @@ namespace TypeLess
 
     public interface IRegexAssertion : IStringAssertion {
         /// <summary>
-        /// Return result of group. Ex. ${1} for the first group or ${group1} for named groups
+        /// Return result of group. Ex. $0 for the first group or ${group1} for named groups
         /// </summary>
         /// <param name="groupName"></param>
         /// <returns></returns>
@@ -173,46 +174,31 @@ namespace TypeLess
 
         public IRegexAssertion Match(string regex, RegexOptions options = RegexOptions.None)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
+                _previousMatch = Regex.Match(x, regex, options);
 
-            _previousMatch = Regex.Match(Item, regex, options);
-
-            if (_previousMatch.Success)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must not match regular expression {0}", regex));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.Match(regex, options));
-            }
+                if (_previousMatch.Success)
+                {
+                    return String.Format(CultureInfo.InvariantCulture, "must not match regular expression {0}", regex);
+                }
+                return null;
+            }, x => this);
 
             return this;
         }
 
         public IStringAssertion DoesNotMatch(string regex, RegexOptions options = RegexOptions.None)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
-
-            _previousMatch = Regex.Match(Item, regex, options);
-
-            if (!_previousMatch.Success)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must match regular expression {0}", regex));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.DoesNotMatch(regex, options));
-            }
+                _previousMatch = Regex.Match(x, regex, options);
+                if (!_previousMatch.Success)
+                {
+                    return String.Format(CultureInfo.InvariantCulture, "must match regular expression {0}", regex);
+                }
+                return null;
+            }, x => this);
 
             return this;
         }
@@ -225,5 +211,6 @@ namespace TypeLess
 
             return _previousMatch.Result(groupName);
         }
+
     }
 }

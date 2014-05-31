@@ -17,7 +17,7 @@ namespace TypeLess
         new IDateTimeAssertion IsFalse(Func<DateTime, bool> assertFunc, string msgIfTrue);
         new IDateTimeAssertion IsNotEqualTo(DateTime comparedTo);
         new IDateTimeAssertion IsEqualTo(DateTime comparedTo);
-        
+
         IDateTimeAssertion SameDayAs(DateTime date);
         IDateTimeAssertion SameMonthAs(DateTime date);
         IDateTimeAssertion SameYearAs(DateTime date);
@@ -34,12 +34,12 @@ namespace TypeLess
 
         IDateTimeAssertion SameWeekDayAs(DateTime date);
         IDateTimeAssertion NotSameWeekDayAs(DateTime date);
-        
+
     }
 
     public interface IDateTimeAssertion : IDateTimeAssertionU, IAssertion<DateTime>
     {
-        
+
     }
 
 #if !DEBUG
@@ -50,7 +50,7 @@ namespace TypeLess
         private List<DateTimeAssertion> _childAssertions = new List<DateTimeAssertion>();
 
         public DateTimeAssertion(string s, DateTime source, string file, int? lineNumber, string caller)
-            :base (s, source, file, lineNumber, caller) {}
+            : base(s, source, file, lineNumber, caller) { }
 
         internal new List<DateTimeAssertion> ChildAssertions
         {
@@ -67,102 +67,59 @@ namespace TypeLess
 
         public new IDateTimeAssertion StopIfNotValid
         {
-            get {
+            get
+            {
                 base.IgnoreFurtherChecks = true;
                 return this;
             }
         }
 
-        public IDateTimeAssertion IsNotWithin(DateTime min, DateTime max) 
+        public IDateTimeAssertion IsNotWithin(DateTime min, DateTime max)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
-
-            dynamic d = Item;
-            if (d < min || d > max)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must be within {0} and {1}", min, max));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.IsNotWithin(min, max));
-            }
-
+                dynamic d = Item;
+                if (d < min || d > max)
+                {
+                    return String.Format(CultureInfo.InvariantCulture, "must be within {0} and {1}", min, max);
+                }
+                return null;
+            }, x => this);
             return this;
         }
 
         public IDateTimeAssertion IsWithin(DateTime min, DateTime max)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
-
-            dynamic d = Item;
-            if (d >= min && d <= max)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must not be within {0} and {1}", min, max));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.IsWithin(min, max));
-            }
-
+                dynamic d = x;
+                if (d >= min && d <= max)
+                {
+                    return String.Format(CultureInfo.InvariantCulture, "must not be within {0} and {1}", min, max);
+                }
+                return null;
+            }, x => this);
             return this;
         }
 
         public IDateTimeAssertion IsBefore(DateTime date)
         {
-            if (IgnoreFurtherChecks)
-            {
-                return this;
-            }
-
-            if (Item.CompareTo(date) <= 0)
-            {
-                Append("must be larger than " + date);
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.IsBefore(date));
-            }
-
+            Extend(x => x.CompareTo(date) <= 0 ? "must be larger than " + date : null,
+                x => this);
             return this;
         }
 
         public IDateTimeAssertion IsAfter(DateTime date)
         {
-            if (IgnoreFurtherChecks)
-            {
-                return this;
-            }
-
-            if (Item.CompareTo(date) >= 0)
-            {
-                Append("must be smaller than " + date);
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.IsAfter(date));
-            }
-
+            Extend(x => x.CompareTo(date) >= 0 ? "must be smaller than " + date : null,
+                x => this);
             return this;
         }
 
         public IDateTimeAssertionU Or(DateTime obj, string withName = null)
         {
             this.ChildAssertions.Add(new DateTimeAssertion(withName, obj, null, null, null));
-            return this; 
+            return this;
         }
 
         public new IDateTimeAssertion IsTrue(Func<DateTime, bool> assertFunc, string msgIfFalse)
@@ -187,305 +144,179 @@ namespace TypeLess
 
         public IDateTimeAssertion SameDayAs(DateTime date)
         {
-            if (IgnoreFurtherChecks)
-            {
-                return this;
-            }
-
-            if ((Item.Date - date.Date).TotalDays == 0.0)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must not be on same day as {0}", date.ToString("yyyy-MM-dd")));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.SameDayAs(date));
-            }
+            Extend(x => (x.Date - date.Date).TotalDays == 0.0 ? String.Format(CultureInfo.InvariantCulture, "must not be on same day as {0}", date.ToString("yyyy-MM-dd")) : null,
+                x => this);
             return this;
         }
 
         public IDateTimeAssertion SameMonthAs(DateTime date)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
+                var sameYear = x.Date.Year == date.Year;
+                var sameMonth = x.Date.Month == date.Month;
 
-            var sameYear = Item.Date.Year == date.Year;
-            var sameMonth = Item.Date.Month == date.Month;
-
-            if (sameYear && sameMonth)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must not be on same month as {0}", date.ToString("yyyy-MM")));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.SameMonthAs(date));
-            }
+                if (sameYear && sameMonth)
+                {
+                    return String.Format(CultureInfo.InvariantCulture, "must not be on same month as {0}", date.ToString("yyyy-MM"));
+                }
+                return null;
+            }, x => this);
             return this;
         }
 
         public IDateTimeAssertion SameYearAs(DateTime date)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
+                var sameYear = x.Date.Year == date.Year;
 
-            var sameYear = Item.Date.Year == date.Year;
-            
-            if (sameYear)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must not be on same year as {0}", date.ToString("yyyy")));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.SameYearAs(date));
-            }
+                if (sameYear)
+                {
+                    return String.Format(CultureInfo.InvariantCulture, "must not be on same year as {0}", date.ToString("yyyy"));
+                }
+                return null;
+            }, x => this);
             return this;
         }
 
         public IDateTimeAssertion SameHourAs(DateTime date)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
+                var diff = (x - date).TotalHours;
 
-            var diff = (Item - date).TotalHours;
-
-            if (diff >= 0 && diff <= 1.0)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must not be on same hour as {0}", date.ToString("yyyy-MM-dd HH")));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.SameHourAs(date));
-            }
+                if (diff >= 0 && diff <= 1.0)
+                {
+                    return String.Format(CultureInfo.InvariantCulture, "must not be on same hour as {0}", date.ToString("yyyy-MM-dd HH"));
+                }
+                return null;
+            }, x => this);
             return this;
         }
 
         public IDateTimeAssertion SameMinuteAs(DateTime date)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
+                var diff = (Item - date).TotalMinutes;
 
-            var diff = (Item - date).TotalMinutes;
-
-            if (diff >= 0 && diff <= 1.0)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must not be on same minute as {0}", date.ToString("yyyy-MM-dd HH:mm")));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.SameMinuteAs(date));
-            }
+                if (diff >= 0 && diff <= 1.0)
+                {
+                    return String.Format(CultureInfo.InvariantCulture, "must not be on same minute as {0}", date.ToString("yyyy-MM-dd HH:mm"));
+                }
+                return null;
+            }, x => this);
             return this;
         }
 
         public IDateTimeAssertion SameSecondAs(DateTime date)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
+                var diff = (x - date).TotalSeconds;
 
-            var diff = (Item - date).TotalSeconds;
-
-            if (diff >= 0 && diff <= 1.0)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must not be on same second as {0}", date.ToString("yyyy-MM-dd HH:mm:ss")));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.SameSecondAs(date));
-            }
+                if (diff >= 0 && diff <= 1.0)
+                {
+                    return String.Format(CultureInfo.InvariantCulture, "must not be on same second as {0}", date.ToString("yyyy-MM-dd HH:mm:ss"));
+                }
+                return null;
+            }, x => this);
             return this;
         }
 
         public IDateTimeAssertion NotSameDayAs(DateTime date)
         {
-            if (IgnoreFurtherChecks)
-            {
-                return this;
-            }
-
-            if ((Item.Date - date.Date).TotalDays != 0.0)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must be on same day as {0}", date.ToString("yyyy-MM-dd")));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.NotSameDayAs(date));
-            }
+            Extend(x => (x.Date - date.Date).TotalDays != 0.0 ? String.Format(CultureInfo.InvariantCulture, "must be on same day as {0}", date.ToString("yyyy-MM-dd")) : null, x => this);
             return this;
         }
 
         public IDateTimeAssertion NotSameMonthAs(DateTime date)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
+                var sameYear = x.Date.Year == date.Year;
+                var sameMonth = x.Date.Month == date.Month;
 
-            var sameYear = Item.Date.Year == date.Year;
-            var sameMonth = Item.Date.Month == date.Month;
-
-            if (!(sameYear && sameMonth))
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must be on same month as {0}", date.ToString("yyyy-MM")));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.NotSameMonthAs(date));
-            }
+                if (!(sameYear && sameMonth))
+                {
+                    return String.Format(CultureInfo.InvariantCulture, "must be on same month as {0}", date.ToString("yyyy-MM"));
+                }
+                return null;
+            }, x => this);
             return this;
         }
 
         public IDateTimeAssertion NotSameYearAs(DateTime date)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
+                var sameYear = x.Date.Year == date.Year;
 
-            var sameYear = Item.Date.Year == date.Year;
-
-            if (!sameYear)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must be on same year as {0}", date.ToString("yyyy")));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.NotSameYearAs(date));
-            }
+                if (!sameYear)
+                {
+                    return String.Format(CultureInfo.InvariantCulture, "must be on same year as {0}", date.ToString("yyyy"));
+                }
+                return null;
+            }, x => this);
             return this;
         }
 
         public IDateTimeAssertion NotSameHourAs(DateTime date)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
+                var diff = (x - date).TotalHours;
 
-            var diff = (Item - date).TotalHours;
-
-            if (diff < 0 || diff > 1.0)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must be on same hour as {0}", date.ToString("yyyy-MM-dd HH")));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.NotSameHourAs(date));
-            }
+                if (diff < 0 || diff > 1.0)
+                {
+                    return String.Format(CultureInfo.InvariantCulture, "must be on same hour as {0}", date.ToString("yyyy-MM-dd HH"));
+                }
+                return null;
+            }, x => this);
             return this;
         }
 
         public IDateTimeAssertion NotSameMinuteAs(DateTime date)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
+                var diff = (x - date).TotalMinutes;
 
-            var diff = (Item - date).TotalMinutes;
-
-            if (diff < 0 || diff > 1.0)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must be on same minute as {0}", date.ToString("yyyy-MM-dd HH:mm")));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.NotSameMinuteAs(date));
-            }
+                if (diff < 0 || diff > 1.0)
+                {
+                    return String.Format(CultureInfo.InvariantCulture, "must be on same minute as {0}", date.ToString("yyyy-MM-dd HH:mm"));
+                }
+                return null;
+            }, x => this);
             return this;
         }
 
         public IDateTimeAssertion NotSameSecondAs(DateTime date)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
+                var diff = (x - date).TotalSeconds;
 
-            var diff = (Item - date).TotalSeconds;
-
-            if (diff < 0 || diff > 1.0)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must be on same second as {0}", date.ToString("yyyy-MM-dd HH:mm:ss")));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.NotSameSecondAs(date));
-            }
+                if (diff < 0 || diff > 1.0)
+                {
+                    return String.Format(CultureInfo.InvariantCulture, "must be on same second as {0}", date.ToString("yyyy-MM-dd HH:mm:ss"));
+                }
+                return null;
+            }, x => this);
             return this;
         }
 
 
         public IDateTimeAssertion SameWeekDayAs(DateTime date)
         {
-            if (IgnoreFurtherChecks)
-            {
-                return this;
-            }
-
-            if (date.DayOfWeek == date.DayOfWeek)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must not be on same week day as {0}", date.DayOfWeek.ToString()));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.SameWeekDayAs(date));
-            }
+            Extend(x => date.DayOfWeek == date.DayOfWeek ? String.Format(CultureInfo.InvariantCulture, "must not be on same week day as {0}", date.DayOfWeek.ToString()) : null, x => this);
             return this;
         }
 
-
         public IDateTimeAssertion NotSameWeekDayAs(DateTime date)
         {
-            if (IgnoreFurtherChecks)
-            {
-                return this;
-            }
-
-            if (date.DayOfWeek != date.DayOfWeek)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must be on same week day as {0}", date.DayOfWeek.ToString()));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.NotSameWeekDayAs(date));
-            }
+            Extend(x => date.DayOfWeek != date.DayOfWeek ? String.Format(CultureInfo.InvariantCulture, "must be on same week day as {0}", date.DayOfWeek.ToString()) : null, x => this);
             return this;
         }
     }

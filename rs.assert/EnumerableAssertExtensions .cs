@@ -22,30 +22,20 @@ namespace TypeLess
     public static class EnumerableAssertExtensions 
     {
 
-
         internal static EnumerableAssertion IsEmpty(this EnumerableAssertion source)
         {
-            if (source.IgnoreFurtherChecks)
+            source.Extend(x =>
             {
-                return source;
-            }
+                var c = GetCount(x);
 
-            var c = GetCount(source.Item);
-
-            if (c == 0)
-            {
-                source.Append("must be non empty");
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                source.Combine(child.IsEmpty());
-            }
-
+                if (c == 0)
+                {
+                    return "must be non empty";
+                }
+                return null;
+            }, x => source);
             return source;
         }
-
 
         internal static int GetCount(IEnumerable e)
         {
@@ -68,47 +58,31 @@ namespace TypeLess
 
         internal static EnumerableAssertion ContainsLessThan(this EnumerableAssertion source, int nElements)
         {
-            if (source.IgnoreFurtherChecks)
+            source.Extend(x =>
             {
-                return source;
-            }
+                var count = GetCount(x);
 
-            var count = GetCount(source.Item);
-
-            if (count < nElements)
-            {
-                source.Append("must contain more than " + nElements + " items");
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                source.Combine(child.ContainsLessThan(nElements));
-            }
-
+                if (count < nElements)
+                {
+                    return "must contain more than " + nElements + " items";
+                }
+                return null;
+            }, x => source);
             return source;
         }
 
         internal static EnumerableAssertion ContainsMoreThan(this EnumerableAssertion source, int nElements)
         {
-            if (source.IgnoreFurtherChecks)
+            source.Extend(x =>
             {
-                return source;
-            }
+                var count = GetCount(x);
 
-            var count = GetCount(source.Item);
-
-            if (count > nElements)
-            {
-                source.Append("must contain less than " + nElements + " items");
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                source.Combine(child.ContainsMoreThan(nElements));
-            }
-
+                if (count > nElements)
+                {
+                    return "must contain less than " + nElements + " items";
+                }
+                return null;
+            }, x => source);
             return source;
         }
 

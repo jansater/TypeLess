@@ -74,11 +74,19 @@ namespace TypeLess.Tests
 
         }
 
+        [Fact]
         public void WhenRegexMatchReturnValIsCorrectThrow()
         {
-
             string s = "some 2 string";
-            var res =  s.If().Match("\\d").ThenReturnResultOf("${1}");
+            var res =  s.If().Match("\\d").ThenReturnResultOf("$0");
+            Xunit.Assert.Equal("2", res);
+        }
+
+        [Fact]
+        public void WhenRegexMatchReturnValIsCorrectForNameThrow()
+        {
+            string s = "some 2 string";
+            var res =  s.If().Match("(?<val>\\d)").ThenReturnResultOf("${val}");
             Xunit.Assert.Equal("2", res);
         }
 

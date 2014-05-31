@@ -20,217 +20,100 @@ namespace TypeLess
 #if !DEBUG
     [DebuggerStepThrough]
 #endif
-    public static class StringAssertExtensions 
+    public static class StringAssertExtensions
     {
 
         internal static StringAssertion IsEmpty(this StringAssertion source)
         {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            if (source.Item.Length <= 0)
-            {
-                source.Append("must be non empty");
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                source.Combine(child.IsEmpty());
-            }
-
+            source.Extend(x => x.Length <= 0 ? "must be non empty" : null,
+                x => source);
             return source;
         }
 
         internal static StringAssertion IsEmptyOrWhitespace(this StringAssertion source)
         {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            if (string.IsNullOrWhiteSpace(source.Item))
-            {
-                source.Append("must not be empty");
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                source.Combine(child.IsEmptyOrWhitespace);
-            }
-
+            source.Extend(x => string.IsNullOrWhiteSpace(x) ? "must not be empty" : null,
+                x => source);
             return source;
         }
 
         internal static StringAssertion IsNotValidEmail(this StringAssertion source)
         {
-            if (source.IgnoreFurtherChecks)
+            source.Extend(x =>
             {
-                return source;
-            }
-
-            bool isEmail = Regex.IsMatch(source.Item, @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z");
-            if (string.IsNullOrWhiteSpace(source.Item) || !isEmail)
-            {
-                source.Append("must be a valid email address");
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                source.Combine(child.IsNotValidEmail);
-            }
+                bool isEmail = Regex.IsMatch(x, @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z");
+                if (string.IsNullOrWhiteSpace(x) || !isEmail)
+                {
+                    return "must be a valid email address";
+                }
+                return null;
+            }, x => source);
 
             return source;
         }
 
         internal static StringAssertion IsShorterThan(this StringAssertion source, int length)
         {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            if (source.Item.Length < length)
-            {
-                source.Append(String.Format(CultureInfo.InvariantCulture, "must be longer than {0} characters", length - 1));
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                source.Combine(child.IsShorterThan(length));
-            }
+            source.Extend(x => x.Length < length ? String.Format(CultureInfo.InvariantCulture, "must be longer than {0} characters", length - 1) : null, x => source);
             return source;
         }
 
         internal static StringAssertion IsLongerThan(this StringAssertion source, int length)
         {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            if (source.Item.Length > length)
-            {
-                source.Append(String.Format(CultureInfo.InvariantCulture, "must be shorter than {0} characters", length + 1));
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                source.Combine(child.IsLongerThan(length));
-            }
+            source.Extend(x => x.Length > length ? "must be shorter than {0} characters" : null, x => source);
 
             return source;
         }
 
         internal static StringAssertion DoesNotContainAlphaChars(this StringAssertion source)
         {
-            if (source.IgnoreFurtherChecks)
+            source.Extend(x =>
             {
-                return source;
-            }
-
-            bool isValid = Regex.IsMatch(source.Item, @"\W|_");
-            if (!isValid)
-            {
-                source.Append("must contain alpha numeric characters");
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                source.Combine(child.DoesNotContainAlphaChars);
-            }
-
+                bool isValid = Regex.IsMatch(x, @"\W|_");
+                if (!isValid)
+                {
+                    return "must contain alpha numeric characters";
+                }
+                return null;
+            }, x => source);
             return source;
         }
 
         internal static StringAssertion DoesNotContainDigit(this StringAssertion source)
         {
-            if (source.IgnoreFurtherChecks)
+            source.Extend(x =>
             {
-                return source;
-            }
-
-            bool isValid = Regex.IsMatch(source.Item, @"\d");
-            if (!isValid)
-            {
-                source.Append("must contain at least 1 digit");
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                source.Combine(child.DoesNotContainDigit());
-            }
-
+                bool isValid = Regex.IsMatch(x, @"\d");
+                if (!isValid)
+                {
+                    return "must contain at least 1 digit";
+                }
+                return null;
+            }, x => source);
             return source;
         }
 
         internal static IStringAssertion DoesNotContain(this StringAssertion source, string text)
         {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            if (!source.Item.Contains(text))
-            {
-                source.Append("must contain text " + text);
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                source.Combine(child.DoesNotContain(text));
-            }
+            source.Extend(x => !x.Contains(text) ? "must contain text " + text : null,
+                x => source);
 
             return source;
         }
 
         internal static IStringAssertion DoesNotStartWith(this StringAssertion source, string text)
         {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            if (!source.Item.StartsWith(text, StringComparison.CurrentCultureIgnoreCase))
-            {
-                source.Append("must start with text " + text);
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                source.Combine(child.DoesNotStartWith(text));
-            }
+            source.Extend(x => !x.StartsWith(text, StringComparison.CurrentCultureIgnoreCase) ? "must start with text " + text : null, x => source);
 
             return source;
+
         }
 
         internal static IStringAssertion DoesNotEndWith(this StringAssertion source, string text)
         {
-            if (source.IgnoreFurtherChecks)
-            {
-                return source;
-            }
-
-            if (!source.Item.EndsWith(text, StringComparison.CurrentCultureIgnoreCase))
-            {
-                source.Append("must start with text " + text);
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                source.Combine(child.DoesNotEndWith(text));
-            }
+            source.Extend(x => !x.EndsWith(text, StringComparison.CurrentCultureIgnoreCase)
+                ? "must start with text " + text : null,
+                x => source);
 
             return source;
         }

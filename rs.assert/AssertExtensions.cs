@@ -23,31 +23,6 @@ namespace TypeLess
 #pragma warning disable 0436,1685
     public static class AssertExtensions
     {
-
-        //private static string TryReadLine(string filePath, int line) {
-        //    try
-        //    {
-        //        using (Stream stream = File.Open(filePath, FileMode.Open))
-        //        {
-        //            using (StreamReader reader = new StreamReader(stream))
-        //            {
-        //                string row = null;
-        //                for (int i = 0; i < line && !reader.EndOfStream; i++)
-        //                {
-        //                    row = reader.ReadLine();
-        //                }
-
-        //                return row;
-        //            }
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return null;
-        //    }
-
-        //}
-
         internal static string GetTypeName(Type type)
         {
             var genericArgs = type.GenericTypeArguments;
@@ -62,26 +37,6 @@ namespace TypeLess
                 return type.Name;
             }
         }
-
-        //private static string UpdateName(string name, string file, int? lineNumber) {
-
-        //    if (String.IsNullOrEmpty(name) && Debugger.IsAttached && file != null && lineNumber.HasValue) {
-        //        var line = TryReadLine(file, lineNumber.Value);
-        //        if (line != null) {
-        //            var match = Regex.Match(line, "(?<caller>\\S*?).If\\(");
-        //            if (match.Success) {
-        //                var callingProperty = match.Result("$1");
-        //                if (!String.IsNullOrWhiteSpace(callingProperty)) {
-        //                    name = callingProperty;
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return name;
-
-        //}
-
 
         #region Numbers
 
@@ -268,23 +223,14 @@ namespace TypeLess
                 throw new ArgumentNullException("msgIfFalse");
             }
 
-            if (source.IgnoreFurtherChecks)
+            source.Extend(x =>
             {
-                return source;
-            }
-
-            if (assertFunc(source.Item))
-            {
-                source.Append(msgIfFalse);
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                var c = child.Cast<T>();
-                c.ClearErrorMsg();
-                source.Combine(c.IsTrue(assertFunc, msgIfFalse.Replace(source.Name, c.Name)));
-            }
-
+                if (assertFunc(source.Item))
+                {
+                    return msgIfFalse;
+                }
+                return null;
+            }, x => source);
             return source;
         }
 
@@ -300,97 +246,59 @@ namespace TypeLess
                 throw new ArgumentNullException("msgIfTrue");
             }
 
-            if (source.IgnoreFurtherChecks)
+            source.Extend(x =>
             {
-                return source;
-            }
-
-            if (!assertFunc(source.Item))
-            {
-                source.Append(msgIfTrue);
-            }
-
-            foreach (var child in source.ChildAssertions)
-            {
-                var c = child.Cast<T>();
-                c.ClearErrorMsg();
-                source.Combine(c.IsFalse(assertFunc, msgIfTrue.Replace(source.Name, c.Name)));
-            }
-
+                if (!assertFunc(x))
+                {
+                    return msgIfTrue;
+                }
+                return null;
+            }, x => source);
             return source;
         }
 
-        internal static IAssertion<T> IsNotEqualTo<T>(this Assertion<T> source, T comparedTo) 
-        {
-            if (source.IgnoreFurtherChecks)
+        internal static IAssertion<T> IsNotEqualTo<T>(this Assertion<T> source, T comparedTo){
+            source.Extend(x =>
             {
-                return source;
-            }
-
-            try
-            {
-                if (source.Item == null)
+                if (x == null)
                 {
                     if (comparedTo != null)
                     {
-                        source.Append("must be equal to " + comparedTo);
-
+                        return "must be equal to " + comparedTo;
                     }
-                    return source;
+                    return null;
                 }
 
-                if (!source.Item.Equals(comparedTo))
+                if (!x.Equals(comparedTo))
                 {
-                    source.Append(string.Format(CultureInfo.InvariantCulture,"must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
+                    return string.Format(CultureInfo.InvariantCulture, "must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
                 }
-                return source;
-            }
-            finally
-            {
-                foreach (var child in source.ChildAssertions)
-                {
-                    var c = child.Cast<T>();
-                    c.ClearErrorMsg();
-                    source.Combine(c.IsNotEqualTo(comparedTo));
-                }
-            }
-
+                return null;
+            }, x => source);
+            return source;
         }
 
         internal static IAssertion<T> IsEqualTo<T>(this Assertion<T> source, T comparedTo)
         {
-            if (source.IgnoreFurtherChecks)
+            source.Extend(x =>
             {
-                return source;
-            }
-
-            try
-            {
-                if (source.Item == null)
+                if (x == null)
                 {
                     if (comparedTo == null)
                     {
-                        source.Append("must not be equal to " + comparedTo);
+                        return "must not be equal to " + comparedTo;
 
                     }
-                    return source;
+                    return null;
                 }
 
-                if (source.Item.Equals(comparedTo))
+                if (x.Equals(comparedTo))
                 {
-                    source.Append(string.Format(CultureInfo.InvariantCulture, "must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString()));
+                    return string.Format(CultureInfo.InvariantCulture, "must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
                 }
-                return source;
-            }
-            finally
-            {
-                foreach (var child in source.ChildAssertions)
-                {
-                    var c = child.Cast<T>();
-                    c.ClearErrorMsg();
-                    source.Combine(c.IsEqualTo(comparedTo));
-                }
-            }
+                return null;
+            }, x => source);
+            return source;
         }
 
 

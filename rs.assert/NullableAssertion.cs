@@ -63,23 +63,15 @@ namespace TypeLess
         public INullableAssertion<T> IsNull
         {
             get {
-                if (IgnoreFurtherChecks)
+                Extend(x =>
                 {
-                    return this;
-                }
-
-                if (Item == null)
-                {
-                    var x = StopIfNotValid;
-                    Append("is required");
-                }
-
-                foreach (var child in ChildAssertions)
-                {
-                    child.ClearErrorMsg();
-                    Combine(child.IsNull);
-                }
-
+                    if (x == null)
+                    {
+                        var temp = StopIfNotValid;
+                        return "is required";
+                    }
+                    return null;
+                }, x => this);
                 return this;
             }
             
@@ -89,23 +81,15 @@ namespace TypeLess
         {
             get
             {
-                if (IgnoreFurtherChecks)
+                Extend(x =>
                 {
-                    return this;
-                }
-
-                if (Item != null)
-                {
-                    var x = StopIfNotValid;
-                    Append("must be null");
-                }
-
-                foreach (var child in ChildAssertions)
-                {
-                    child.ClearErrorMsg();
-                    Combine(child.IsNotNull);
-                }
-
+                    if (x != null)
+                    {
+                        var temp = StopIfNotValid;
+                        return "must be null";
+                    }
+                    return null;
+                }, x => this);
                 return this;
             }
 

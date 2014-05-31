@@ -69,22 +69,7 @@ namespace TypeLess
         {
             get
             {
-                if (IgnoreFurtherChecks)
-                {
-                    return this;
-                }
-
-                if (Item.Count == 0)
-                {
-                    Append("must be non empty");
-                }
-
-                foreach (var child in ChildAssertions)
-                {
-                    child.ClearErrorMsg();
-                    Combine(child.IsEmpty);
-                }
-
+                Extend(x => x.Count == 0 ? "must be non empty" : null, x => this);
                 return this;
             }
         }

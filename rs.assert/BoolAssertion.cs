@@ -52,18 +52,8 @@ namespace TypeLess
 
         public new IBoolAssertion IsTrue {
             get {
-                
-                if (Item)
-                {
-                    Append("must be false");
-                }
 
-                foreach (var child in ChildAssertions)
-                {
-                    child.ClearErrorMsg();
-                    Combine(child.IsTrue);
-                }
-
+                Extend(x => x ? "must be false" : null, x => this);
                 return this;
             }
         }
@@ -72,18 +62,7 @@ namespace TypeLess
         {
             get
             {
-
-                if (!Item)
-                {
-                    Append("must be true");
-                }
-
-                foreach (var child in ChildAssertions)
-                {
-                    child.ClearErrorMsg();
-                    Combine(child.IsTrue);
-                }
-
+                Extend(x => !x ? "must be true" : null, x => this);
                 return this;
             }
         }

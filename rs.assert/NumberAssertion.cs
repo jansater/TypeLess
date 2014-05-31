@@ -28,7 +28,7 @@ namespace TypeLess
 
     public interface INumberAssertion<T> : IAssertion<T>, INumberAssertionU<T> where T : struct, IComparable<T>
     {
-        
+
     }
 
 #if !DEBUG
@@ -67,23 +67,15 @@ namespace TypeLess
         {
             get
             {
-                if (this.IgnoreFurtherChecks)
+                Extend(x =>
                 {
-                    return this;
-                }
-
-                dynamic d = this.Item;
-                if (d == 0)
-                {
-                    Append("must be non zero");
-                }
-
-                foreach (var child in ChildAssertions)
-                {
-                    child.ClearErrorMsg();
-                    Combine(child.IsZero);
-                }
-
+                    dynamic d = x;
+                    if (d == 0)
+                    {
+                        return "must be non zero";
+                    }
+                    return null;
+                }, x => this);
                 return this;
             }
 
@@ -93,23 +85,16 @@ namespace TypeLess
         {
             get
             {
-                if (IgnoreFurtherChecks)
+                Extend(x =>
                 {
-                    return this;
-                }
+                    dynamic d = x;
 
-                dynamic d = Item;
-
-                if (d > 0.0)
-                {
-                    Append("must be zero or negative");
-                }
-
-                foreach (var child in ChildAssertions)
-                {
-                    child.ClearErrorMsg();
-                    Combine(child.IsPositive);
-                }
+                    if (d > 0.0)
+                    {
+                        return "must be zero or negative";
+                    }
+                    return null;
+                }, x => this);
 
                 return this;
             }
@@ -120,23 +105,15 @@ namespace TypeLess
         {
             get
             {
-                if (IgnoreFurtherChecks)
+                Extend(x =>
                 {
-                    return this;
-                }
-
-                dynamic d = Item;
-                if (d < 0.0)
-                {
-                    Append("must be zero or positive");
-                }
-
-                foreach (var child in ChildAssertions)
-                {
-                    child.ClearErrorMsg();
-                    Combine(child.IsNegative);
-                }
-
+                    dynamic d = x;
+                    if (d < 0.0)
+                    {
+                        return "must be zero or positive";
+                    }
+                    return null;
+                }, x => this);
                 return this;
             }
 
@@ -144,90 +121,45 @@ namespace TypeLess
 
         public INumberAssertion<T> IsNotWithin(T min, T max)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
-
-            dynamic d = Item;
-            if (d < min || d > max)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must be within {0} and {1}", min, max));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.IsNotWithin(min, max));
-            }
-
+                dynamic d = x;
+                if (d < min || d > max)
+                {
+                    return String.Format(CultureInfo.InvariantCulture, "must be within {0} and {1}", min, max);
+                }
+                return null;
+            }, x => this);
             return this;
         }
 
         public INumberAssertion<T> IsWithin(T min, T max)
         {
-            if (IgnoreFurtherChecks)
+            Extend(x =>
             {
-                return this;
-            }
-
-            dynamic d = Item;
-            if (d >= min && d <= max)
-            {
-                Append(String.Format(CultureInfo.InvariantCulture, "must not be within {0} and {1}", min, max));
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.IsWithin(min, max));
-            }
+                dynamic d = x;
+                if (d >= min && d <= max)
+                {
+                    return String.Format(CultureInfo.InvariantCulture, "must not be within {0} and {1}", min, max);
+                }
+                return null;
+            }, x => this);
 
             return this;
         }
 
         public INumberAssertion<T> IsSmallerThan(T comparedTo)
         {
-            if (IgnoreFurtherChecks)
-            {
-                return this;
-            }
-
-            if (Item.CompareTo(comparedTo) <= 0)
-            {
-                Append("must be larger than " + comparedTo);
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.IsSmallerThan(comparedTo));
-            }
+            Extend(x => x.CompareTo(comparedTo) <= 0 ? "must be larger than " + comparedTo : null, x => this);
 
             return this;
         }
 
         public INumberAssertion<T> IsLargerThan(T comparedTo)
         {
-            if (IgnoreFurtherChecks)
-            {
-                return this;
-            }
-
-            if (Item.CompareTo(comparedTo) >= 0)
-            {
-                Append("must be smaller than " + comparedTo);
-            }
-
-            foreach (var child in ChildAssertions)
-            {
-                child.ClearErrorMsg();
-                Combine(child.IsLargerThan(comparedTo));
-            }
-
+            Extend(x => x.CompareTo(comparedTo) >= 0 ? "must be smaller than " + comparedTo : null, x => this);
             return this;
         }
-
 
         public INumberAssertionU<T> Or(T obj, string withName = null)
         {

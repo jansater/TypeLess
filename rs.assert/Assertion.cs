@@ -365,7 +365,7 @@ namespace TypeLess
 
             var s = assertFunc(Item);
 
-            if (!String.IsNullOrEmpty(s))
+            if (s != null)
             {
                 Append(s);
             }
