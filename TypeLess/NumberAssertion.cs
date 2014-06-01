@@ -16,12 +16,13 @@ namespace TypeLess
         INumberAssertion<T> IsNegative { get; }
         INumberAssertion<T> IsNotWithin(T min, T max);
         INumberAssertion<T> IsWithin(T min, T max);
-        INumberAssertion<T> IsSmallerThan(T comparedTo);
-        INumberAssertion<T> IsLargerThan(T comparedTo);
         INumberAssertionU<T> Or(T obj, string withName = null);
 
         new INumberAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse);
         new INumberAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue);
+
+        INumberAssertion<T> IsSmallerThan(T comparedTo);
+        INumberAssertion<T> IsLargerThan(T comparedTo);
         new INumberAssertion<T> IsNotEqualTo(T comparedTo);
         new INumberAssertion<T> IsEqualTo(T comparedTo);
     }

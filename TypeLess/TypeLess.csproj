@@ -68,6 +68,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\Luhn.cs" />
+    <Compile Include="DataTypes\Range.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Debugging\PerfLogger.cs" />
+    <Compile Include="Helpers\EnumerableExtensions.cs" />
+    <Compile Include="Helpers\EnumerableTraverser.cs" />
+    <Compile Include="Helpers\HashHelper.cs" />
+    <Compile Include="Helpers\ListSync.cs" />
+    <Compile Include="Helpers\Maps\Kml\LineStyle.cs" />
+    <Compile Include="Helpers\Maps\Kml\PlacemarkStyle.cs" />
+    <Compile Include="Helpers\Maps\Kml\Polygon.cs" />
+    <Compile Include="Helpers\Maps\Kml\PolygonPoint.cs" />
+    <Compile Include="Helpers\Maps\Kml\PolygonReader.cs" />
+    <Compile Include="Helpers\Maps\Kml\PolygonStyle.cs" />
+    <Compile Include="Helpers\RangeExtensions.cs" />
+    <Compile Include="Helpers\SpreadFunctions.cs" />
     <Compile Include="Extensions\Sweden\PersonalNumber.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Helpers\IntExtensions.cs" />
@@ -104,7 +120,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

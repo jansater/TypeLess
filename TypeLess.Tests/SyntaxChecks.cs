@@ -6,10 +6,21 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TypeLess;
 using TypeLess.Extensions.Sweden;
+using TypeLess.DataTypes;
 
 namespace TypeLess.Tests
 {
-    
+    public class ComparableSyntaxChecks<T> where T : IComparable<T>
+    {
+        public ComparableSyntaxChecks()
+        {
+            Range<int> i = new Range<int>();
+           
+            
+        }
+
+    }
+
     public class ClassSyntaxChecks
     {
         public ClassSyntaxChecks()

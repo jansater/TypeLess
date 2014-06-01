@@ -7,6 +7,7 @@ namespace TypeLess.Tests
 {
     public class ThenAsserts
     {
+
         [Fact]
         public void ThenCallsActionOnTrue()
         {
