@@ -138,6 +138,24 @@ ifDateNotValid.Combine(ifStringNotValid).ThenThrow();
 ```
 - *Example output: DateTime must be within 2014-05-01 00:00:00 and 2014-05-10 00:00:00. abc must be longer than 3 characters*
 
+####How to add your own validation code on top of TypeLess####
+Adding your own checks is easy. Just create an extension method for the assertion type you are interested in like this
+``` c#
+public static class PersonalNumber
+{
+    public static IStringAssertion IsNotValidPersonalNumber(this IStringAssertionU source) {
+        source.Extend(x =>
+        {
+            return Luhn.IsValid(x.ToIntArray()) ? "must be a valid personal number" : null;
+        });
+        return (IStringAssertion)source;
+    }
+}
+```
+This method extends the IStringAssertionU interface with a swedish personal number check for strings according to the
+Luhn algorithm. Note the U at the end of the interface and that it is not included in the return type. This is simply because the method should be available directly after the If() statement and not only after other assertions have been made. The Extend method will node show up in code completion but its there and it expects a function that receives the string being checked and returns a non null string in case its not valid (I.e. null means valid). The error message as in this case knows that the parameter name has already been prepended to the message.
+
+
 ###Features:###
 - Chain validation checks 
 - Short circuit validation 
