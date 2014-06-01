@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Xunit;
+using TypeLess.Extensions.Sweden;
 
 namespace TypeLess.Tests
 {
@@ -436,6 +437,8 @@ namespace TypeLess.Tests
 
         }
 
+
+
         [Fact]
         public void WhenIsShorterThanThenThrow()
         {
@@ -799,6 +802,23 @@ namespace TypeLess.Tests
             {
                 Dictionary<string, int> d = new Dictionary<string, int>();
                 d.If().ContainsKey("some key").ThenThrow();
+            });
+
+        }
+
+        [Fact]
+        public void WhenIsNotValidPersonalNumberThenThrow()
+        {
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                string s = "123987";
+                s.If().IsNotValidPersonalNumber().ThenThrow();
+            });
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                string s = "6708021586";
+                s.If().IsNotValidPersonalNumber().ThenThrow();
             });
 
         }
