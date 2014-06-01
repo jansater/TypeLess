@@ -53,7 +53,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\rs.assert\TypeLess.csproj">
+    <ProjectReference Include="..\TypeLess\TypeLess.csproj">
       <Project>{01bd2432-e1fb-4c96-9607-653b45950669}</Project>
       <Name>TypeLess</Name>
     </ProjectReference>
