@@ -42,6 +42,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CheckDigitTest.cs" />
     <Compile Include="ExtensionAsserts.cs" />
     <Compile Include="ThenAsserts.cs" />
     <Compile Include="Asserts.cs" />

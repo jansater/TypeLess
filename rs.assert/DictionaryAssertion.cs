@@ -67,7 +67,7 @@ namespace TypeLess
             }
         }
 
-        public IDictionaryAssertionU<T1, T2> Or(IDictionary<T1, T2> obj, string withName = null)
+        public new IDictionaryAssertionU<T1, T2> Or(IDictionary<T1, T2> obj, string withName = null)
         {
             Add(new DictionaryAssertion<T1, T2>(withName, obj, null, null, null));
             return this;

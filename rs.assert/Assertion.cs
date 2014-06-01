@@ -54,21 +54,24 @@ namespace TypeLess
     {
         int ErrorCount { get; }
         bool IgnoreFurtherChecks { get; }
-        IAssertionOW ThenThrow(string errorMsg = null);
-        IAssertionOW ThenThrow<E>(string errorMsg = null) where E : Exception;
+        //IAssertionOW ThenThrow(string errorMsg = null);
+        //IAssertionOW ThenThrow<E>(string errorMsg = null) where E : Exception;
         string ToString();
         IAssertion Combine(IAssertion otherAssertion);
     }
 
-    public interface IAssertionOW
+    public interface IAssertionOW<T>
     {
-        void Otherwise(Action action);
+        void Otherwise(Action<T> action);
     }
+
 
     public interface IAssertion<T> : IAssertion, IAssertionU<T>
     {
         void Then(Action<T> action);
         S ThenReturn<S>(Func<T, S> func);
+        IAssertionOW<T> ThenThrow(string errorMsg = null);
+        IAssertionOW<T> ThenThrow<E>(string errorMsg = null) where E : Exception;
 
     }
 
@@ -76,7 +79,7 @@ namespace TypeLess
 #if !DEBUG
     [DebuggerStepThrough]
 #endif
-    internal class Assertion<T> : TypeLess.IAssertion<T>, IAssertion, IAssertionOW
+    internal class Assertion<T> : TypeLess.IAssertion<T>, IAssertion, IAssertionOW<T>
     {
         private StringBuilder _sb { get; set; }
         internal T Item { get; set; }
@@ -215,7 +218,7 @@ namespace TypeLess
             return this;
         }
 
-        public IAssertionOW ThenThrow<E>(string errorMsg = null) where E : Exception
+        public IAssertionOW<T> ThenThrow<E>(string errorMsg = null) where E : Exception
         {
             if (IsValid)
             {
@@ -237,7 +240,7 @@ namespace TypeLess
         /// Throws arg null instead of arg exception just because of the message created
         /// </summary>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public IAssertionOW ThenThrow(string errorMsg = null)
+        public IAssertionOW<T> ThenThrow(string errorMsg = null)
         {
             if (IsValid)
             {
@@ -413,11 +416,11 @@ namespace TypeLess
 
         }
 
-        public void Otherwise(Action action)
+        public void Otherwise(Action<T> action)
         {
             action.If("action").IsNull.ThenThrow();
 
-            action();
+            action(Item);
         }
     }
 }

@@ -67,6 +67,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\Luhn.cs" />
+    <Compile Include="Extensions\Sweden\PersonalNumber.cs" />
+    <Compile Include="Helpers\StringExtensions.cs" />
+    <Compile Include="Helpers\IntExtensions.cs" />
+    <Compile Include="Helpers\ValueRotator.cs" />
     <Compile Include="MixedTypeAssertion.cs" />
     <Compile Include="ClassAssertion.cs" />
     <Compile Include="DictionaryAssertion.cs" />

@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TypeLess;
+using TypeLess.Extensions.Sweden;
 
 namespace TypeLess.Tests
 {
@@ -22,7 +23,7 @@ namespace TypeLess.Tests
             o.If().Or(o2).Or(o3).IsNull.ThenThrow(); //this should not be possible
             o.If().IsEqualTo(o3).ThenThrow();
 
-            o.If().IsNull.ThenThrow().Otherwise(() =>
+            o.If().IsNull.ThenThrow().Otherwise(x =>
             {
 
             });
@@ -50,6 +51,7 @@ namespace TypeLess.Tests
             d.If().IsNotWithin(3, 5).ThenThrow();
             d.If().IsWithin(3, 5).ThenThrow();
             d.If().Or(e).IsLargerThan(5).ThenThrow(); //this should not be possible
+
         }
 
     }
@@ -107,7 +109,8 @@ namespace TypeLess.Tests
             s.If().IsTrue(x => 1 == 1, "").ThenThrow();
             s.If().Or(someOtherList).ContainsLessThan(5).ThenThrow();
 
-
+            IEnumerable<int> i = new List<int>();
+            i.If().ContainsLessThan(5).ThenThrow();
         }
 
     }
@@ -145,7 +148,7 @@ namespace TypeLess.Tests
             s.If().IsFalse(x => 1 == 0, "").ThenThrow();
             s.If().IsTrue(x => 1 == 1, "").ThenThrow();
             s.If().DoesNotContainAlphaChars.ThenThrow();
-
+            s.If().IsNotValidPersonalNumber().ThenThrow();
         }
 
     }
