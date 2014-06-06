@@ -96,7 +96,7 @@ namespace TypeLess.Net.Helpers
                             return CreateInstanceOfType(x.ParameterType);
                         }
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         return Activator.CreateInstance(x.ParameterType);
                     }

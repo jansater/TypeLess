@@ -614,6 +614,40 @@ namespace TypeLess.Tests
 
         }
 
+        [Fact]
+        public void WhenIsWithinThenThrow()
+        {
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                int i = 3;
+                i.If().IsWithin(1, 4).ThenThrow();
+            });
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                int i = 5;
+                i.If().IsWithin(6, 9).ThenThrow();
+            });
+
+            DateTime dMin = new DateTime(2014, 05, 10);
+            DateTime dMax = new DateTime(2014, 05, 23);
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                DateTime d = new DateTime(2014, 05, 15);
+                d.If().IsWithin(dMin, dMax).ThenThrow();
+            });
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                DateTime d = new DateTime(2014, 05, 25);
+                d.If().IsWithin(dMin, dMax).ThenThrow();
+            });
+
+            int i2 = 3;
+            Assert.True(i2.If().IsWithin(1, 4).IsValid);
+
+        }
+
         public class SomeClassWithoutValidate
         {
 
@@ -667,6 +701,16 @@ namespace TypeLess.Tests
                 x.If().IsInvalid.ThenThrow();
             });
 
+        }
+
+        [Fact]
+        public void WhenInOneOfMultipleRangesThenReturnIsValid() {
+            double heading = 345;
+
+            var isTrue = heading.If()
+                .IsWithin(315, 360).Or(heading).IsWithin(0, 45).Or(heading).IsWithin(135, 225).IsValid;
+
+            Assert.True(isTrue);
         }
 
         public class SomeClass
