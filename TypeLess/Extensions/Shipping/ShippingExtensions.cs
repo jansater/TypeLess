@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TypeLess.DataTypes;
 
 namespace TypeLess.Extensions.Shipping
 {
@@ -14,12 +15,7 @@ namespace TypeLess.Extensions.Shipping
         {
             source.Extend(x =>
             {
-                if (!ImoValidator.IsValid(x))
-                {
-                    return String.Format(CultureInfo.InvariantCulture, "must be a valid IMO number");
-                }
-                
-                return null;
+                return AssertResult.New(!ImoValidator.IsValid(x), "<name> must be a valid IMO number");
             });
 
             return (IStringAssertion)source;

@@ -26,11 +26,14 @@ namespace TypeLess.Tests
         public void WhenNullThenThrow()
         {
 
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = null;
                 s.If("s").IsNull.ThenThrow();
+                
             });
+
+            Assert.True(res.Message.StartsWith("s is required"));
 
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
@@ -62,11 +65,13 @@ namespace TypeLess.Tests
         public void WhenNullThenThrowWithSpecificException()
         {
 
-            Xunit.Assert.Throws<ArgumentException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentException>(() =>
             {
                 string s = null;
                 s.If("s").IsNull.ThenThrow<ArgumentException>();
             });
+
+            Assert.True(res.Message.StartsWith("s is required"));
 
         }
 
@@ -95,11 +100,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenEmptyStringThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "";
-                s.If().IsEmpty.ThenThrow();
+                s.If("s").IsEmpty.ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be non empty"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -111,11 +118,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenIsTrueThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "";
-                s.If().IsTrue(x => true, "").ThenThrow();
+                s.If("s").IsTrue(x => true, "<name> must be false i guess").ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be false i guess"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -128,11 +137,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenIsFalseThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "";
-                s.If().IsFalse(x => false, "").ThenThrow();
+                s.If("s").IsFalse(x => false, "{0} must be true i guess").ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be true i guess"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -145,11 +156,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenIsEmptyThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 var l = new List<int>();
-                l.If().IsEmpty.ThenThrow();
+                l.If("s").IsEmpty.ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be non empty"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -161,11 +174,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenEnumerationIsEmptyThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 var l = new List<int>() as IEnumerable;
-                l.If().IsEmpty.ThenThrow();
+                l.If("s").IsEmpty.ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be non empty"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -178,11 +193,13 @@ namespace TypeLess.Tests
         public void WhenContainsLessThanThenThrow()
         {
 
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 var l = new List<int> { 1, 2 };
-                l.If().ContainsLessThan(3).ThenThrow();
+                l.If("s").ContainsLessThan(3).ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must contain more than 3 items"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -194,11 +211,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenContainsMoreThanThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 var l = new List<int> { 1, 2, 3, 4 };
-                l.If().ContainsMoreThan(3).ThenThrow();
+                l.If("s").ContainsMoreThan(3).ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must contain less than 3 items"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -210,11 +229,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenZeroThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int i = 0;
-                i.If().IsZero.ThenThrow();
+                i.If("s").IsZero.ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be non zero"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -239,11 +260,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenNotEqualToThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int i = 0;
-                i.If().IsNotEqualTo(1).ThenThrow();
+                i.If("s").IsNotEqualTo(1).ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be equal to 1"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -256,11 +279,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenEqualToThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int i = 1;
-                i.If().IsEqualTo(1).ThenThrow();
+                i.If("s").IsEqualTo(1).ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must not be equal to 1"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -273,11 +298,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenSmallerThanThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int i = 1;
-                i.If().IsSmallerThan(2).ThenThrow();
+                i.If("s").IsSmallerThan(2).ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be larger than 2"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -290,11 +317,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenLargerThanThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int i = 3;
-                i.If().IsLargerThan(2).ThenThrow();
+                i.If("s").IsLargerThan(2).ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be smaller than 2"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -307,11 +336,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenPositiveThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int i = 3;
-                i.If().IsPositive.ThenThrow();
+                i.If("s").IsPositive.ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be zero or negative"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -330,11 +361,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenNegativeThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int i = -1;
-                i.If().IsNegative.ThenThrow();
+                i.If("s").IsNegative.ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be zero or positive"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -353,11 +386,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenNullableThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int i = -1;
-                i.If().IsNegative.ThenThrow();
+                i.If("s").IsNegative.ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be zero or positive"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -376,11 +411,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenIsEmptyOrContainsWhitespaceThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "   ";
-                s.If().IsEmptyOrWhitespace.ThenThrow();
+                s.If("s").IsEmptyOrWhitespace.ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must not be empty"));
 
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
@@ -399,11 +436,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenIsInvalidEmailThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "asdad@";
-                s.If().IsNotValidEmail.ThenThrow();
+                s.If("s").IsNotValidEmail.ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be a valid email address"));
 
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
@@ -442,11 +481,14 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenIsShorterThanThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "123";
-                s.If().IsShorterThan(4).ThenThrow();
+                s.If("s").IsShorterThan(4).ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be longer than 3 characters"));
+
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -471,11 +513,14 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenIsLongerThanThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "123";
-                s.If().IsLongerThan(2).ThenThrow();
+                s.If("s").IsLongerThan(2).ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be shorter than 3 characters"));
+
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -500,11 +545,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenDoesNotContainNonAlphaCharsThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "asd123";
-                s.If().DoesNotContainAlphaChars.ThenThrow();
+                s.If("s").DoesNotContainAlphaChars.ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must contain alpha numeric characters"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -517,11 +564,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenDoesNotContainDigitThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "asd";
-                s.If().DoesNotContainDigit.ThenThrow();
+                s.If("s").DoesNotContainDigit.ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must contain at least 1 digit"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -534,11 +583,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenDoesNotContainTextThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "asd";
-                s.If().DoesNotContain("e").ThenThrow();
+                s.If("s").DoesNotContain("e").ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must contain text e"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -551,11 +602,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenDoesNotStartWithTextThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "asd";
-                s.If().DoesNotStartWith("sd").ThenThrow();
+                s.If("s").DoesNotStartWith("sd").ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must start with text sd"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -568,11 +621,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenDoesNotEndWithTextThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "asd";
-                s.If().DoesNotEndWith("as").ThenThrow();
+                s.If("s").DoesNotEndWith("as").ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must end with text as"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -585,11 +640,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenNotWithinThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int i = 5;
-                i.If().IsNotWithin(1, 4).ThenThrow();
+                i.If("s").IsNotWithin(1, 4).ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be within 1 and 4"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -617,11 +674,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenIsWithinThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int i = 3;
-                i.If().IsWithin(1, 4).ThenThrow();
+                i.If("s").IsWithin(1, 4).ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must not be within 1 and 4"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -644,7 +703,7 @@ namespace TypeLess.Tests
             });
 
             int i2 = 3;
-            Assert.True(i2.If().IsWithin(1, 4).IsValid);
+            Assert.True(i2.If().IsWithin(1, 4).True);
 
         }
 
@@ -662,8 +721,8 @@ namespace TypeLess.Tests
             public ObjectAssertion IsInvalid()
             {
                 return ObjectAssertion.New(
-                    Name.If().IsNull, 
-                    Number.If().IsEqualTo(4));
+                    Name.If("Name").IsNull, 
+                    Number.If("Number").IsEqualTo(4));
             }
         }
 
@@ -675,13 +734,29 @@ namespace TypeLess.Tests
 
             public SomeClassWithValidate()
             {
+                Name = "Some long string";
                 Prop = new SomeClassWithValidateB();
             }
 
             public ObjectAssertion IsInvalid()
             {
-                return ObjectAssertion.New(Prop.If().IsInvalid);
+                return ObjectAssertion.New(
+                    Name.If("Name").IsShorterThan(5),
+                    Number.If("Number").IsEqualTo(5)
+                    //Prop.If("Prop").IsInvalid
+                    );
             }
+        }
+
+        [Fact]
+        public void WhenCombiningAssertsErrorMessageIsCorrect() {
+
+            double d = 1;
+            double d2 = 10;
+
+            var errMsg = d.If("d").IsEqualTo(1).IsLargerThan(0).Combine(d2.If("d2").IsEqualTo(10)).ToString();
+            Assert.True(errMsg.StartsWith("d must not be equal to 1 and d must be smaller than 0. d2 must not be equal to 10"));
+
         }
 
         [Fact]
@@ -691,16 +766,20 @@ namespace TypeLess.Tests
             //Xunit.Assert.Throws<MissingMemberException>(() =>
             //{
             //    var x = new SomeClassWithoutValidate();
-
             //    x.If().IsInvalid.ThenThrow();
             //});
 
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 var x = new SomeClassWithValidate();
-                x.If().IsInvalid.ThenThrow();
+                x.If("s").IsInvalid.ThenThrow();
             });
 
+            /*
+             s must be null and Prop must be null and Name is required at IsInvalid, line number 724 in file Asserts.cs  at IsInvalid, line number 743 in file Asserts.cs  at WhenDTOIsInValidThenThrow, line number 761 in file Asserts.cs
+             */
+
+            Assert.True(res.Message.StartsWith("s must ..."));
         }
 
         [Fact]
@@ -708,9 +787,12 @@ namespace TypeLess.Tests
             double heading = 345;
 
             var isTrue = heading.If()
-                .IsWithin(315, 360).Or(heading).IsWithin(0, 45).Or(heading).IsWithin(135, 225).IsValid;
+                .IsWithin(315, 360) //true
+                .Or(heading).IsWithin(0, 45) //another assertion that is false, returns the first one
+                .Or(heading).IsWithin(135, 225);
 
-            Assert.True(isTrue);
+            Assert.True(isTrue.True);
+
         }
 
         public class SomeClass
@@ -725,7 +807,7 @@ namespace TypeLess.Tests
             SomeClass s2 = null;
             string d = "";
 
-            var errMsg = s1.If("s1")
+            var errMsg = s1.If("s1") 
                 .Or(s2, "s2")
                 .Or(d, "s3").IsNull.ToString();
 
@@ -741,8 +823,9 @@ namespace TypeLess.Tests
             double d2 = 3;
             double d3 = 4;
 
-            var errMsg = d1.If("1").Or(d2, "2").Or(d3, "3").IsSmallerThan(5).IsLargerThan(0).ToString();
-            Xunit.Assert.True(errMsg.Contains("1") && errMsg.Contains("2") && errMsg.Contains("3"));
+            var errMsg = d1.If("d1").Or(d2, "d2").Or(d3, "d3").IsSmallerThan(5).IsLargerThan(0).ToString();
+
+            Xunit.Assert.True(errMsg.StartsWith("d1 must be larger than 5. d2 must be larger than 5. d3 must be larger than 5 and d1 must be smaller than 0. d2 must be smaller than 0. d3 must be smaller than 0"));
 
         }
 
@@ -750,10 +833,12 @@ namespace TypeLess.Tests
         public void WhenBoolIsFalseThenThrow()
         {
 
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 (1 == 0).If("expr").IsFalse.ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("expr must be true"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -766,10 +851,12 @@ namespace TypeLess.Tests
         public void WhenBoolIsTrueThenThrow()
         {
 
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 (1 == 1).If("expr").IsTrue.ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("expr must be false"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -781,14 +868,15 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenOnSameDayThenThrow()
         {
-
             DateTime d = DateTime.Now;
             DateTime d2 = DateTime.Now.Date.AddHours(2);
 
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
-                d.If().SameDayAs(d2).ThenThrow();
+                d.If("s").SameDayAs(d2).ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must not be on same day as " + d2.ToString("yyyy-MM-dd")));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -803,10 +891,12 @@ namespace TypeLess.Tests
             DateTime d = DateTime.Now;
             DateTime d2 = DateTime.Now.Date.AddHours(2).AddDays(1);
 
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
-                d.If().NotSameDayAs(d2).ThenThrow();
+                d.If("s").NotSameDayAs(d2).ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be on same day as " + d2.ToString("yyyy-MM-dd")));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -817,11 +907,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenDoesNotContainKeyThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 Dictionary<string, int> d = new Dictionary<string, int>();
-                d.If().DoesNotContainKey("some key").ThenThrow();
+                d.If("s").DoesNotContainKey("some key").ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must contain key some key"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -835,12 +927,14 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenContainKeyThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 Dictionary<string, int> d = new Dictionary<string, int>();
                 d.Add("some key", 1);
-                d.If().ContainsKey("some key").ThenThrow();
+                d.If("s").ContainsKey("some key").ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must not contain key some key"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -853,11 +947,13 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenIsNotValidPersonalNumberThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = "123987";
-                s.If().IsNotValidPersonalNumber().ThenThrow();
+                s.If("s").IsNotValidPersonalNumber().ThenThrow();
             });
+
+            Assert.True(res.Message.StartsWith("s must be a valid personal number"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {

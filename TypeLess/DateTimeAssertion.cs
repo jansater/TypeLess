@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
+using TypeLess.DataTypes;
 
 namespace TypeLess
 {
@@ -71,11 +72,7 @@ namespace TypeLess
             Extend(x =>
             {
                 dynamic d = Item;
-                if (d < min || d > max)
-                {
-                    return String.Format(CultureInfo.InvariantCulture, "must be within {0} and {1}", min, max);
-                }
-                return null;
+                return AssertResult.New(d < min || d > max, "<name> must be within {0} and {1}", min, max);
             });
             return this;
         }
@@ -85,30 +82,26 @@ namespace TypeLess
             Extend(x =>
             {
                 dynamic d = x;
-                if (d >= min && d <= max)
-                {
-                    return String.Format(CultureInfo.InvariantCulture, "must not be within {0} and {1}", min, max);
-                }
-                return null;
+                return AssertResult.New(d >= min && d <= max, "<name> must not be within {0} and {1}", min, max);
             });
             return this;
         }
 
         public IDateTimeAssertion IsBefore(DateTime date)
         {
-            Extend(x => x.CompareTo(date) <= 0 ? "must be larger than " + date : null);
+            Extend(x => AssertResult.New(x.CompareTo(date) <= 0, "<name> must be larger than " + date));
             return this;
         }
 
         public IDateTimeAssertion IsAfter(DateTime date)
         {
-            Extend(x => x.CompareTo(date) >= 0 ? "must be smaller than " + date : null);
+            Extend(x => AssertResult.New(x.CompareTo(date) >= 0, "<name> must be smaller than " + date));
             return this;
         }
 
         public IDateTimeAssertionU Or(DateTime obj, string withName = null)
         {
-            Add(new DateTimeAssertion(withName, obj, null, null, null));
+            AddWithOr(new DateTimeAssertion(withName, obj, null, null, null));
             return this;
         }
 
@@ -134,7 +127,7 @@ namespace TypeLess
 
         public IDateTimeAssertion SameDayAs(DateTime date)
         {
-            Extend(x => (x.Date - date.Date).TotalDays == 0.0 ? String.Format(CultureInfo.InvariantCulture, "must not be on same day as {0}", date.ToString("yyyy-MM-dd")) : null);
+            Extend(x => AssertResult.New((x.Date - date.Date).TotalDays == 0.0, "<name> must not be on same day as {0}", date.ToString("yyyy-MM-dd")));
             return this;
         }
 
@@ -145,11 +138,7 @@ namespace TypeLess
                 var sameYear = x.Date.Year == date.Year;
                 var sameMonth = x.Date.Month == date.Month;
 
-                if (sameYear && sameMonth)
-                {
-                    return String.Format(CultureInfo.InvariantCulture, "must not be on same month as {0}", date.ToString("yyyy-MM"));
-                }
-                return null;
+                return AssertResult.New(sameYear && sameMonth, "<name> must not be on same month as {0}", date.ToString("yyyy-MM"));
             });
             return this;
         }
@@ -159,12 +148,7 @@ namespace TypeLess
             Extend(x =>
             {
                 var sameYear = x.Date.Year == date.Year;
-
-                if (sameYear)
-                {
-                    return String.Format(CultureInfo.InvariantCulture, "must not be on same year as {0}", date.ToString("yyyy"));
-                }
-                return null;
+                return AssertResult.New(sameYear, "<name> must not be on same year as {0}", date.ToString("yyyy"));
             });
             return this;
         }
@@ -174,12 +158,7 @@ namespace TypeLess
             Extend(x =>
             {
                 var diff = (x - date).TotalHours;
-
-                if (diff >= 0 && diff <= 1.0)
-                {
-                    return String.Format(CultureInfo.InvariantCulture, "must not be on same hour as {0}", date.ToString("yyyy-MM-dd HH"));
-                }
-                return null;
+                return AssertResult.New(diff >= 0 && diff <= 1.0, "<name> must not be on same hour as {0}", date.ToString("yyyy-MM-dd HH"));
             });
             return this;
         }
@@ -189,12 +168,7 @@ namespace TypeLess
             Extend(x =>
             {
                 var diff = (Item - date).TotalMinutes;
-
-                if (diff >= 0 && diff <= 1.0)
-                {
-                    return String.Format(CultureInfo.InvariantCulture, "must not be on same minute as {0}", date.ToString("yyyy-MM-dd HH:mm"));
-                }
-                return null;
+                return AssertResult.New(diff >= 0 && diff <= 1.0, "<name> must not be on same minute as {0}", date.ToString("yyyy-MM-dd HH:mm"));
             });
             return this;
         }
@@ -205,18 +179,15 @@ namespace TypeLess
             {
                 var diff = (x - date).TotalSeconds;
 
-                if (diff >= 0 && diff <= 1.0)
-                {
-                    return String.Format(CultureInfo.InvariantCulture, "must not be on same second as {0}", date.ToString("yyyy-MM-dd HH:mm:ss"));
-                }
-                return null;
+                return AssertResult.New(diff >= 0 && diff <= 1.0, "<name> must not be on same second as {0}", date.ToString("yyyy-MM-dd HH:mm:ss"));
+
             });
             return this;
         }
 
         public IDateTimeAssertion NotSameDayAs(DateTime date)
         {
-            Extend(x => (x.Date - date.Date).TotalDays != 0.0 ? String.Format(CultureInfo.InvariantCulture, "must be on same day as {0}", date.ToString("yyyy-MM-dd")) : null);
+            Extend(x => AssertResult.New((x.Date - date.Date).TotalDays != 0.0, "<name> must be on same day as {0}", date.ToString("yyyy-MM-dd")));
             return this;
         }
 
@@ -227,11 +198,7 @@ namespace TypeLess
                 var sameYear = x.Date.Year == date.Year;
                 var sameMonth = x.Date.Month == date.Month;
 
-                if (!(sameYear && sameMonth))
-                {
-                    return String.Format(CultureInfo.InvariantCulture, "must be on same month as {0}", date.ToString("yyyy-MM"));
-                }
-                return null;
+                return AssertResult.New(!(sameYear && sameMonth), "<name> must be on same month as {0}", date.ToString("yyyy-MM"));
             });
             return this;
         }
@@ -242,11 +209,7 @@ namespace TypeLess
             {
                 var sameYear = x.Date.Year == date.Year;
 
-                if (!sameYear)
-                {
-                    return String.Format(CultureInfo.InvariantCulture, "must be on same year as {0}", date.ToString("yyyy"));
-                }
-                return null;
+                return AssertResult.New(!sameYear, "<name> must be on same year as {0}", date.ToString("yyyy"));
             });
             return this;
         }
@@ -256,12 +219,7 @@ namespace TypeLess
             Extend(x =>
             {
                 var diff = (x - date).TotalHours;
-
-                if (diff < 0 || diff > 1.0)
-                {
-                    return String.Format(CultureInfo.InvariantCulture, "must be on same hour as {0}", date.ToString("yyyy-MM-dd HH"));
-                }
-                return null;
+                return AssertResult.New(diff < 0 || diff > 1.0, "<name> must be on same hour as {0}", date.ToString("yyyy-MM-dd HH"));
             });
             return this;
         }
@@ -271,12 +229,7 @@ namespace TypeLess
             Extend(x =>
             {
                 var diff = (x - date).TotalMinutes;
-
-                if (diff < 0 || diff > 1.0)
-                {
-                    return String.Format(CultureInfo.InvariantCulture, "must be on same minute as {0}", date.ToString("yyyy-MM-dd HH:mm"));
-                }
-                return null;
+                return AssertResult.New(diff < 0 || diff > 1.0, "<name> must be on same minute as {0}", date.ToString("yyyy-MM-dd HH:mm"));
             });
             return this;
         }
@@ -286,12 +239,7 @@ namespace TypeLess
             Extend(x =>
             {
                 var diff = (x - date).TotalSeconds;
-
-                if (diff < 0 || diff > 1.0)
-                {
-                    return String.Format(CultureInfo.InvariantCulture, "must be on same second as {0}", date.ToString("yyyy-MM-dd HH:mm:ss"));
-                }
-                return null;
+                return AssertResult.New(diff < 0 || diff > 1.0, "<name> must be on same second as {0}", date.ToString("yyyy-MM-dd HH:mm:ss"));
             });
             return this;
         }
@@ -299,13 +247,13 @@ namespace TypeLess
 
         public IDateTimeAssertion SameWeekDayAs(DateTime date)
         {
-            Extend(x => date.DayOfWeek == date.DayOfWeek ? String.Format(CultureInfo.InvariantCulture, "must not be on same week day as {0}", date.DayOfWeek.ToString()) : null);
+            Extend(x => AssertResult.New(date.DayOfWeek == date.DayOfWeek, "<name> must not be on same week day as {0}", date.DayOfWeek.ToString()));
             return this;
         }
 
         public IDateTimeAssertion NotSameWeekDayAs(DateTime date)
         {
-            Extend(x => date.DayOfWeek != date.DayOfWeek ? String.Format(CultureInfo.InvariantCulture, "must be on same week day as {0}", date.DayOfWeek.ToString()) : null);
+            Extend(x => AssertResult.New(date.DayOfWeek != date.DayOfWeek, "<name> must be on same week day as {0}", date.DayOfWeek.ToString()));
             return this;
         }
     }

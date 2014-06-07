@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
+using TypeLess.DataTypes;
 
 namespace TypeLess
 {
@@ -27,12 +28,7 @@ namespace TypeLess
             source.Extend(x =>
             {
                 var c = GetCount(x);
-
-                if (c == 0)
-                {
-                    return "must be non empty";
-                }
-                return null;
+                return AssertResult.New(c == 0, "<name> must be non empty");
             });
             return source;
         }
@@ -61,12 +57,7 @@ namespace TypeLess
             source.Extend(x =>
             {
                 var count = GetCount(x);
-
-                if (count < nElements)
-                {
-                    return "must contain more than " + nElements + " items";
-                }
-                return null;
+                return AssertResult.New(count < nElements, "<name> must contain more than " + nElements + " items");
             });
             return source;
         }
@@ -76,12 +67,7 @@ namespace TypeLess
             source.Extend(x =>
             {
                 var count = GetCount(x);
-
-                if (count > nElements)
-                {
-                    return "must contain less than " + nElements + " items";
-                }
-                return null;
+                return AssertResult.New(count > nElements, "<name> must contain less than " + nElements + " items");
             });
             return source;
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
+using TypeLess.DataTypes;
 
 namespace TypeLess
 {
@@ -39,7 +40,7 @@ namespace TypeLess
 
         public ITimeSpanAssertionU Or(TimeSpan obj, string withName = null)
         {
-            Add(new TimeSpanAssertion(withName, obj, null, null, null));
+            AddWithOr(new TimeSpanAssertion(withName, obj, null, null, null));
             return this;
         }
 
@@ -73,14 +74,13 @@ namespace TypeLess
 
         public ITimeSpanAssertion IsShorterThan(TimeSpan span)
         {
-            Extend(x => x.Ticks < span.Ticks ? String.Format(CultureInfo.InvariantCulture, "must be longer than {0:c}", span) : null);
-
+            Extend(x => AssertResult.New(x.Ticks < span.Ticks, "<name> must be longer than {0:c}", span));
             return this;
         }
 
         public ITimeSpanAssertion IsLongerThan(TimeSpan span)
         {
-            Extend(x => x.Ticks > span.Ticks ? String.Format(CultureInfo.InvariantCulture, "must be shorter than {0:c}", span) : null);
+            Extend(x => AssertResult.New(x.Ticks > span.Ticks, "<name> must be shorter than {0:c}", span));
             return this;
         }
 

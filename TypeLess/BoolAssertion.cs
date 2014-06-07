@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using TypeLess.DataTypes;
 
 namespace TypeLess
 {
@@ -45,7 +46,7 @@ namespace TypeLess
         public new IBoolAssertion IsTrue {
             get {
 
-                Extend(x => x ? "must be false" : null);
+                Extend(x => AssertResult.New(x, "<name> must be false"));
                 return this;
             }
         }
@@ -54,14 +55,14 @@ namespace TypeLess
         {
             get
             {
-                Extend(x => !x ? "must be true" : null);
+                Extend(x => AssertResult.New(!x, "<name> must be true"));
                 return this;
             }
         }
 
         public IBoolAssertionU Or(bool obj, string withName = null)
         {
-            Add(new BoolAssertion(withName, obj, null, null, null));
+            AddWithOr(new BoolAssertion(withName, obj, null, null, null));
             return this;
         }
 

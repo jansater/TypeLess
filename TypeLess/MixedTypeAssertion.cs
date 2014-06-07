@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
+using TypeLess.DataTypes;
 
 namespace TypeLess
 {
@@ -64,9 +65,9 @@ namespace TypeLess
                     if (x == null)
                     {
                         var temp = StopIfNotValid;
-                        return "is required";
+                        return AssertResult.New(true, "<name> is required");
                     }
-                    return null;
+                    return AssertResult.New(false);
                 });
                 return this;
             }
@@ -82,9 +83,9 @@ namespace TypeLess
                     if (x != null)
                     {
                         var temp = StopIfNotValid;
-                        return "must be null";
+                        return AssertResult.New(true, "<name> must be null");
                     }
-                    return null;
+                    return AssertResult.New(false);
                 });
                 return this;
             }
@@ -139,19 +140,10 @@ namespace TypeLess
             {
                 if (x == null)
                 {
-                    if (comparedTo != null)
-                    {
-                        return "must be equal to " + comparedTo;
-
-                    }
-                    return null;
+                    return AssertResult.New(comparedTo != null, "<name> must be equal to " + comparedTo);
                 }
 
-                if (!x.Equals(comparedTo))
-                {
-                    return string.Format(CultureInfo.InvariantCulture, "must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
-                }
-                return null;
+                return AssertResult.New(!x.Equals(comparedTo), "<name> must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
             });
             return this;
         }
@@ -162,18 +154,10 @@ namespace TypeLess
             {
                 if (x == null)
                 {
-                    if (comparedTo == null)
-                    {
-                        return "must not be equal to " + comparedTo;
-                    }
-                    return null;
+                    return AssertResult.New(comparedTo == null, "<name> must not be equal to " + comparedTo);
                 }
 
-                if (x.Equals(comparedTo))
-                {
-                    return string.Format(CultureInfo.InvariantCulture, "must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
-                }
-                return null;
+                return AssertResult.New(x.Equals(comparedTo), "<name> must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
             });
             return this;
         }

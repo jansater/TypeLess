@@ -12,12 +12,16 @@ namespace TypeLess
 
         public ObjectAssertion(params IAssertion[] assertions)
         {
-            assertions.If("assertions").IsNull.ThenThrow();
+            if (assertions == null)
+            {
+                throw new ArgumentNullException("assertions");
+            }
             
             this.Assertions = assertions;
         }
 
         public static ObjectAssertion New(params IAssertion[] assertions) {
+
             return new ObjectAssertion(assertions);
         } 
     }

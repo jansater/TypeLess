@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using TypeLess.DataTypes;
 
 namespace TypeLess
 {
@@ -57,12 +58,13 @@ namespace TypeLess
             get {
                 Extend(x =>
                 {
+                    
                     if (x == null)
                     {
                         var temp = StopIfNotValid;
-                        return "is required";
+                        return AssertResult.New(true, "<name> is required");
                     }
-                    return null;
+                    return AssertResult.False;
                 });
                 return this;
             }
@@ -78,9 +80,9 @@ namespace TypeLess
                     if (x != null)
                     {
                         var temp = StopIfNotValid;
-                        return "must be null";
+                        return AssertResult.New(true, "<name> must be null");
                     }
-                    return null;
+                    return AssertResult.False;
                 });
                 return this;
             }
@@ -89,7 +91,7 @@ namespace TypeLess
 
         public INullableAssertionU<T> Or(T? obj, string withName = null)
         {
-            Add(new NullableAssertion<T>(withName, obj, null, null, null));
+            AddWithOr(new NullableAssertion<T>(withName, obj, null, null, null));
             return this;
         }
 

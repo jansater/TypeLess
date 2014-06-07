@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using TypeLess.DataTypes;
 
 namespace TypeLess
 {
@@ -62,14 +63,14 @@ namespace TypeLess
         {
             get
             {
-                Extend(x => x.Count == 0 ? "must be non empty" : null);
+                Extend(x => AssertResult.New(x.Count == 0, "<name> must be non empty"));
                 return this;
             }
         }
 
         public new IDictionaryAssertionU<T1, T2> Or(IDictionary<T1, T2> obj, string withName = null)
         {
-            Add(new DictionaryAssertion<T1, T2>(withName, obj, null, null, null));
+            AddWithOr(new DictionaryAssertion<T1, T2>(withName, obj, null, null, null));
             return this;
         }
 
@@ -86,13 +87,7 @@ namespace TypeLess
         public IDictionaryAssertion<T1, T2> ContainsKey(T1 key)
         {
             Extend(x => {
-                if (x.ContainsKey(key))
-                {
-                    return String.Format("must not contain key {0}", key);
-                }
-                else {
-                    return null;
-                }
+                return AssertResult.New(x.ContainsKey(key), "<name> must not contain key {0}", key);
             });
 
             return this;
@@ -102,14 +97,7 @@ namespace TypeLess
         {
             Extend(x =>
             {
-                if (!x.ContainsKey(key))
-                {
-                    return String.Format("must not contain key {0}", key);
-                }
-                else
-                {
-                    return null;
-                }
+                return AssertResult.New(!x.ContainsKey(key), "<name> must contain key {0}", key);
             });
 
             return this;

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
+using TypeLess.DataTypes;
 
 namespace TypeLess
 {
@@ -33,7 +34,18 @@ namespace TypeLess
 
     public interface IAssertionU : IFluentInterface
     {
-        bool IsValid { get; }
+        /// <summary>
+        /// Is the current condition true
+        /// </summary>
+        bool True { get; }
+        /// <summary>
+        /// Is the current condition false
+        /// </summary>
+        bool False { get; }
+
+        /// <summary>
+        /// Remove any error messages in this assertion
+        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         void ClearErrorMsg();
     }
@@ -41,21 +53,33 @@ namespace TypeLess
     public interface IAssertionU<T> : IAssertionU
     {
         IMixedTypeAssertionU<T, S> Or<S>(S obj, string withName = null) where S : class;
+
+        /// <summary>
+        /// Checks wether the given statement is true
+        /// </summary>
+        /// <param name="assertFunc"></param>
+        /// <param name="msgIfFalse">Message to return. Use <name> to include the parameter name in the string.</param>
+        /// <returns></returns>
         IAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse);
+        /// <summary>
+        /// Checks wether the given statement is false
+        /// </summary>
+        /// <param name="assertFunc"></param>
+        /// <param name="msgIfFalse">Message to return. Use <name> to include the parameter name in the string.</param>
+        /// <returns></returns>
         IAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue);
         IAssertion<T> IsNotEqualTo(T comparedTo);
         IAssertion<T> IsEqualTo(T comparedTo);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        void Extend(Func<T, string> assertFunc);
+        void Extend(Func<T, AssertResult> assertFunc);
     }
 
     public interface IAssertion : IAssertionU
     {
         int ErrorCount { get; }
         bool IgnoreFurtherChecks { get; }
-        //IAssertionOW ThenThrow(string errorMsg = null);
-        //IAssertionOW ThenThrow<E>(string errorMsg = null) where E : Exception;
+        string ToString(bool skipTrace);
         string ToString();
         IAssertion Combine(IAssertion otherAssertion);
     }
@@ -70,7 +94,17 @@ namespace TypeLess
     {
         void Then(Action<T> action);
         S ThenReturn<S>(Func<T, S> func);
+        /// <summary>
+        /// Throws an argument null exception.
+        /// </summary>
+        /// <param name="errorMsg">Override the system generated message with your own. Use <name> to include the paramater name in the message</param>
+        /// <returns></returns>
         IAssertionOW<T> ThenThrow(string errorMsg = null);
+        /// <summary>
+        /// Throws an exception of type T.
+        /// </summary>
+        /// <param name="errorMsg">Override the system generated message with your own. Use <name> to include the paramater name in the message</param>
+        /// <returns></returns>
         IAssertionOW<T> ThenThrow<E>(string errorMsg = null) where E : Exception;
 
     }
@@ -118,22 +152,22 @@ namespace TypeLess
             mixed._children.Add(this);
             return mixed;
         }
-        
-        internal void Add(Assertion<T> assertion)
+
+        private bool _orWasCalled = false;
+
+        /// <summary>
+        /// Adds a child assertion as or
+        /// </summary>
+        /// <param name="assertion"></param>
+        internal void AddWithOr(Assertion<T> assertion)
         {
-            assertion.If("assertion").IsNull.ThenThrow();
+            if (assertion == null) {
+                throw new ArgumentNullException("assertion is required");
+            }
+
             _children.Add(assertion);
+            _orWasCalled = true;
         }
-
-        //internal Assertion<object> Add(object obj, string name)
-        //{
-        //    //todo re add this
-
-        //    var assert = AssertExtensions.CreateAssert(obj, name);
-        //    var tObj = this.Cast<object>();
-        //    assert._childAssertions.Add(tObj);
-        //    return assert;
-        //}
 
         public Assertion<T> StopIfNotValid
         {
@@ -145,73 +179,27 @@ namespace TypeLess
 
         }
 
-        //internal Assertion<S> Cast<S>()
-        //{
-        //    if (this.Item == null)
-        //    {
-        //        return new Assertion<S>(Name, default(S), null, null, null)
-        //        {
-        //            _sb = this._sb,
-        //            _caller = this._caller,
-        //            _file = this._file,
-        //            _childAssertions = this._childAssertions,
-        //            _errorCount = this._errorCount,
-        //            _ignoreFurtherChecks = this._ignoreFurtherChecks,
-        //            _isValid = this._isValid,
-        //            _lineNr = this._lineNr,
-        //        };
-        //    }
-
-        //    var item = this.Item as object;
-
-        //    if (!(item is S))
-        //    {
-        //        throw new InvalidCastException("You can't mix types " + typeof(S).Name + " and " + typeof(T));
-        //    }
-        //    var s = (S)item;
-
-        //    return new Assertion<S>(Name, s, null, null, null)
-        //    {
-        //        _sb = this._sb,
-        //        _caller = this._caller,
-        //        _file = this._file,
-        //        _childAssertions = this._childAssertions,
-        //        _errorCount = this._errorCount,
-        //        _ignoreFurtherChecks = this._ignoreFurtherChecks,
-        //        _isValid = this._isValid,
-        //        _lineNr = this._lineNr,
-        //    };
-        //}
-
         public void ClearErrorMsg()
         {
             _sb.Clear();
         }
 
-        //internal List<Assertion<object>> ChildAssertions
-        //{
-        //    get
-        //    {
-        //        return _childAssertions;
-        //    }
-        //}
-
         public IAssertion Combine(IAssertion otherAssertion)
         {
 
-            if (otherAssertion == null || otherAssertion.IsValid)
+            if (otherAssertion == null || otherAssertion.ErrorCount == 0)
             {
                 return this;
             }
 
-            if (_isValid)
+            if (_errorCount <= 0)
             {
-                _isValid &= otherAssertion.IsValid;
+                _isValid &= otherAssertion.True;
                 _sb.Append(otherAssertion.ToString());
             }
             else
             {
-                _isValid &= otherAssertion.IsValid;
+                _isValid &= otherAssertion.True;
                 _sb.Append(". ").AppendLine(otherAssertion.ToString());
             }
 
@@ -220,18 +208,19 @@ namespace TypeLess
 
         public IAssertionOW<T> ThenThrow<E>(string errorMsg = null) where E : Exception
         {
-            if (IsValid)
+            if (!True)
             {
                 return this;
             }
 
             if (Debugger.IsAttached)
             {
-                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { AppendTrace(_sb.ToString()) });
+                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { AppendTrace(errorMsg == null ? String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name) : String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)) });
+
             }
             else
             {
-                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { _sb.ToString() });
+                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name) : String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name) });
             }
 
         }
@@ -242,40 +231,50 @@ namespace TypeLess
         /// <exception cref="System.ArgumentNullException"></exception>
         public IAssertionOW<T> ThenThrow(string errorMsg = null)
         {
-            if (IsValid)
+            if (!True)
             {
                 return this;
             }
 
             if (Debugger.IsAttached && _errorCount != 0)
             {
-                throw new ArgumentNullException("", AppendTrace(errorMsg == null ? _sb.ToString() : errorMsg));
+                throw new ArgumentNullException("", AppendTrace(errorMsg == null ?
+                    String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name) : 
+                    String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)));
             }
             else
             {
-                throw new ArgumentNullException("", errorMsg == null ? _sb.ToString() : errorMsg);
+                throw new ArgumentNullException("", errorMsg == null ?
+                    String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name) : 
+                    String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name));
             }
         }
 
         public override string ToString()
         {
-            if (IsValid)
+            return this.ToString(skipTrace: false);
+        }
+
+        public string ToString(bool skipTrace)
+        {
+            if (_errorCount <= 0)
             {
-                return Name + " is valid";
+                return String.Empty;
             }
 
-            if (Debugger.IsAttached && _errorCount != 0)
+            if (Debugger.IsAttached && _errorCount != 0 && !skipTrace)
             {
-                return AppendTrace(_sb.ToString());
+                return AppendTrace(String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name));
             }
             else
             {
-                return _sb.ToString();
+                return String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name);
             }
         }
 
         private bool _isValid = true;
-        public bool IsValid { get { return _isValid; } }
+        public bool True { get { return _isValid; } }
+        public bool False { get { return !_isValid; } }
 
         private string AppendTrace(string msg)
         {
@@ -319,29 +318,17 @@ namespace TypeLess
 
         internal void Append(string s)
         {
-            if (_errorCount == 0)
-            {
-                _sb.Append(Name);
-            }
-
             _errorCount++;
 
-            if (_isValid)
+            if (_errorCount <= 1)
             {
-                _sb.Append(" ").Append(s);
-            }
-            else if (_children.Count > 0)
-            {
-                _sb.AppendFormat(CultureInfo.InvariantCulture, " and {0} ", Name).Append(s);
+                _sb.Append(s);
             }
             else
             {
                 _sb.Append(" and ").Append(s);
             }
-            _isValid = false;
         }
-
-
 
         public IAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse)
         {
@@ -367,7 +354,7 @@ namespace TypeLess
         {
             action.If().IsNull.ThenThrow();
 
-            if (IsValid)
+            if (!True)
             {
                 return;
             }
@@ -376,7 +363,7 @@ namespace TypeLess
 
         public S ThenReturn<S>(Func<T, S> func)
         {
-            if (IsValid)
+            if (!True)
             {
                 return default(S);
             }
@@ -385,7 +372,7 @@ namespace TypeLess
         }
 
 
-        public void Extend(Func<T, string> assertFunc) //Func<IAssertionU, IAssertion> selfFunc
+        public void Extend(Func<T, AssertResult> assertFunc) //Func<IAssertionU, IAssertion> selfFunc
         {
             if (IgnoreFurtherChecks)
             {
@@ -394,9 +381,19 @@ namespace TypeLess
 
             var s = assertFunc(Item);
 
-            if (s != null)
+            if (s != null && s.Message != null && s.IsValid)
             {
-                Append(s);
+                Append(s.Message);
+            }
+            else if (s != null && !s.IsValid) {
+                if (_orWasCalled)
+                {
+                    _isValid |= false;
+                }
+                else {
+                    _isValid = false;
+                }
+                _orWasCalled = false;
             }
 
             foreach (var child in _children)
@@ -404,12 +401,16 @@ namespace TypeLess
                 if (child is Assertion<T>)
                 {
                     var childAssertion = (Assertion<T>)child;
-                    string res = assertFunc(childAssertion.Item);
+                    var res = assertFunc(childAssertion.Item);
 
-                    if (res != null)
+                    if (res != null && res.Message != null && res.IsValid)
                     {
-                        _isValid = false;
-                        _sb.Append(". ").Append(childAssertion.Name).Append(" ").AppendLine(res);
+                        _sb.Append(". ").Append(String.Format(CultureInfo.InvariantCulture, res.Message.Replace("<name>", "{0}"), childAssertion.Name));
+                    }
+                    else if (res != null && !res.IsValid)
+                    {
+                        //children are always evaluated as or
+                        _isValid |= false;
                     }
                 }
             }

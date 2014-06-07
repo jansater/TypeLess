@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using TypeLess.DataTypes;
 
 namespace TypeLess
 {
@@ -58,7 +59,7 @@ namespace TypeLess
 
         public new IStringAssertionU Or(string obj, string withName = null)
         {
-            Add(new StringAssertion(withName, obj, null, null, null));
+            AddWithOr(new StringAssertion(withName, obj, null, null, null));
             return this;
         }
 
@@ -169,12 +170,7 @@ namespace TypeLess
             Extend(x =>
             {
                 _previousMatch = Regex.Match(x, regex, options);
-
-                if (_previousMatch.Success)
-                {
-                    return String.Format(CultureInfo.InvariantCulture, "must not match regular expression {0}", regex);
-                }
-                return null;
+                return AssertResult.New(_previousMatch.Success, "<name> must not match pattern {0}", regex);
             });
 
             return this;
@@ -185,11 +181,7 @@ namespace TypeLess
             Extend(x =>
             {
                 _previousMatch = Regex.Match(x, regex, options);
-                if (!_previousMatch.Success)
-                {
-                    return String.Format(CultureInfo.InvariantCulture, "must match regular expression {0}", regex);
-                }
-                return null;
+                return AssertResult.New(!_previousMatch.Success, "<name> must match pattern {0}");
             });
 
             return this;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
+using TypeLess.DataTypes;
 
 namespace TypeLess
 {
@@ -50,7 +51,7 @@ namespace TypeLess
 
         public IClassAssertion<T> Or(T obj, string withName = null) {
             var ca = new ClassAssertion<T>(withName, obj, null, null, null);
-            Add(ca);
+            AddWithOr(ca);
             return this;
         }
 
@@ -69,9 +70,9 @@ namespace TypeLess
                     if (x == null)
                     {
                         var temp = StopIfNotValid;
-                        return "is required";
+                        return AssertResult.New(true, "<name> is required");
                     }
-                    return null;
+                    return AssertResult.New(false);
                 });
                 return this;
             }
@@ -87,9 +88,9 @@ namespace TypeLess
                     if (x != null)
                     {
                         var temp = StopIfNotValid;
-                        return "must be null";
+                        return AssertResult.New(true, "<name> must be null");
                     }
-                    return null;
+                    return AssertResult.New(false);
                 });
                 return this;
             }
@@ -109,10 +110,10 @@ namespace TypeLess
             get {
                 Extend(x =>
                 {
-                    var temp = this.IsNull;
-
                     if (x != null)
                     {
+                        StringBuilder sb = new StringBuilder();
+                        int errCount = 0;
                         dynamic d = x;
                         try
                         {
@@ -122,7 +123,10 @@ namespace TypeLess
                             {
                                 foreach (var item in classAssertions.Assertions)
                                 {
-                                    Combine(item);
+                                    var s = item.ToString();
+
+                                    errCount += item.ErrorCount;
+                                    sb.Append(s);
                                 }
                             }
                         }
@@ -130,15 +134,18 @@ namespace TypeLess
                         {
                             throw new System.MissingMemberException("You must define method public ObjectAssertion IsInvalid() {} in class " + typeof(T).Name);
                         }
+
+                        return AssertResult.New(errCount > 0, sb.ToString());
                     }
-                    return null;
+                    else {
+                        return AssertResult.New(x.If().IsNull.True, Name + " must not be null");
+                    }
+                    
                 });
                 return this;
             }
 
         }
-
-        
 
         public new IClassAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse)
         {
@@ -167,19 +174,10 @@ namespace TypeLess
             {
                 if (x == null)
                 {
-                    if (comparedTo != null)
-                    {
-                        return "must be equal to " + comparedTo;
-
-                    }
-                    return null;
+                    return AssertResult.New(comparedTo != null, "<name> must be equal to " + comparedTo);
                 }
 
-                if (!x.Equals(comparedTo))
-                {
-                    return string.Format(CultureInfo.InvariantCulture, "must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
-                }
-                return null;
+                return AssertResult.New(!x.Equals(comparedTo), "<name> must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
             });
             return this;
         }
@@ -190,18 +188,10 @@ namespace TypeLess
             {
                 if (x == null)
                 {
-                    if (comparedTo == null)
-                    {
-                        return "must not be equal to " + comparedTo;
-                    }
-                    return null;
+                    return AssertResult.New(comparedTo == null, "<name> must not be equal to " + comparedTo);
                 }
 
-                if (x.Equals(comparedTo))
-                {
-                    return string.Format(CultureInfo.InvariantCulture, "must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
-                }
-                return null;
+                return AssertResult.New(x.Equals(comparedTo), "<name> must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
             });
             return this;
         }

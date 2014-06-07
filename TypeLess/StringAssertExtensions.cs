@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
+using TypeLess.DataTypes;
 
 namespace TypeLess
 {
@@ -25,13 +26,13 @@ namespace TypeLess
 
         internal static StringAssertion IsEmpty(this StringAssertion source)
         {
-            source.Extend(x => x.Length <= 0 ? "must be non empty" : null);
+            source.Extend(x => AssertResult.New(x.Length <= 0, "<name> must be non empty"));
             return source;
         }
 
         internal static StringAssertion IsEmptyOrWhitespace(this StringAssertion source)
         {
-            source.Extend(x => string.IsNullOrWhiteSpace(x) ? "must not be empty" : null);
+            source.Extend(x => AssertResult.New(string.IsNullOrWhiteSpace(x), "<name> must not be empty"));
             return source;
         }
 
@@ -40,11 +41,8 @@ namespace TypeLess
             source.Extend(x =>
             {
                 bool isEmail = Regex.IsMatch(x, @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z");
-                if (string.IsNullOrWhiteSpace(x) || !isEmail)
-                {
-                    return "must be a valid email address";
-                }
-                return null;
+
+                return AssertResult.New(string.IsNullOrWhiteSpace(x) || !isEmail, "<name> must be a valid email address");
             });
 
             return source;
@@ -52,14 +50,13 @@ namespace TypeLess
 
         internal static StringAssertion IsShorterThan(this StringAssertion source, int length)
         {
-            source.Extend(x => x.Length < length ? String.Format(CultureInfo.InvariantCulture, "must be longer than {0} characters", length - 1) : null);
+            source.Extend(x => AssertResult.New(x.Length < length, "<name> must be longer than {0} characters", length - 1));
             return source;
         }
 
         internal static StringAssertion IsLongerThan(this StringAssertion source, int length)
         {
-            source.Extend(x => x.Length > length ? "must be shorter than {0} characters" : null);
-
+            source.Extend(x => AssertResult.New(x.Length > length, "<name> must be shorter than {0} characters", length + 1));
             return source;
         }
 
@@ -68,11 +65,7 @@ namespace TypeLess
             source.Extend(x =>
             {
                 bool isValid = Regex.IsMatch(x, @"\W|_");
-                if (!isValid)
-                {
-                    return "must contain alpha numeric characters";
-                }
-                return null;
+                return AssertResult.New(!isValid, "<name> must contain alpha numeric characters");
             });
             return source;
         }
@@ -82,25 +75,21 @@ namespace TypeLess
             source.Extend(x =>
             {
                 bool isValid = Regex.IsMatch(x, @"\d");
-                if (!isValid)
-                {
-                    return "must contain at least 1 digit";
-                }
-                return null;
+                return AssertResult.New(!isValid, "<name> must contain at least 1 digit");
             });
             return source;
         }
 
         internal static IStringAssertion DoesNotContain(this StringAssertion source, string text)
         {
-            source.Extend(x => !x.Contains(text) ? "must contain text " + text : null);
+            source.Extend(x => AssertResult.New(!x.Contains(text), "<name> must contain text " + text));
 
             return source;
         }
 
         internal static IStringAssertion DoesNotStartWith(this StringAssertion source, string text)
         {
-            source.Extend(x => !x.StartsWith(text, StringComparison.CurrentCultureIgnoreCase) ? "must start with text " + text : null);
+            source.Extend(x => AssertResult.New(!x.StartsWith(text, StringComparison.CurrentCultureIgnoreCase), "<name> must start with text " + text));
 
             return source;
 
@@ -108,8 +97,8 @@ namespace TypeLess
 
         internal static IStringAssertion DoesNotEndWith(this StringAssertion source, string text)
         {
-            source.Extend(x => !x.EndsWith(text, StringComparison.CurrentCultureIgnoreCase)
-                ? "must start with text " + text : null);
+            source.Extend(x => AssertResult.New(!x.EndsWith(text, StringComparison.CurrentCultureIgnoreCase),
+                "<name> must end with text " + text));
 
             return source;
         }

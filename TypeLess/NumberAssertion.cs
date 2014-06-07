@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
+using TypeLess.DataTypes;
 
 namespace TypeLess
 {
@@ -64,11 +65,7 @@ namespace TypeLess
                 Extend(x =>
                 {
                     dynamic d = x;
-                    if (d == 0)
-                    {
-                        return "must be non zero";
-                    }
-                    return null;
+                    return AssertResult.New(d == 0, "<name> must be non zero");
                 });
                 return this;
             }
@@ -82,12 +79,7 @@ namespace TypeLess
                 Extend(x =>
                 {
                     dynamic d = x;
-
-                    if (d > 0.0)
-                    {
-                        return "must be zero or negative";
-                    }
-                    return null;
+                    return AssertResult.New(d > 0.0, "<name> must be zero or negative");
                 });
 
                 return this;
@@ -102,11 +94,7 @@ namespace TypeLess
                 Extend(x =>
                 {
                     dynamic d = x;
-                    if (d < 0.0)
-                    {
-                        return "must be zero or positive";
-                    }
-                    return null;
+                    return AssertResult.New(d < 0.0, "<name> must be zero or positive");
                 });
                 return this;
             }
@@ -118,11 +106,7 @@ namespace TypeLess
             Extend(x =>
             {
                 dynamic d = x;
-                if (d < min || d > max)
-                {
-                    return String.Format(CultureInfo.InvariantCulture, "must be within {0} and {1}", min, max);
-                }
-                return null;
+                return AssertResult.New(d < min || d > max, "<name> must be within {0} and {1}", min, max);
             });
             return this;
         }
@@ -132,11 +116,7 @@ namespace TypeLess
             Extend(x =>
             {
                 dynamic d = x;
-                if (d >= min && d <= max)
-                {
-                    return String.Format(CultureInfo.InvariantCulture, "must not be within {0} and {1}", min, max);
-                }
-                return null;
+                return AssertResult.New(d >= min && d <= max, "<name> must not be within {0} and {1}", min, max);
             });
 
             return this;
@@ -144,23 +124,22 @@ namespace TypeLess
 
         public INumberAssertion<T> IsSmallerThan(T comparedTo)
         {
-            Extend(x => x.CompareTo(comparedTo) <= 0 ? "must be larger than " + comparedTo : null);
+            Extend(x => AssertResult.New(x.CompareTo(comparedTo) <= 0, "<name> must be larger than " + comparedTo));
 
             return this;
         }
 
         public INumberAssertion<T> IsLargerThan(T comparedTo)
         {
-            Extend(x => x.CompareTo(comparedTo) >= 0 ? "must be smaller than " + comparedTo : null);
+            Extend(x => AssertResult.New(x.CompareTo(comparedTo) >= 0, "<name> must be smaller than " + comparedTo));
             return this;
         }
 
         public INumberAssertionU<T> Or(T obj, string withName = null)
         {
-            Add(new NumberAssertion<T>(withName, obj, null, null, null));
+            AddWithOr(new NumberAssertion<T>(withName, obj, null, null, null));
             return this;
         }
-
 
         public new INumberAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse)
         {
