@@ -80,7 +80,7 @@ s1.If("s1").Or(s2, "s2").Or(s3, "s3").IsNull.ThenThrow().Otherwise(() => {...});
 ```
 **And of course you can use multiple checks as in the very unreal example below**
 ```
-d1.If("1").Or(d2, "2").Or(d3, "3").IsSmallerThan(5).IsLargerThan(0).ThenThrow();
+d1.If("1").Or(d2, "2").Or(d3, "3").IsSmallerThan(5).IsGreaterThan(0).ThenThrow();
 ```
 
 ####And that is what you do with TypeLess! Nothing more, nothing less####
@@ -104,7 +104,7 @@ email.If().IsNull.IsNotValidEmail.ThenThrow();
 ####Use with normal if statement####
 ``` c#
 var precondition = email.If().IsNull.IsNotValidEmail;
-if (!precondition.IsValid) {
+if (!precondition.True) {
     //Get errors
     string errors = precondition.ToString();
 }
@@ -170,6 +170,7 @@ Luhn algorithm. Note the U at the end of the interface and that it is not includ
 - Re-use predicates on other objects
 - Can return number of validation errors
 - Kind of fluent...
+- Supports English and Swedish error messages (controlled by current culture) 
 
 ###Available (predefined) checks:###
 - IsNull
@@ -183,7 +184,7 @@ Luhn algorithm. Note the U at the end of the interface and that it is not includ
 - IsNotEqualTo
 - IsEqualTo
 - IsSmallerThan
-- IsLargerThan
+- IsGreaterThan
 - IsPositive
 - IsNegative
 - IsEmptyOrWhitespace
@@ -204,6 +205,15 @@ Luhn algorithm. Note the U at the end of the interface and that it is not includ
 - SameSecondAs + Not
 - SameWeekDayAs + Not
 - Match + Not (regex matching)
+- IsValidUrl + Not
+- ContainsKey + Not
+
+Extensions
+- Shipping/IsValidIMO
+- Sweden/IsValidPersonalNumber
+- Us/IsValidPhoneNumber
+- Us/IsValidSocialSecurityNumber
+- Us/IsValidZipCode
 
 ###The framework target profile supports###
 - .Net
