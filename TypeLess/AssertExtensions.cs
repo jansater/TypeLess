@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using TypeLess.DataTypes;
+using TypeLess.Properties;
 
 namespace TypeLess
 {
@@ -258,10 +259,10 @@ namespace TypeLess
             {
                 if (x == null)
                 {
-                    return AssertResult.New(comparedTo != null, "<name> must be equal to " + comparedTo);
+                    return AssertResult.New(comparedTo != null, Resources.IsNotEqualTo, comparedTo);
                 }
 
-                return AssertResult.New(!x.Equals(comparedTo), "<name> must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
+                return AssertResult.New(!x.Equals(comparedTo), Resources.IsNotEqualTo, comparedTo == null ? "null" : comparedTo.ToString());
             });
             return source;
         }
@@ -272,10 +273,10 @@ namespace TypeLess
             {
                 if (x == null)
                 {
-                    return AssertResult.New(comparedTo == null, "<name> must not be equal to " + comparedTo);
+                    return AssertResult.New(comparedTo == null, Resources.IsEqualTo, comparedTo);
                 }
 
-                return AssertResult.New(x.Equals(comparedTo), "<name> must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
+                return AssertResult.New(x.Equals(comparedTo), Resources.IsEqualTo, comparedTo == null ? "null" : comparedTo.ToString());
             });
             return source;
         }

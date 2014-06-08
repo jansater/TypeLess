@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using TypeLess.DataTypes;
+using TypeLess.Properties;
 
 namespace TypeLess
 {
@@ -65,7 +66,7 @@ namespace TypeLess
                     if (x == null)
                     {
                         var temp = StopIfNotValid;
-                        return AssertResult.New(true, "<name> is required");
+                        return AssertResult.New(true, Resources.IsNull);
                     }
                     return AssertResult.New(false);
                 });
@@ -83,7 +84,7 @@ namespace TypeLess
                     if (x != null)
                     {
                         var temp = StopIfNotValid;
-                        return AssertResult.New(true, "<name> must be null");
+                        return AssertResult.New(true, Resources.IsNotNull);
                     }
                     return AssertResult.New(false);
                 });
@@ -140,10 +141,10 @@ namespace TypeLess
             {
                 if (x == null)
                 {
-                    return AssertResult.New(comparedTo != null, "<name> must be equal to " + comparedTo);
+                    return AssertResult.New(comparedTo != null, Resources.IsNotEqualTo, comparedTo);
                 }
 
-                return AssertResult.New(!x.Equals(comparedTo), "<name> must be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
+                return AssertResult.New(!x.Equals(comparedTo), Resources.IsNotEqualTo, comparedTo == null ? "null" : comparedTo.ToString());
             });
             return this;
         }
@@ -154,10 +155,10 @@ namespace TypeLess
             {
                 if (x == null)
                 {
-                    return AssertResult.New(comparedTo == null, "<name> must not be equal to " + comparedTo);
+                    return AssertResult.New(comparedTo == null, Resources.IsEqualTo, comparedTo);
                 }
 
-                return AssertResult.New(x.Equals(comparedTo), "<name> must not be equal to {0}", comparedTo == null ? "null" : comparedTo.ToString());
+                return AssertResult.New(x.Equals(comparedTo), Resources.IsEqualTo, comparedTo == null ? "null" : comparedTo.ToString());
             });
             return this;
         }

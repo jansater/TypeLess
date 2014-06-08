@@ -36,7 +36,7 @@ namespace TypeLess.Tests
             A a = new A() { SomeProp = 6 };
             Assert.Throws<ArgumentNullException>(() =>
             {
-                a.If().IsNotNull.ThenReturn(x => x.SomeProp).If("Some prop in a").IsLargerThan(5).ThenThrow();
+                a.If().IsNotNull.ThenReturn(x => x.SomeProp).If("Some prop in a").IsGreaterThan(5).ThenThrow();
             });
 
         }

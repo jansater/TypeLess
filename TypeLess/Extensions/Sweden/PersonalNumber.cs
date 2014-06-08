@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TypeLess.Algorithms;
 using TypeLess.DataTypes;
 using TypeLess.Helpers;
+using TypeLess.Properties;
 
 namespace TypeLess.Extensions.Sweden
 {
@@ -15,7 +16,7 @@ namespace TypeLess.Extensions.Sweden
         public static IStringAssertion IsNotValidPersonalNumber(this IStringAssertionU source) {
             source.Extend(x =>
             {
-                return AssertResult.New(!Luhn.IsValid(x.ToIntArray()), "<name> must be a valid personal number");
+                return AssertResult.New(!Luhn.IsValid(x.ToIntArray()), Resources.IsNotValidPersonalNumber);
             });
             return (IStringAssertion)source;
         }
@@ -24,7 +25,7 @@ namespace TypeLess.Extensions.Sweden
         {
             source.Extend(x =>
             {
-                return AssertResult.New(Luhn.IsValid(x.ToIntArray()), "<name> must not be a valid personal number");
+                return AssertResult.New(Luhn.IsValid(x.ToIntArray()), Resources.IsValidPersonalNumber);
             });
             return (IStringAssertion)source;
         }

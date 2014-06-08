@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
 using TypeLess.DataTypes;
+using TypeLess.Properties;
 
 namespace TypeLess
 {
@@ -23,7 +24,7 @@ namespace TypeLess
         new INumberAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue);
 
         INumberAssertion<T> IsSmallerThan(T comparedTo);
-        INumberAssertion<T> IsLargerThan(T comparedTo);
+        INumberAssertion<T> IsGreaterThan(T comparedTo);
         new INumberAssertion<T> IsNotEqualTo(T comparedTo);
         new INumberAssertion<T> IsEqualTo(T comparedTo);
     }
@@ -65,7 +66,7 @@ namespace TypeLess
                 Extend(x =>
                 {
                     dynamic d = x;
-                    return AssertResult.New(d == 0, "<name> must be non zero");
+                    return AssertResult.New(d == 0, Resources.IsZero);
                 });
                 return this;
             }
@@ -79,7 +80,7 @@ namespace TypeLess
                 Extend(x =>
                 {
                     dynamic d = x;
-                    return AssertResult.New(d > 0.0, "<name> must be zero or negative");
+                    return AssertResult.New(d > 0.0, Resources.IsPositive);
                 });
 
                 return this;
@@ -94,7 +95,7 @@ namespace TypeLess
                 Extend(x =>
                 {
                     dynamic d = x;
-                    return AssertResult.New(d < 0.0, "<name> must be zero or positive");
+                    return AssertResult.New(d < 0.0, Resources.IsNegative);
                 });
                 return this;
             }
@@ -106,7 +107,7 @@ namespace TypeLess
             Extend(x =>
             {
                 dynamic d = x;
-                return AssertResult.New(d < min || d > max, "<name> must be within {0} and {1}", min, max);
+                return AssertResult.New(d < min || d > max, Resources.IsNotWithin, min, max);
             });
             return this;
         }
@@ -116,7 +117,7 @@ namespace TypeLess
             Extend(x =>
             {
                 dynamic d = x;
-                return AssertResult.New(d >= min && d <= max, "<name> must not be within {0} and {1}", min, max);
+                return AssertResult.New(d >= min && d <= max, Resources.IsWithin, min, max);
             });
 
             return this;
@@ -124,14 +125,14 @@ namespace TypeLess
 
         public INumberAssertion<T> IsSmallerThan(T comparedTo)
         {
-            Extend(x => AssertResult.New(x.CompareTo(comparedTo) <= 0, "<name> must be larger than " + comparedTo));
+            Extend(x => AssertResult.New(x.CompareTo(comparedTo) <= 0, Resources.IsSmallerThan, comparedTo));
 
             return this;
         }
 
-        public INumberAssertion<T> IsLargerThan(T comparedTo)
+        public INumberAssertion<T> IsGreaterThan(T comparedTo)
         {
-            Extend(x => AssertResult.New(x.CompareTo(comparedTo) >= 0, "<name> must be smaller than " + comparedTo));
+            Extend(x => AssertResult.New(x.CompareTo(comparedTo) >= 0, Resources.IsGreaterThan, comparedTo));
             return this;
         }
 

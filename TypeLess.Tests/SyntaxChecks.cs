@@ -54,14 +54,14 @@ namespace TypeLess.Tests
             d.If().IsNegative.ThenThrow();
             d.If().IsZero.ThenThrow();
             d.If().IsSmallerThan(5).ThenThrow();
-            d.If().IsLargerThan(5).ThenThrow();
+            d.If().IsGreaterThan(5).ThenThrow();
             d.If().IsEqualTo(5).ThenThrow();
             d.If().IsFalse(x => true, "is not false").ThenThrow();
             d.If().IsTrue(x => false, "is not true").ThenThrow();
             d.If().IsNotEqualTo(5).ThenThrow();
             d.If().IsNotWithin(3, 5).ThenThrow();
             d.If().IsWithin(3, 5).ThenThrow();
-            d.If().Or(e).IsLargerThan(5).ThenThrow(); //this should not be possible
+            d.If().Or(e).IsGreaterThan(5).ThenThrow(); //this should not be possible
 
         }
 

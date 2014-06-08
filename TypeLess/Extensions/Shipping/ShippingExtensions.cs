@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TypeLess.DataTypes;
+using TypeLess.Properties;
 
 namespace TypeLess.Extensions.Shipping
 {
@@ -15,7 +16,7 @@ namespace TypeLess.Extensions.Shipping
         {
             source.Extend(x =>
             {
-                return AssertResult.New(!ImoValidator.IsValid(x), "<name> must be a valid IMO number");
+                return AssertResult.New(!ImoValidator.IsValid(x), Resources.IsNotValidImoNr);
             });
 
             return (IStringAssertion)source;

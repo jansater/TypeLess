@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using TypeLess.DataTypes;
+using TypeLess.Properties;
 
 namespace TypeLess
 {
@@ -62,7 +63,7 @@ namespace TypeLess
                     if (x == null)
                     {
                         var temp = StopIfNotValid;
-                        return AssertResult.New(true, "<name> is required");
+                        return AssertResult.New(true, Resources.IsNull);
                     }
                     return AssertResult.False;
                 });
@@ -80,7 +81,7 @@ namespace TypeLess
                     if (x != null)
                     {
                         var temp = StopIfNotValid;
-                        return AssertResult.New(true, "<name> must be null");
+                        return AssertResult.New(true, Resources.IsNotNull);
                     }
                     return AssertResult.False;
                 });

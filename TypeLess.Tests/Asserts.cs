@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Xunit;
 using TypeLess.Extensions.Sweden;
+using System.Threading;
+using System.Globalization;
 
 namespace TypeLess.Tests
 {
@@ -25,7 +27,6 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenNullThenThrow()
         {
-
             var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 string s = null;
@@ -106,12 +107,48 @@ namespace TypeLess.Tests
                 s.If("s").IsEmpty.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be non empty"));
+            Assert.True(res.Message.StartsWith("s must not be empty"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
                 string s = "d";
                 s.If().IsEmpty.ThenThrow();
+            });
+        }
+
+        [Fact]
+        public void WhenStringDoesNotMatchPatternThenThrow()
+        {
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                string s = "here is a long string";
+                s.If("s").DoesNotMatch("\\d").ThenThrow();
+            });
+
+            Assert.True(res.Message.StartsWith("s must match pattern \\d"));
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                string s = "asd 23123 asd";
+                s.If("s").DoesNotMatch("\\d").ThenThrow();
+            });
+        }
+
+        [Fact]
+        public void WhenStringMatchPatternThenThrow()
+        {
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                string s = "here is 22 a long string";
+                s.If("s").Match("\\d").ThenThrow();
+            });
+
+            Assert.True(res.Message.StartsWith("s must not match pattern \\d"));
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                string s = "asd asd";
+                s.If("s").Match("\\d").ThenThrow();
             });
         }
 
@@ -162,7 +199,7 @@ namespace TypeLess.Tests
                 l.If("s").IsEmpty.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be non empty"));
+            Assert.True(res.Message.StartsWith("s must not be empty"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -180,7 +217,7 @@ namespace TypeLess.Tests
                 l.If("s").IsEmpty.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be non empty"));
+            Assert.True(res.Message.StartsWith("s must not be empty"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -304,7 +341,7 @@ namespace TypeLess.Tests
                 i.If("s").IsSmallerThan(2).ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be larger than 2"));
+            Assert.True(res.Message.StartsWith("s must be greater than 2"));
 
             Xunit.Assert.DoesNotThrow(() =>
             {
@@ -320,7 +357,7 @@ namespace TypeLess.Tests
             var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int i = 3;
-                i.If("s").IsLargerThan(2).ThenThrow();
+                i.If("s").IsGreaterThan(2).ThenThrow();
             });
 
             Assert.True(res.Message.StartsWith("s must be smaller than 2"));
@@ -328,7 +365,7 @@ namespace TypeLess.Tests
             Xunit.Assert.DoesNotThrow(() =>
             {
                 int i = 1;
-                i.If().IsLargerThan(2).ThenThrow();
+                i.If().IsGreaterThan(2).ThenThrow();
             });
 
         }
@@ -718,11 +755,17 @@ namespace TypeLess.Tests
             public string Name { get; set; }
             public int Number { get; set; }
 
+            public SomeClassWithValidateB()
+            {
+                Name = "Some long string";
+            }
+
             public ObjectAssertion IsInvalid()
             {
                 return ObjectAssertion.New(
-                    Name.If("Name").IsNull, 
-                    Number.If("Number").IsEqualTo(4));
+                    Name.If("Name2").IsLongerThan(5),
+                    Number.If("Number2").IsEqualTo(0)
+                    );
             }
         }
 
@@ -741,9 +784,9 @@ namespace TypeLess.Tests
             public ObjectAssertion IsInvalid()
             {
                 return ObjectAssertion.New(
-                    Name.If("Name").IsShorterThan(5),
-                    Number.If("Number").IsEqualTo(5)
-                    //Prop.If("Prop").IsInvalid
+                    Name.If("Name1").IsLongerThan(6),
+                    Number.If("Number1").IsEqualTo(0),
+                    Prop.If("Prop").IsInvalid
                     );
             }
         }
@@ -754,7 +797,7 @@ namespace TypeLess.Tests
             double d = 1;
             double d2 = 10;
 
-            var errMsg = d.If("d").IsEqualTo(1).IsLargerThan(0).Combine(d2.If("d2").IsEqualTo(10)).ToString();
+            var errMsg = d.If("d").IsEqualTo(1).IsGreaterThan(0).Combine(d2.If("d2").IsEqualTo(10)).ToString();
             Assert.True(errMsg.StartsWith("d must not be equal to 1 and d must be smaller than 0. d2 must not be equal to 10"));
 
         }
@@ -775,11 +818,7 @@ namespace TypeLess.Tests
                 x.If("s").IsInvalid.ThenThrow();
             });
 
-            /*
-             s must be null and Prop must be null and Name is required at IsInvalid, line number 724 in file Asserts.cs  at IsInvalid, line number 743 in file Asserts.cs  at WhenDTOIsInValidThenThrow, line number 761 in file Asserts.cs
-             */
-
-            Assert.True(res.Message.StartsWith("s must ..."));
+            Assert.True(res.Message.StartsWith("Name1 must be shorter than 7 characters and Number1 must not be equal to 0 and Name2 must be shorter than 6 characters and Number2 must not be equal to 0"));
         }
 
         [Fact]
@@ -823,9 +862,9 @@ namespace TypeLess.Tests
             double d2 = 3;
             double d3 = 4;
 
-            var errMsg = d1.If("d1").Or(d2, "d2").Or(d3, "d3").IsSmallerThan(5).IsLargerThan(0).ToString();
+            var errMsg = d1.If("d1").Or(d2, "d2").Or(d3, "d3").IsSmallerThan(5).IsGreaterThan(0).ToString();
 
-            Xunit.Assert.True(errMsg.StartsWith("d1 must be larger than 5. d2 must be larger than 5. d3 must be larger than 5 and d1 must be smaller than 0. d2 must be smaller than 0. d3 must be smaller than 0"));
+            Xunit.Assert.True(errMsg.StartsWith("d1 must be greater than 5. d2 must be greater than 5. d3 must be greater than 5 and d1 must be smaller than 0. d2 must be smaller than 0. d3 must be smaller than 0"));
 
         }
 
@@ -959,6 +998,25 @@ namespace TypeLess.Tests
             {
                 string s = "6708021586";
                 s.If().IsNotValidPersonalNumber().ThenThrow();
+            });
+
+        }
+
+        [Fact]
+        public void WhenIsNotValidUrlThenThrow()
+        {
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                string s = "http://www.rapidsolutions].se";
+                s.If("s").IsNotValidUrl.ThenThrow();
+            });
+
+            Assert.True(res.Message.StartsWith("s must be a valid URL"));
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                string s = "http://www.rapidsolutions.se";
+                s.If("s").IsNotValidUrl.ThenThrow();
             });
 
         }

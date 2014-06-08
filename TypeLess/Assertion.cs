@@ -318,6 +318,10 @@ namespace TypeLess
 
         internal void Append(string s)
         {
+            if (String.IsNullOrWhiteSpace(s)) {
+                return;
+            } 
+            
             _errorCount++;
 
             if (_errorCount <= 1)

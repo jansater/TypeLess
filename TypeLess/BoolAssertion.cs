@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using TypeLess.DataTypes;
+using TypeLess.Properties;
 
 namespace TypeLess
 {
@@ -46,7 +47,7 @@ namespace TypeLess
         public new IBoolAssertion IsTrue {
             get {
 
-                Extend(x => AssertResult.New(x, "<name> must be false"));
+                Extend(x => AssertResult.New(x, Resources.BoolIsTrue));
                 return this;
             }
         }
@@ -55,7 +56,7 @@ namespace TypeLess
         {
             get
             {
-                Extend(x => AssertResult.New(!x, "<name> must be true"));
+                Extend(x => AssertResult.New(!x, Resources.BoolIsFalse));
                 return this;
             }
         }

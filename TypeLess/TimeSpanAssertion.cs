@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using TypeLess.DataTypes;
+using TypeLess.Properties;
 
 namespace TypeLess
 {
@@ -74,13 +75,13 @@ namespace TypeLess
 
         public ITimeSpanAssertion IsShorterThan(TimeSpan span)
         {
-            Extend(x => AssertResult.New(x.Ticks < span.Ticks, "<name> must be longer than {0:c}", span));
+            Extend(x => AssertResult.New(x.Ticks < span.Ticks, Resources.TimeSpanIsShorterThan, span));
             return this;
         }
 
         public ITimeSpanAssertion IsLongerThan(TimeSpan span)
         {
-            Extend(x => AssertResult.New(x.Ticks > span.Ticks, "<name> must be shorter than {0:c}", span));
+            Extend(x => AssertResult.New(x.Ticks > span.Ticks, Resources.TimeSpanIsLongerThan, span));
             return this;
         }
 

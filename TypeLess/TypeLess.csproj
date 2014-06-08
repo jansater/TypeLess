@@ -73,6 +73,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Debugging\PerfLogger.cs" />
+    <Compile Include="Extensions\Books\Isbn.cs" />
+    <Compile Include="Extensions\Usa\ZipCode.cs" />
+    <Compile Include="Extensions\Usa\PhoneNumber.cs" />
+    <Compile Include="Extensions\Usa\SocialSecurityNumber.cs" />
     <Compile Include="Helpers\EnumerableExtensions.cs" />
     <Compile Include="Helpers\EnumerableTraverser.cs" />
     <Compile Include="Helpers\HashHelper.cs" />
@@ -84,6 +88,7 @@
     <Compile Include="Helpers\Maps\Kml\PolygonReader.cs" />
     <Compile Include="Helpers\Maps\Kml\PolygonStyle.cs" />
     <Compile Include="Helpers\RangeExtensions.cs" />
+    <Compile Include="Helpers\RegexHelper.cs" />
     <Compile Include="Helpers\SpreadFunctions.cs" />
     <Compile Include="Extensions\Sweden\PersonalNumber.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />
@@ -96,6 +101,16 @@
     <Compile Include="Extensions\Shipping\ShippingExtensions.cs" />
     <Compile Include="NumberAssertion.cs" />
     <Compile Include="ObjectAssertion.cs" />
+    <Compile Include="Properties\Resources.sv.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.sv.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="TimeSpanAssertion.cs" />
     <Compile Include="DateTimeAssertion.cs" />
     <Compile Include="NullableAssertion.cs" />
@@ -120,6 +135,16 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.sv.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.sv.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using TypeLess.DataTypes;
+using TypeLess.Properties;
 
 namespace TypeLess
 {
@@ -20,7 +21,9 @@ namespace TypeLess
         new IStringAssertion IsTrue(Func<string, bool> assertFunc, string msgIfFalse);
         new IStringAssertion IsFalse(Func<string, bool> assertFunc, string msgIfTrue);
         new IStringAssertion IsNotEqualTo(string comparedTo);
-        
+
+        IStringAssertion IsValidUrl { get; }
+        IStringAssertion IsNotValidUrl { get; }
         IStringAssertion StopIfNotValid { get; }
         IStringAssertion IsShorterThan(int length);
         IStringAssertion IsLongerThan(int length);
@@ -147,6 +150,30 @@ namespace TypeLess
             return StringAssertExtensions.DoesNotEndWith(this, text);
         }
 
+        private const string _urlRegex = "^(ht|f)tp(s?)\\:\\/\\/[0-9a-zA-Z]([-.\\w]*[0-9a-zA-Z])*(:(0-9)*)*(\\/?)([a-zA-Z0-9\\-\\.\\?\\,\\'\\/\\\\\\+&amp;%\\$#_]*)?$";
+        public IStringAssertion IsValidUrl
+        {
+            get {
+                Extend(x =>
+                {
+                    return AssertResult.New(Regex.IsMatch(x, _urlRegex), Resources.IsValidUrl);
+                });
+                return this;
+            }
+        }
+
+        public IStringAssertion IsNotValidUrl
+        {
+            get {
+                Extend(x =>
+                {
+                    return AssertResult.New(!Regex.IsMatch(x, _urlRegex), Resources.IsNotValidUrl);
+                });
+                return this;
+            }
+            
+        }
+
 
         public new IStringAssertion IsTrue(Func<string, bool> assertFunc, string msgIfFalse)
         {
@@ -170,7 +197,7 @@ namespace TypeLess
             Extend(x =>
             {
                 _previousMatch = Regex.Match(x, regex, options);
-                return AssertResult.New(_previousMatch.Success, "<name> must not match pattern {0}", regex);
+                return AssertResult.New(_previousMatch.Success, Resources.Match, regex);
             });
 
             return this;
@@ -181,7 +208,7 @@ namespace TypeLess
             Extend(x =>
             {
                 _previousMatch = Regex.Match(x, regex, options);
-                return AssertResult.New(!_previousMatch.Success, "<name> must match pattern {0}");
+                return AssertResult.New(!_previousMatch.Success, Resources.DoesNotMatch, regex);
             });
 
             return this;
