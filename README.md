@@ -109,6 +109,19 @@ if (!precondition.True) {
     string errors = precondition.ToString();
 }
 ```
+Another if statement example
+
+``` c#
+var angle = 345;
+
+if (angle.If()
+ .IsWithin(315, 360)
+ .Or(heading).IsWithin(0, 45)
+ .Or(heading).IsWithin(135, 225).True) 
+{
+ ...
+}
+```
 ####Custom validation with lambda expresions####
 ``` c#
 double a=1.0,b=2.0,c=3.0;
