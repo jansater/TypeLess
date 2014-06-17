@@ -12,7 +12,7 @@ namespace TypeLess.DataTypes
     {
         public bool IsValid { get; set; }
         public string Message { get; set; }
-
+        
         private AssertResult(bool isValid, string msg, params object[] parameters) {
             this.IsValid = isValid;
 

@@ -31,7 +31,7 @@ namespace TypeLess.Tests
             {
                 string s = null;
                 s.If("s").IsNull.ThenThrow();
-                
+
             });
 
             Assert.True(res.Message.StartsWith("s is required"));
@@ -58,6 +58,24 @@ namespace TypeLess.Tests
             {
                 int? s = 1;
                 s.If().IsNull.ThenThrow();
+            });
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                object o1 = new object();
+                object o2 = new object();
+                object o3 = new object();
+
+                o1.If("o1").Or(o2, "o2").Or(o3, "o3").IsNull.ThenThrow();
+            });
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                int? o1 = 1;
+                int? o2 = 1;
+                int? o3 = 1;
+
+                o1.If("o1").Or(o2, "o2").Or(o3, "o3").IsNull.ThenThrow();
             });
 
         }
@@ -826,9 +844,16 @@ namespace TypeLess.Tests
             double heading = 345;
 
             var isTrue = heading.If()
-                .IsWithin(315, 360) //true
-                .Or(heading).IsWithin(0, 45) //another assertion that is false, returns the first one
+                .IsWithin(315, 360) 
+                .Or(heading).IsWithin(0, 45) 
                 .Or(heading).IsWithin(135, 225);
+
+            Assert.True(isTrue.True);
+
+            isTrue = heading.If()
+                .IsWithin(315, 360)
+                .IsWithin(0, 45)
+                .IsWithin(135, 225);
 
             Assert.True(isTrue.True);
 

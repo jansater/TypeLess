@@ -153,8 +153,6 @@ namespace TypeLess
             return mixed;
         }
 
-        private bool _orWasCalled = false;
-
         /// <summary>
         /// Adds a child assertion as or
         /// </summary>
@@ -164,9 +162,8 @@ namespace TypeLess
             if (assertion == null) {
                 throw new ArgumentNullException("assertion is required");
             }
-
+            
             _children.Add(assertion);
-            _orWasCalled = true;
         }
 
         public Assertion<T> StopIfNotValid
@@ -272,7 +269,7 @@ namespace TypeLess
             }
         }
 
-        private bool _isValid = true;
+        private bool _isValid = false;
         public bool True { get { return _isValid; } }
         public bool False { get { return !_isValid; } }
 
@@ -389,17 +386,9 @@ namespace TypeLess
             {
                 Append(s.Message);
             }
-            else if (s != null && !s.IsValid) {
-                if (_orWasCalled)
-                {
-                    _isValid |= false;
-                }
-                else {
-                    _isValid = false;
-                }
-                _orWasCalled = false;
-            }
-
+            
+            _isValid |= s.IsValid;
+                
             foreach (var child in _children)
             {
                 if (child is Assertion<T>)
@@ -413,7 +402,6 @@ namespace TypeLess
                     }
                     else if (res != null && !res.IsValid)
                     {
-                        //children are always evaluated as or
                         _isValid |= false;
                     }
                 }
