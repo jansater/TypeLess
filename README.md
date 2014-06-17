@@ -1,8 +1,10 @@
 TypeLess 
 =========
 ##More code - less typing##
+###[No dependencies | Portal library | Easy to extend with your own validations] ###
 
 ###Available on nuget: PM> Install-Package TypeLess###
+
 
 **What problem/annoyance is this trying to solve**
 ``` c#
