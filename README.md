@@ -150,7 +150,7 @@ string email = "some text";
 ```
 - *Example output: Email must be a valid email address*
 
-####Combine validation output from multiple properties####
+####Combine validations from multiple assertions with custom separator####
 ``` c#
 DateTime d1 = new DateTime(2014,05,01);
 DateTime d2 = new DateTime(2014,05,10);
@@ -159,9 +159,9 @@ string s1 = "abc";
 var ifDateNotValid = new DateTime(2014, 05, 24).If().IsNotWithin(d1, d2);
 var ifStringNotValid = s1.If("abc").IsShorterThan(4);
 
-ifDateNotValid.Combine(ifStringNotValid).ThenThrow();
+ifDateNotValid.Or(ifStringNotValid, "<br />").ThenThrow();
 ```
-- *Example output: DateTime must be within 2014-05-01 00:00:00 and 2014-05-10 00:00:00. abc must be longer than 3 characters*
+- *Example output: DateTime must be within 2014-05-01 00:00:00 and 2014-05-10 00:00:00 <br /> abc must be longer than 3 characters*
 
 ####How to add your own validation code on top of TypeLess####
 Adding your own checks is easy. Just create an extension method for the assertion type you are interested in like this
