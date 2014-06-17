@@ -116,11 +116,23 @@ var angle = 345;
 
 if (angle.If()
  .IsWithin(315, 360)
- .Or(heading).IsWithin(0, 45)
- .Or(heading).IsWithin(135, 225).True) 
+ .Or(angle).IsWithin(0, 45)
+ .Or(angle).IsWithin(135, 225).True) 
 {
  ...
 }
+
+or this would produce the same results
+
+if (angle.If()
+ .IsWithin(315, 360)
+ .IsWithin(0, 45)
+ .IsWithin(135, 225).True) 
+{
+ ...
+}
+
+
 ```
 ####Custom validation with lambda expresions####
 ``` c#
