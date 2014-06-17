@@ -68,7 +68,7 @@ namespace TypeLess
 
         public IStringAssertion Combine(IStringAssertion otherAssertion)
         {
-            return (IStringAssertion)base.Combine(otherAssertion);
+            return (IStringAssertion)base.Or(otherAssertion);
         }
 
         public new IStringAssertion StopIfNotValid

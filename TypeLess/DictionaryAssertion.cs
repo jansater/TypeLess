@@ -39,7 +39,7 @@ namespace TypeLess
 
         public IDictionaryAssertion<T1, T2> Combine(IDictionaryAssertion<T1, T2> otherAssertion)
         {
-            return (IDictionaryAssertion<T1, T2>)base.Combine(otherAssertion);
+            return (IDictionaryAssertion<T1, T2>)base.Or(otherAssertion);
         }
 
         public new IDictionaryAssertion<T1, T2> StopIfNotValid

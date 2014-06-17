@@ -56,7 +56,7 @@ namespace TypeLess
 
         public IDateTimeAssertion Combine(IDateTimeAssertion otherAssertion)
         {
-            return (IDateTimeAssertion)base.Combine(otherAssertion);
+            return (IDateTimeAssertion)base.Or(otherAssertion);
         }
 
         public new IDateTimeAssertion StopIfNotValid

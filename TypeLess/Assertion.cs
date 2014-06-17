@@ -81,7 +81,8 @@ namespace TypeLess
         bool IgnoreFurtherChecks { get; }
         string ToString(bool skipTrace);
         string ToString();
-        IAssertion Combine(IAssertion otherAssertion);
+        IAssertion Or(IAssertion otherAssertion, string separator = ". ");
+        
     }
 
     public interface IAssertionOW<T>
@@ -92,6 +93,8 @@ namespace TypeLess
 
     public interface IAssertion<T> : IAssertion, IAssertionU<T>
     {
+        IAssertion<T> Or<S>(IAssertion<S> otherAssertion, string separator = ". ");
+
         void Then(Action<T> action);
         S ThenReturn<S>(Func<T, S> func);
         /// <summary>
@@ -181,7 +184,7 @@ namespace TypeLess
             _sb.Clear();
         }
 
-        public IAssertion Combine(IAssertion otherAssertion)
+        public IAssertion Or(IAssertion otherAssertion, string separator = ". ")
         {
 
             if (otherAssertion == null || otherAssertion.ErrorCount == 0)
@@ -189,15 +192,37 @@ namespace TypeLess
                 return this;
             }
 
-            if (_errorCount <= 0)
+            if (!_isValid)
             {
-                _isValid &= otherAssertion.True;
-                _sb.Append(otherAssertion.ToString());
+                _isValid |= otherAssertion.True;
+                _sb.Append(otherAssertion.ToString(skipTrace: true));
             }
             else
             {
-                _isValid &= otherAssertion.True;
-                _sb.Append(". ").AppendLine(otherAssertion.ToString());
+                _isValid |= otherAssertion.True;
+                _sb.Append(separator ?? ". ").AppendLine(otherAssertion.ToString(skipTrace: true));
+            }
+
+            return this;
+        }
+
+        public IAssertion<T> Or<S>(IAssertion<S> otherAssertion, string separator = ". ")
+        {
+
+            if (otherAssertion == null || otherAssertion.ErrorCount == 0)
+            {
+                return this;
+            }
+
+            if (!_isValid)
+            {
+                _isValid |= otherAssertion.True;
+                _sb.Append(otherAssertion.ToString(skipTrace: true));
+            }
+            else
+            {
+                _isValid |= otherAssertion.True;
+                _sb.Append(separator ?? ". ").AppendLine(otherAssertion.ToString(skipTrace: true));
             }
 
             return this;

@@ -40,7 +40,7 @@ namespace TypeLess
 
         public IMixedTypeAssertion<T, U> Combine(IMixedTypeAssertion<T, U> otherAssertion)
         {
-            return (IMixedTypeAssertion<T, U>)base.Combine(otherAssertion);
+            return (IMixedTypeAssertion<T, U>)base.Or(otherAssertion);
         }
 
         public new IMixedTypeAssertion<T, U> StopIfNotValid
@@ -119,7 +119,7 @@ namespace TypeLess
                             {
                                 foreach (var item in classAssertions.Assertions)
                                 {
-                                    Combine(item);
+                                    Or(item);
                                 }
                             }
                         }

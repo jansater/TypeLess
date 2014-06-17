@@ -33,7 +33,7 @@ namespace TypeLess
 
         public IBoolAssertion Combine(IBoolAssertion otherAssertion)
         {
-            return (IBoolAssertion)base.Combine(otherAssertion);
+            return (IBoolAssertion)base.Or(otherAssertion);
         }
 
         public new IBoolAssertion StopIfNotValid

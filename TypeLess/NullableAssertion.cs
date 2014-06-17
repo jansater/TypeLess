@@ -36,7 +36,7 @@ namespace TypeLess
 
         public INullableAssertion<T> Combine(INullableAssertion<T> otherAssertion)
         {
-            return (INullableAssertion<T>)base.Combine(otherAssertion);
+            return (INullableAssertion<T>)base.Or(otherAssertion);
         }
 
         public new NullableAssertion<T> StopIfNotValid

@@ -36,7 +36,7 @@ namespace TypeLess
 
         public ITimeSpanAssertion Combine(ITimeSpanAssertion otherAssertion)
         {
-            return (ITimeSpanAssertion)base.Combine(otherAssertion);
+            return (ITimeSpanAssertion)base.Or(otherAssertion);
         }
 
         public ITimeSpanAssertionU Or(TimeSpan obj, string withName = null)

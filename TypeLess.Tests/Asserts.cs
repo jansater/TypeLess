@@ -25,6 +25,24 @@ namespace TypeLess.Tests
         }
 
         [Fact]
+        public void ChainingAlerts()
+        {
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                object o2 = null;
+                object o1 = new object();
+                int i1 = 1;
+
+                o1.If("o1").IsNull
+                    .Or(i1.If("i1").IsEqualTo(1), "<br>")
+                    .Or(o2.If("o2").IsNull, "<br>")
+                    .ThenThrow();
+            });
+
+            Assert.True(res.Message.StartsWith("i1 must not be equal to 1<br>o2 is required"));
+        }
+
+        [Fact]
         public void WhenNullThenThrow()
         {
             var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
@@ -810,12 +828,13 @@ namespace TypeLess.Tests
         }
 
         [Fact]
-        public void WhenCombiningAssertsErrorMessageIsCorrect() {
+        public void WhenCombiningAssertsErrorMessageIsCorrect()
+        {
 
             double d = 1;
             double d2 = 10;
 
-            var errMsg = d.If("d").IsEqualTo(1).IsGreaterThan(0).Combine(d2.If("d2").IsEqualTo(10)).ToString();
+            var errMsg = d.If("d").IsEqualTo(1).IsGreaterThan(0).Or(d2.If("d2").IsEqualTo(10)).ToString();
             Assert.True(errMsg.StartsWith("d must not be equal to 1 and d must be smaller than 0. d2 must not be equal to 10"));
 
         }
@@ -840,12 +859,13 @@ namespace TypeLess.Tests
         }
 
         [Fact]
-        public void WhenInOneOfMultipleRangesThenReturnIsValid() {
+        public void WhenInOneOfMultipleRangesThenReturnIsValid()
+        {
             double heading = 345;
 
             var isTrue = heading.If()
-                .IsWithin(315, 360) 
-                .Or(heading).IsWithin(0, 45) 
+                .IsWithin(315, 360)
+                .Or(heading).IsWithin(0, 45)
                 .Or(heading).IsWithin(135, 225);
 
             Assert.True(isTrue.True);
@@ -871,7 +891,7 @@ namespace TypeLess.Tests
             SomeClass s2 = null;
             string d = "";
 
-            var errMsg = s1.If("s1") 
+            var errMsg = s1.If("s1")
                 .Or(s2, "s2")
                 .Or(d, "s3").IsNull.ToString();
 
@@ -882,7 +902,7 @@ namespace TypeLess.Tests
         [Fact]
         public void AnyAssertWorksForDoubles()
         {
-            
+
             double d1 = 1;
             double d2 = 3;
             double d3 = 4;
@@ -906,7 +926,7 @@ namespace TypeLess.Tests
 
             Xunit.Assert.DoesNotThrow(() =>
             {
-                (1 == 1).If("expr").IsFalse.ThenThrow();   
+                (1 == 1).If("expr").IsFalse.ThenThrow();
             });
 
         }

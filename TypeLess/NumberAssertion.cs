@@ -47,7 +47,7 @@ namespace TypeLess
         
         public INumberAssertion<T> Combine(INumberAssertion<T> otherAssertion)
         {
-            return (INumberAssertion<T>)base.Combine(otherAssertion);
+            return (INumberAssertion<T>)base.Or(otherAssertion);
         }
 
         public new INumberAssertion<T> StopIfNotValid

@@ -74,6 +74,7 @@
     </Compile>
     <Compile Include="Debugging\PerfLogger.cs" />
     <Compile Include="Extensions\Books\Isbn.cs" />
+    <Compile Include="Extensions\Misc\NumberExtensions.cs" />
     <Compile Include="Extensions\Usa\ZipCode.cs" />
     <Compile Include="Extensions\Usa\PhoneNumber.cs" />
     <Compile Include="Extensions\Usa\SocialSecurityNumber.cs" />

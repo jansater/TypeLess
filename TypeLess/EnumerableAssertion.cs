@@ -35,7 +35,7 @@ namespace TypeLess
 
         public IEnumerableAssertion Combine(IEnumerableAssertion otherAssertion)
         {
-            return (IEnumerableAssertion)base.Combine(otherAssertion);
+            return (IEnumerableAssertion)base.Or(otherAssertion);
         }
 
         public new IEnumerableAssertion StopIfNotValid

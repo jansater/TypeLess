@@ -49,7 +49,7 @@ namespace TypeLess.Tests
             double d = 2;
             double e = 3;
 
-            d.If().IsPositive.Combine(d.If().IsPositive);
+            d.If().IsPositive.Or(d.If().IsPositive);
             d.If().IsPositive.ThenThrow();
             d.If().IsNegative.ThenThrow();
             d.If().IsZero.ThenThrow();

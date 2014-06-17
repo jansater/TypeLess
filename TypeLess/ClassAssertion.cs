@@ -39,7 +39,7 @@ namespace TypeLess
 
         public IClassAssertion<T> Combine(IClassAssertion<T> otherAssertion)
         {
-            return (IClassAssertion<T>)base.Combine(otherAssertion);
+            return (IClassAssertion<T>)base.Or(otherAssertion);
         }
 
         public new IClassAssertion<T> StopIfNotValid
