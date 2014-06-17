@@ -7,7 +7,7 @@ TypeLess
 **What problem/annoyance is this trying to solve**
 ``` c#
 public void Login(SomeDTO data) {
-    if (data != null) {
+    if (data == null) {
         throw new ArgumentNullException("Data is required");
     }
     
