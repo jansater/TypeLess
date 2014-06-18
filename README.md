@@ -210,18 +210,18 @@ This method extends the IStringAssertionU interface with a swedish personal numb
 Luhn algorithm. Note the U at the end of the interface and that it is not included in the return type. This is simply because the method should be available directly after the If() statement and not only after other assertions have been made. The Extend method will not show up in code completion but its there and it expects a function that receives the string (value) being checked and returns an AssertResult that takes the condition followed by the error message. Use &lt;name&gt; in the error message for replacement with parameter name
 
 **The following types can be extended**
-ITimeSpanAssertionU / ITimeSpanAssertion
-IStringAssertionU / IStringAssertion / IRegexAssertion
-INumberAssertionU<T> / INumberAssertion<T>
-INullableAssertionU<T> / INullableAssertion<T>
-IMixedTypeAssertionU<T, U> / IMixedTypeAssertion<T, U>
-IEnumerableAssertionU / IEnumerableAssertion
-IDictionaryAssertionU<T1, T2> / IDictionaryAssertion<T1, T2>
-IDateTimeAssertionU / IDateTimeAssertion
-IClassAssertionU<T> / IClassAssertion<T>
-IBoolAssertionU / IBoolAssertion
-IAssertionU / IAssertion
-IAssertionU<T> / IAssertion<T> / IAssertionOW<T>
+- ITimeSpanAssertionU / ITimeSpanAssertion
+- IStringAssertionU / IStringAssertion / IRegexAssertion
+- INumberAssertionU<T> / INumberAssertion<T>
+- INullableAssertionU<T> / INullableAssertion<T>
+- IMixedTypeAssertionU<T, U> / IMixedTypeAssertion<T, U>
+- IEnumerableAssertionU / IEnumerableAssertion
+- IDictionaryAssertionU<T1, T2> / IDictionaryAssertion<T1, T2>
+- IDateTimeAssertionU / IDateTimeAssertion
+- IClassAssertionU<T> / IClassAssertion<T>
+- IBoolAssertionU / IBoolAssertion
+- IAssertionU / IAssertion
+- IAssertionU<T> / IAssertion<T> / IAssertionOW<T>
 
 ###Features:###
 - Chain validation checks 
