@@ -1,13 +1,15 @@
 TypeLess 
 =========
 ##More code - less typing##
+###[No dependencies | Portal library | Easy to extend with your own validations] ###
 
 ###Available on nuget: PM> Install-Package TypeLess###
+
 
 **What problem/annoyance is this trying to solve**
 ``` c#
 public void Login(SomeDTO data) {
-    if (data != null) {
+    if (data == null) {
         throw new ArgumentNullException("Data is required");
     }
     
@@ -78,6 +80,14 @@ s3.If("s3").IsNull.ThenThrow();
 ```
 s1.If("s1").Or(s2, "s2").Or(s3, "s3").IsNull.ThenThrow().Otherwise(() => {...});
 ```
+
+**If you need to you can also group different types like this**
+```
+string s1 = "some string";
+double d1 = 0;
+s1.If("s1").IsNull.Or(d1.IsGreaterThan(0)).ThenThrow();
+```
+
 **And of course you can use multiple checks as in the very unreal example below**
 ```
 d1.If("1").Or(d2, "2").Or(d3, "3").IsSmallerThan(5).IsGreaterThan(0).ThenThrow();
@@ -97,10 +107,21 @@ email.If("Email")
 - *Example exception debug: Email must be a valid email address and must be shorter than 6 characters at SomeMethod, line number 27 in file Asserts.cs*
 - *Example exception not debug: Email must be a valid email address and must be shorter than 6 characters*
 
-or if the parameter name is not important in the exception output
+**or if the parameter name is not important in the exception output you can leave it out**
 ``` c#
 email.If().IsNull.IsNotValidEmail.ThenThrow();
 ```
+
+**here is how you use custom error message (you can use <name> anywhere in the text to include the parameter name)**
+``` c#
+email.If("email").IsNull.IsNotValidEmail.ThenThrow("<name> was not a valid email address");
+```
+
+**and of course you can throw custom exceptions**
+``` c#
+email.If("email").IsNull.IsNotValidEmail.ThenThrow<SomeException>("<name> was not a valid email address");
+```
+
 ####Use with normal if statement####
 ``` c#
 var precondition = email.If().IsNull.IsNotValidEmail;
@@ -150,7 +171,7 @@ string email = "some text";
 ```
 - *Example output: Email must be a valid email address*
 
-####Combine validation output from multiple properties####
+####Combine validations from multiple assertions with custom separator####
 ``` c#
 DateTime d1 = new DateTime(2014,05,01);
 DateTime d2 = new DateTime(2014,05,10);
@@ -159,9 +180,9 @@ string s1 = "abc";
 var ifDateNotValid = new DateTime(2014, 05, 24).If().IsNotWithin(d1, d2);
 var ifStringNotValid = s1.If("abc").IsShorterThan(4);
 
-ifDateNotValid.Combine(ifStringNotValid).ThenThrow();
+ifDateNotValid.Or(ifStringNotValid, "<br />").ThenThrow();
 ```
-- *Example output: DateTime must be within 2014-05-01 00:00:00 and 2014-05-10 00:00:00. abc must be longer than 3 characters*
+- *Example output: DateTime must be within 2014-05-01 00:00:00 and 2014-05-10 00:00:00 <br /> abc must be longer than 3 characters*
 
 ####How to add your own validation code on top of TypeLess####
 Adding your own checks is easy. Just create an extension method for the assertion type you are interested in like this
@@ -171,14 +192,14 @@ public static class PersonalNumber
     public static IStringAssertion IsNotValidPersonalNumber(this IStringAssertionU source) {
         source.Extend(x =>
         {
-            return Luhn.IsValid(x.ToIntArray()) ? "must be a valid personal number" : null;
+            return AssertResult.New(!Luhn.IsValid(x.ToIntArray()), Resources.IsNotValidPersonalNumber);
         });
         return (IStringAssertion)source;
     }
 }
 ```
 This method extends the IStringAssertionU interface with a swedish personal number check for strings according to the
-Luhn algorithm. Note the U at the end of the interface and that it is not included in the return type. This is simply because the method should be available directly after the If() statement and not only after other assertions have been made. The Extend method will not show up in code completion but its there and it expects a function that receives the string being checked and returns a non null string in case its not valid (I.e. null means valid). The error message as in this case knows that the parameter name has already been prepended to the message.
+Luhn algorithm. Note the U at the end of the interface and that it is not included in the return type. This is simply because the method should be available directly after the If() statement and not only after other assertions have been made. The Extend method will not show up in code completion but its there and it expects a function that receives the string (value) being checked and returns an AssertResult that takes the condition followed by the error message. Use <name> in the error message for replacement with parameter name
 
 
 ###Features:###
