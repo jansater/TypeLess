@@ -103,6 +103,17 @@ or if the parameter name is not important in the exception output
 ``` c#
 email.If().IsNull.IsNotValidEmail.ThenThrow();
 ```
+
+here is how you use custom error message (you can use <name> anywhere in the text to include the parameter name)
+``` c#
+email.If("email").IsNull.IsNotValidEmail.ThenThrow("<name> was not a valid email address");
+```
+
+and of course you can throw custom exceptions
+``` c#
+email.If("email").IsNull.IsNotValidEmail.ThenThrow<SomeException>("<name> was not a valid email address");
+```
+
 ####Use with normal if statement####
 ``` c#
 var precondition = email.If().IsNull.IsNotValidEmail;
