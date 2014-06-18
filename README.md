@@ -112,7 +112,7 @@ email.If("Email")
 email.If().IsNull.IsNotValidEmail.ThenThrow();
 ```
 
-**here is how you use custom error message (you can use <code><name></code> anywhere in the text to include the parameter name)**
+**here is how you use custom error message (you can use &lt;name&gt; anywhere in the text to include the parameter name)**
 ``` c#
 email.If("email").IsNull.IsNotValidEmail.ThenThrow("<name> was not a valid email address");
 ```
@@ -207,7 +207,7 @@ public static class PersonalNumber
 }
 ```
 This method extends the IStringAssertionU interface with a swedish personal number check for strings according to the
-Luhn algorithm. Note the U at the end of the interface and that it is not included in the return type. This is simply because the method should be available directly after the If() statement and not only after other assertions have been made. The Extend method will not show up in code completion but its there and it expects a function that receives the string (value) being checked and returns an AssertResult that takes the condition followed by the error message. Use ``` <code><name></code> in the error message for replacement with parameter name
+Luhn algorithm. Note the U at the end of the interface and that it is not included in the return type. This is simply because the method should be available directly after the If() statement and not only after other assertions have been made. The Extend method will not show up in code completion but its there and it expects a function that receives the string (value) being checked and returns an AssertResult that takes the condition followed by the error message. Use &lt;name&gt; in the error message for replacement with parameter name
 
 
 ###Features:###
