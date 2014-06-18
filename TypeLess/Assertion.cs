@@ -95,7 +95,7 @@ namespace TypeLess
     {
         IAssertion<T> Or<S>(IAssertion<S> otherAssertion, string separator = ". ");
 
-        void Then(Action<T> action);
+        IAssertionOW<T> Then(Action<T> action);
         S ThenReturn<S>(Func<T, S> func);
         /// <summary>
         /// Throws an argument null exception.
@@ -376,15 +376,16 @@ namespace TypeLess
             return AssertExtensions.IsEqualTo(this, comparedTo);
         }
 
-        public void Then(Action<T> action)
+        public IAssertionOW<T> Then(Action<T> action)
         {
             action.If().IsNull.ThenThrow();
 
             if (!True)
             {
-                return;
+                return this;
             }
             action(Item);
+            return this;
         }
 
         public S ThenReturn<S>(Func<T, S> func)
