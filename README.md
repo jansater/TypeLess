@@ -99,17 +99,17 @@ email.If("Email")
 - *Example exception debug: Email must be a valid email address and must be shorter than 6 characters at SomeMethod, line number 27 in file Asserts.cs*
 - *Example exception not debug: Email must be a valid email address and must be shorter than 6 characters*
 
-or if the parameter name is not important in the exception output
+**or if the parameter name is not important in the exception output you can leave it out**
 ``` c#
 email.If().IsNull.IsNotValidEmail.ThenThrow();
 ```
 
-here is how you use custom error message (you can use <name> anywhere in the text to include the parameter name)
+**here is how you use custom error message (you can use <name> anywhere in the text to include the parameter name)**
 ``` c#
 email.If("email").IsNull.IsNotValidEmail.ThenThrow("<name> was not a valid email address");
 ```
 
-and of course you can throw custom exceptions
+**and of course you can throw custom exceptions**
 ``` c#
 email.If("email").IsNull.IsNotValidEmail.ThenThrow<SomeException>("<name> was not a valid email address");
 ```
