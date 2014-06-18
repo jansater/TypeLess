@@ -85,7 +85,7 @@ s1.If("s1").Or(s2, "s2").Or(s3, "s3").IsNull.ThenThrow().Otherwise(() => {...});
 ```
 string s1 = "some string";
 double d1 = 0;
-s1.If("s1").IsNull.Or(d1.IsGreaterThan(0)).ThenThrow();
+s1.If("s1").IsNull.Or(d1.If("d1").IsGreaterThan(0)).ThenThrow();
 ```
 
 **And of course you can use multiple checks as in the very unreal example below**
