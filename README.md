@@ -142,6 +142,7 @@ if (angle.If()
 {
  ...
 }
+else {...}
 
 or this would produce the same results
 
@@ -152,7 +153,14 @@ if (angle.If()
 {
  ...
 }
+else {...}
 
+or
+
+angle.If()
+ .IsWithin(315, 360)
+ .IsWithin(0, 45)
+ .IsWithin(135, 225).Then(a => {...}).Otherwise(a => {...});
 
 ```
 ####Custom validation with lambda expresions####
