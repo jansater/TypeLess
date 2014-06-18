@@ -80,6 +80,14 @@ s3.If("s3").IsNull.ThenThrow();
 ```
 s1.If("s1").Or(s2, "s2").Or(s3, "s3").IsNull.ThenThrow().Otherwise(() => {...});
 ```
+
+**If you need to you can also group different types like this**
+```
+string s1 = "some string";
+double d1 = 0;
+s1.If("s1").IsNull.Or(d1.IsGreaterThan(0)).ThenThrow();
+```
+
 **And of course you can use multiple checks as in the very unreal example below**
 ```
 d1.If("1").Or(d2, "2").Or(d3, "3").IsSmallerThan(5).IsGreaterThan(0).ThenThrow();
