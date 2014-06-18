@@ -93,7 +93,7 @@ s1.If("s1").IsNull.Or(d1.IsGreaterThan(0)).ThenThrow();
 d1.If("1").Or(d2, "2").Or(d3, "3").IsSmallerThan(5).IsGreaterThan(0).ThenThrow();
 ```
 
-####And that is what you do with TypeLess! Nothing more, nothing less####
+####And that is what you do with TypeLess! Nothing more, nothing (but hopefully) less####
 
 **Example of output:**
 ``` c#
