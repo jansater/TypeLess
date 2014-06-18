@@ -184,14 +184,14 @@ public static class PersonalNumber
     public static IStringAssertion IsNotValidPersonalNumber(this IStringAssertionU source) {
         source.Extend(x =>
         {
-            return Luhn.IsValid(x.ToIntArray()) ? "must be a valid personal number" : null;
+            return AssertResult.New(!Luhn.IsValid(x.ToIntArray()), Resources.IsNotValidPersonalNumber);
         });
         return (IStringAssertion)source;
     }
 }
 ```
 This method extends the IStringAssertionU interface with a swedish personal number check for strings according to the
-Luhn algorithm. Note the U at the end of the interface and that it is not included in the return type. This is simply because the method should be available directly after the If() statement and not only after other assertions have been made. The Extend method will not show up in code completion but its there and it expects a function that receives the string being checked and returns a non null string in case its not valid (I.e. null means valid). The error message as in this case knows that the parameter name has already been prepended to the message.
+Luhn algorithm. Note the U at the end of the interface and that it is not included in the return type. This is simply because the method should be available directly after the If() statement and not only after other assertions have been made. The Extend method will not show up in code completion but its there and it expects a function that receives the string (value) being checked and returns an AssertResult that takes the condition followed by the error message. Use <name> in the error message for replacement with parameter name
 
 
 ###Features:###
