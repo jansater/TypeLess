@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="TypeLess : More code - Less typing" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>TypeLess</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/jansater/TypeLess">View on GitHub</a>
+
+          <h1 id="project_title">TypeLess</h1>
+          <h2 id="project_tagline">More code - Less typing</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/jansater/TypeLess/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/jansater/TypeLess/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>
+<a name="no-dependencies--portal-library--easy-to-extend-with-your-own-validations" class="anchor" href="#no-dependencies--portal-library--easy-to-extend-with-your-own-validations"><span class="octicon octicon-link"></span></a>No dependencies | Portal library | Easy to extend with your own validations</h3>
+
+<h3>
+<a name="available-on-nuget-pm-install-package-typeless" class="anchor" href="#available-on-nuget-pm-install-package-typeless"><span class="octicon octicon-link"></span></a>Available on nuget: PM&gt; Install-Package TypeLess</h3>
+
+<p><strong>What problem/annoyance is this trying to solve</strong></p>
+
+<div class="highlight highlight-c#"><pre><span class="k">public</span> <span class="k">void</span> <span class="nf">Login</span><span class="p">(</span><span class="n">SomeDTO</span> <span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">data</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArgumentNullException</span><span class="p">(</span><span class="s">"Data is required"</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">Email</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArgumentNullException</span><span class="p">(</span><span class="s">"Email is required"</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">NotValidEmail</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">Email</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArgumentException</span><span class="p">(</span><span class="s">"Email is not valid"</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">Email</span><span class="p">.</span><span class="n">Length</span> <span class="p">&gt;</span> <span class="m">5</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArgumentException</span><span class="p">(</span><span class="s">"Email must be shorter than 6 characters"</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+
+<h4>
+<a name="if-you-are-like-me-then-writing-that-is-tedious" class="anchor" href="#if-you-are-like-me-then-writing-that-is-tedious"><span class="octicon octicon-link"></span></a>If you are like me then writing that is tedious!</h4>
+
+<p><strong>Would be easier to write this</strong></p>
+
+<div class="highlight highlight-c#"><pre><span class="k">using</span> <span class="nn">TypeLess</span><span class="p">;</span>
+<span class="p">...</span>
+<span class="k">public</span> <span class="nf">SomeMethod</span><span class="p">(</span><span class="n">SomeDTO</span> <span class="n">input</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">input</span><span class="p">.</span><span class="n">If</span><span class="p">(</span><span class="s">"Input"</span><span class="p">).</span><span class="n">IsNull</span><span class="p">.</span><span class="n">ThenThrow</span><span class="p">();</span>
+    <span class="n">input</span><span class="p">.</span><span class="n">Email</span><span class="p">.</span><span class="n">If</span><span class="p">(</span><span class="s">"Email"</span><span class="p">).</span><span class="n">IsNull</span><span class="p">.</span><span class="n">IsNotValidEmail</span><span class="p">.</span><span class="n">ThenThrow</span><span class="p">();</span>
+    <span class="n">input</span><span class="p">.</span><span class="n">Name</span><span class="p">.</span><span class="n">If</span><span class="p">(</span><span class="s">"Name"</span><span class="p">).</span><span class="n">IsNull</span><span class="p">.</span><span class="n">IsEmptyOrWhitespace</span><span class="p">.</span><span class="n">ThenThrow</span><span class="p">();</span>
+    <span class="n">input</span><span class="p">.</span><span class="n">UserId</span><span class="p">.</span><span class="n">If</span><span class="p">(</span><span class="s">"User id"</span><span class="p">).</span><span class="n">IsSmallerThan</span><span class="p">(</span><span class="m">0</span><span class="p">).</span><span class="n">ThenThrow</span><span class="p">();</span>
+
+    <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><strong>Or if you prefer to put validation in the class where it belongs</strong></p>
+
+<div class="highlight highlight-c#"><pre><span class="k">using</span> <span class="nn">TypeLess</span><span class="p">;</span>
+<span class="p">...</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">SomeDTO</span> <span class="p">{</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Email</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="n">UserId</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+    <span class="k">public</span> <span class="n">ObjectAssertion</span> <span class="nf">IsInvalid</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">ObjectAssertion</span><span class="p">.</span><span class="n">New</span><span class="p">(</span>
+            <span class="n">Name</span><span class="p">.</span><span class="n">If</span><span class="p">().</span><span class="n">IsNull</span><span class="p">.</span><span class="n">IsNotValidEmail</span><span class="p">,</span>
+            <span class="n">Email</span><span class="p">.</span><span class="n">If</span><span class="p">().</span><span class="n">IsNull</span><span class="p">.</span><span class="n">IsEmptyOrWhitespace</span><span class="p">,</span>
+            <span class="n">UserId</span><span class="p">.</span><span class="n">If</span><span class="p">().</span><span class="n">IsSmallerThan</span><span class="p">(</span><span class="m">0</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="p">...</span>
+
+<span class="k">public</span> <span class="k">void</span> <span class="nf">Login</span><span class="p">(</span><span class="n">SomeDTO</span> <span class="n">input</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">input</span><span class="p">.</span><span class="n">If</span><span class="p">().</span><span class="n">IsInvalid</span><span class="p">.</span><span class="n">ThenThrow</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+
+<h4>
+<a name="how-about-this-case" class="anchor" href="#how-about-this-case"><span class="octicon octicon-link"></span></a>How about this case?</h4>
+
+<pre><code>s1.If("s1").IsNull.ThenThrow();
+s2.If("s2").IsNull.ThenThrow();
+s3.If("s3").IsNull.ThenThrow();
+</code></pre>
+
+<p><strong>If you need to check the same predicates on multiple objects like above then you can do this</strong></p>
+
+<pre><code>s1.If("s1").Or(s2, "s2").Or(s3, "s3").IsNull.ThenThrow().Otherwise(() =&gt; {...});
+</code></pre>
+
+<p><strong>If you need to you can also group different types like this</strong></p>
+
+<pre><code>string s1 = "some string";
+double d1 = 0;
+s1.If("s1").IsNull.Or(d1.If("d1").IsGreaterThan(0)).ThenThrow();
+</code></pre>
+
+<p><strong>And of course you can use multiple checks as in the very unreal example below</strong></p>
+
+<pre><code>d1.If("1").Or(d2, "2").Or(d3, "3").IsSmallerThan(5).IsGreaterThan(0).ThenThrow();
+</code></pre>
+
+<h4>
+<a name="and-that-is-what-you-do-with-typeless-nothing-more-nothing-but-hopefully-less" class="anchor" href="#and-that-is-what-you-do-with-typeless-nothing-more-nothing-but-hopefully-less"><span class="octicon octicon-link"></span></a>And that is what you do with TypeLess! Nothing more, nothing (but hopefully) less</h4>
+
+<p><strong>Example of output:</strong></p>
+
+<div class="highlight highlight-c#"><pre><span class="kt">string</span> <span class="n">email</span> <span class="p">=</span> <span class="s">"some text"</span><span class="p">;</span>
+<span class="n">email</span><span class="p">.</span><span class="n">If</span><span class="p">(</span><span class="s">"Email"</span><span class="p">)</span>
+  <span class="p">.</span><span class="n">IsNull</span>
+  <span class="p">.</span><span class="n">IsNotValidEmail</span>
+  <span class="p">.</span><span class="n">IsLongerThan</span><span class="p">(</span><span class="m">5</span><span class="p">).</span><span class="n">ThenThrow</span><span class="p">();</span>
+</pre></div>
+
+<ul>
+<li><em>Example exception debug: Email must be a valid email address and must be shorter than 6 characters at SomeMethod, line number 27 in file Asserts.cs</em></li>
+<li><em>Example exception not debug: Email must be a valid email address and must be shorter than 6 characters</em></li>
+</ul><p><strong>or if the parameter name is not important in the exception output you can leave it out</strong></p>
+
+<div class="highlight highlight-c#"><pre><span class="n">email</span><span class="p">.</span><span class="n">If</span><span class="p">().</span><span class="n">IsNull</span><span class="p">.</span><span class="n">IsNotValidEmail</span><span class="p">.</span><span class="n">ThenThrow</span><span class="p">();</span>
+</pre></div>
+
+<p><strong>here is how you use custom error message (you can use &lt;name&gt; anywhere in the text to include the parameter name)</strong></p>
+
+<div class="highlight highlight-c#"><pre><span class="n">email</span><span class="p">.</span><span class="n">If</span><span class="p">(</span><span class="s">"email"</span><span class="p">).</span><span class="n">IsNull</span><span class="p">.</span><span class="n">IsNotValidEmail</span><span class="p">.</span><span class="n">ThenThrow</span><span class="p">(</span><span class="s">"&lt;name&gt; was not a valid email address"</span><span class="p">);</span>
+</pre></div>
+
+<p><strong>and of course you can throw custom exceptions</strong></p>
+
+<div class="highlight highlight-c#"><pre><span class="n">email</span><span class="p">.</span><span class="n">If</span><span class="p">(</span><span class="s">"email"</span><span class="p">).</span><span class="n">IsNull</span><span class="p">.</span><span class="n">IsNotValidEmail</span><span class="p">.</span><span class="n">ThenThrow</span><span class="p">&lt;</span><span class="n">SomeException</span><span class="p">&gt;(</span><span class="s">"&lt;name&gt; was not a valid email address"</span><span class="p">);</span>
+</pre></div>
+
+<h4>
+<a name="use-with-normal-if-statement" class="anchor" href="#use-with-normal-if-statement"><span class="octicon octicon-link"></span></a>Use with normal if statement</h4>
+
+<div class="highlight highlight-c#"><pre><span class="kt">var</span> <span class="n">precondition</span> <span class="p">=</span> <span class="n">email</span><span class="p">.</span><span class="n">If</span><span class="p">().</span><span class="n">IsNull</span><span class="p">.</span><span class="n">IsNotValidEmail</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(!</span><span class="n">precondition</span><span class="p">.</span><span class="n">True</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">//Get errors</span>
+    <span class="kt">string</span> <span class="n">errors</span> <span class="p">=</span> <span class="n">precondition</span><span class="p">.</span><span class="n">ToString</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Another if statement example</p>
+
+<div class="highlight highlight-c#"><pre><span class="kt">var</span> <span class="n">angle</span> <span class="p">=</span> <span class="m">345</span><span class="p">;</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">angle</span><span class="p">.</span><span class="n">If</span><span class="p">()</span>
+ <span class="p">.</span><span class="n">IsWithin</span><span class="p">(</span><span class="m">315</span><span class="p">,</span> <span class="m">360</span><span class="p">)</span>
+ <span class="p">.</span><span class="n">Or</span><span class="p">(</span><span class="n">angle</span><span class="p">).</span><span class="n">IsWithin</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">45</span><span class="p">)</span>
+ <span class="p">.</span><span class="n">Or</span><span class="p">(</span><span class="n">angle</span><span class="p">).</span><span class="n">IsWithin</span><span class="p">(</span><span class="m">135</span><span class="p">,</span> <span class="m">225</span><span class="p">).</span><span class="n">True</span><span class="p">)</span> 
+<span class="p">{</span>
+ <span class="p">...</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="p">{...}</span>
+
+<span class="n">or</span> <span class="k">this</span> <span class="n">would</span> <span class="n">produce</span> <span class="n">the</span> <span class="n">same</span> <span class="n">results</span>
+
+<span class="nf">if</span> <span class="p">(</span><span class="n">angle</span><span class="p">.</span><span class="n">If</span><span class="p">()</span>
+ <span class="p">.</span><span class="n">IsWithin</span><span class="p">(</span><span class="m">315</span><span class="p">,</span> <span class="m">360</span><span class="p">)</span>
+ <span class="p">.</span><span class="n">IsWithin</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">45</span><span class="p">)</span>
+ <span class="p">.</span><span class="n">IsWithin</span><span class="p">(</span><span class="m">135</span><span class="p">,</span> <span class="m">225</span><span class="p">).</span><span class="n">True</span><span class="p">)</span> 
+<span class="p">{</span>
+ <span class="p">...</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="p">{...}</span>
+
+<span class="n">or</span>
+
+<span class="n">angle</span><span class="p">.</span><span class="n">If</span><span class="p">()</span>
+ <span class="p">.</span><span class="n">IsWithin</span><span class="p">(</span><span class="m">315</span><span class="p">,</span> <span class="m">360</span><span class="p">)</span>
+ <span class="p">.</span><span class="n">IsWithin</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">45</span><span class="p">)</span>
+ <span class="p">.</span><span class="n">IsWithin</span><span class="p">(</span><span class="m">135</span><span class="p">,</span> <span class="m">225</span><span class="p">).</span><span class="n">Then</span><span class="p">(</span><span class="n">a</span> <span class="p">=&gt;</span> <span class="p">{...}).</span><span class="n">Otherwise</span><span class="p">(</span><span class="n">a</span> <span class="p">=&gt;</span> <span class="p">{...});</span>
+
+</pre></div>
+
+<h4>
+<a name="custom-validation-with-lambda-expresions" class="anchor" href="#custom-validation-with-lambda-expresions"><span class="octicon octicon-link"></span></a>Custom validation with lambda expresions</h4>
+
+<div class="highlight highlight-c#"><pre><span class="kt">double</span> <span class="n">a</span><span class="p">=</span><span class="m">1.0</span><span class="p">,</span><span class="n">b</span><span class="p">=</span><span class="m">2.0</span><span class="p">,</span><span class="n">c</span><span class="p">=</span><span class="m">3.0</span><span class="p">;</span>
+<span class="n">a</span><span class="p">.</span><span class="n">If</span><span class="p">().</span><span class="n">IsFalse</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span> <span class="p">&gt;</span> <span class="n">b</span> <span class="p">&amp;&amp;</span> <span class="n">x</span> <span class="p">&lt;</span> <span class="n">c</span><span class="p">,</span> <span class="s">"a must be between b and c"</span><span class="p">).</span><span class="n">ThenThrow</span><span class="p">();</span>
+</pre></div>
+
+<ul>
+<li><em>Example output: Double a must be between b and c</em></li>
+</ul><h4>
+<a name="short-circuit-validation-default-for-isnull-check" class="anchor" href="#short-circuit-validation-default-for-isnull-check"><span class="octicon octicon-link"></span></a>Short circuit validation (default for isNull check)</h4>
+
+<div class="highlight highlight-c#"><pre><span class="kt">string</span> <span class="n">email</span> <span class="p">=</span> <span class="s">"some text"</span><span class="p">;</span>
+  <span class="n">email</span><span class="p">.</span><span class="n">If</span><span class="p">(</span><span class="s">"Email"</span><span class="p">)</span>
+    <span class="p">.</span><span class="n">IsNotValidEmail</span><span class="p">.</span><span class="n">StopIfNotValid</span>
+    <span class="p">.</span><span class="n">IsLongerThan</span><span class="p">(</span><span class="m">5</span><span class="p">).</span><span class="n">ThenThrow</span><span class="p">();</span>
+</pre></div>
+
+<ul>
+<li><em>Example output: Email must be a valid email address</em></li>
+</ul><h4>
+<a name="combine-validations-from-multiple-assertions-with-custom-separator" class="anchor" href="#combine-validations-from-multiple-assertions-with-custom-separator"><span class="octicon octicon-link"></span></a>Combine validations from multiple assertions with custom separator</h4>
+
+<div class="highlight highlight-c#"><pre><span class="n">DateTime</span> <span class="n">d1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">DateTime</span><span class="p">(</span><span class="m">2014</span><span class="p">,</span><span class="m">05</span><span class="p">,</span><span class="m">01</span><span class="p">);</span>
+<span class="n">DateTime</span> <span class="n">d2</span> <span class="p">=</span> <span class="k">new</span> <span class="n">DateTime</span><span class="p">(</span><span class="m">2014</span><span class="p">,</span><span class="m">05</span><span class="p">,</span><span class="m">10</span><span class="p">);</span>
+<span class="kt">string</span> <span class="n">s1</span> <span class="p">=</span> <span class="s">"abc"</span><span class="p">;</span>
+
+<span class="kt">var</span> <span class="n">ifDateNotValid</span> <span class="p">=</span> <span class="k">new</span> <span class="n">DateTime</span><span class="p">(</span><span class="m">2014</span><span class="p">,</span> <span class="m">05</span><span class="p">,</span> <span class="m">24</span><span class="p">).</span><span class="n">If</span><span class="p">().</span><span class="n">IsNotWithin</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">ifStringNotValid</span> <span class="p">=</span> <span class="n">s1</span><span class="p">.</span><span class="n">If</span><span class="p">(</span><span class="s">"abc"</span><span class="p">).</span><span class="n">IsShorterThan</span><span class="p">(</span><span class="m">4</span><span class="p">);</span>
+
+<span class="n">ifDateNotValid</span><span class="p">.</span><span class="n">Or</span><span class="p">(</span><span class="n">ifStringNotValid</span><span class="p">,</span> <span class="s">"&lt;br /&gt;"</span><span class="p">).</span><span class="n">ThenThrow</span><span class="p">();</span>
+</pre></div>
+
+<ul>
+<li><em>Example output: DateTime must be within 2014-05-01 00:00:00 and 2014-05-10 00:00:00 <br> abc must be longer than 3 characters</em></li>
+</ul><h4>
+<a name="how-to-add-your-own-validation-code-on-top-of-typeless" class="anchor" href="#how-to-add-your-own-validation-code-on-top-of-typeless"><span class="octicon octicon-link"></span></a>How to add your own validation code on top of TypeLess</h4>
+
+<p>Adding your own checks is easy. Just create an extension method for the assertion type you are interested in like this</p>
+
+<div class="highlight highlight-c#"><pre><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">PersonalNumber</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="n">IStringAssertion</span> <span class="nf">IsNotValidPersonalNumber</span><span class="p">(</span><span class="k">this</span> <span class="n">IStringAssertionU</span> <span class="n">source</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">source</span><span class="p">.</span><span class="n">Extend</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="n">AssertResult</span><span class="p">.</span><span class="n">New</span><span class="p">(!</span><span class="n">Luhn</span><span class="p">.</span><span class="n">IsValid</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">ToIntArray</span><span class="p">()),</span> <span class="n">Resources</span><span class="p">.</span><span class="n">IsNotValidPersonalNumber</span><span class="p">);</span>
+        <span class="p">});</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">IStringAssertion</span><span class="p">)</span><span class="n">source</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>This method extends the IStringAssertionU interface with a swedish personal number check for strings according to the
+Luhn algorithm. Note the U at the end of the interface and that it is not included in the return type. This is simply because the method should be available directly after the If() statement and not only after other assertions have been made. The Extend method will not show up in code completion but its there and it expects a function that receives the string (value) being checked and returns an AssertResult that takes the condition followed by the error message. Use &lt;name&gt; in the error message for replacement with parameter name</p>
+
+<p><strong>The following types can be extended</strong></p>
+
+<ul>
+<li>ITimeSpanAssertionU / ITimeSpanAssertion</li>
+<li>IStringAssertionU / IStringAssertion / IRegexAssertion</li>
+<li>INumberAssertionU / INumberAssertion</li>
+<li>INullableAssertionU / INullableAssertion</li>
+<li>IMixedTypeAssertionU / IMixedTypeAssertion</li>
+<li>IEnumerableAssertionU / IEnumerableAssertion</li>
+<li>IDictionaryAssertionU / IDictionaryAssertion</li>
+<li>IDateTimeAssertionU / IDateTimeAssertion</li>
+<li>IClassAssertionU / IClassAssertion</li>
+<li>IBoolAssertionU / IBoolAssertion</li>
+<li>IAssertionU / IAssertion</li>
+<li>IAssertionU / IAssertion / IAssertionOW</li>
+</ul><h3>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features:</h3>
+
+<ul>
+<li>Chain validation checks </li>
+<li>Short circuit validation </li>
+<li>Built as portable library</li>
+<li>Throw or get errors as text </li>
+<li>Merge multiple property validations into a single validation message</li>
+<li>Examines stack details to return row and file information when running in debug mode</li>
+<li>Easy to extend. Its built on extension methods, add your own extensions to extend with new validations.</li>
+<li>Throw your own exception types</li>
+<li>Supports nullable types</li>
+<li>Chain complex property validations</li>
+<li>Re-use predicates on other objects</li>
+<li>Can return number of validation errors</li>
+<li>Kind of fluent...</li>
+<li>Supports English and Swedish error messages (controlled by current culture) </li>
+</ul><h3>
+<a name="available-predefined-checks" class="anchor" href="#available-predefined-checks"><span class="octicon octicon-link"></span></a>Available (predefined) checks:</h3>
+
+<ul>
+<li>IsNull</li>
+<li>IsEmpty</li>
+<li>IsTrue</li>
+<li>IsFalse</li>
+<li>IsEmpty</li>
+<li>ContainsLessThan x elements</li>
+<li>ContainsMoreThan x elements</li>
+<li>IsZero</li>
+<li>IsNotEqualTo</li>
+<li>IsEqualTo</li>
+<li>IsSmallerThan</li>
+<li>IsGreaterThan</li>
+<li>IsPositive</li>
+<li>IsNegative</li>
+<li>IsEmptyOrWhitespace</li>
+<li>IsNotValidEmail</li>
+<li>IsShorterThan</li>
+<li>IsLongerThan</li>
+<li>DoesNotContainAlphaChars</li>
+<li>DoesNotContainDigit</li>
+<li>IsNotWithin </li>
+<li>DoesNotContain text</li>
+<li>DoesNotStartWith</li>
+<li>DoesNotEndWith</li>
+<li>SameDayAs + Not</li>
+<li>SameMonthAs + Not</li>
+<li>SameYearAs + Not</li>
+<li>SameHourAs + Not</li>
+<li>SameMinuteAs + Not</li>
+<li>SameSecondAs + Not</li>
+<li>SameWeekDayAs + Not</li>
+<li>Match + Not (regex matching)</li>
+<li>IsValidUrl + Not</li>
+<li>ContainsKey + Not</li>
+</ul><p>Extensions</p>
+
+<ul>
+<li>Shipping/IsValidIMO</li>
+<li>Sweden/IsValidPersonalNumber</li>
+<li>Us/IsValidPhoneNumber</li>
+<li>Us/IsValidSocialSecurityNumber</li>
+<li>Us/IsValidZipCode</li>
+</ul><h3>
+<a name="the-framework-target-profile-supports" class="anchor" href="#the-framework-target-profile-supports"><span class="octicon octicon-link"></span></a>The framework target profile supports</h3>
+
+<ul>
+<li>.Net</li>
+<li>Windows 8</li>
+<li>Windows Phone 8.1</li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">TypeLess maintained by <a href="https://github.com/jansater">jansater</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
