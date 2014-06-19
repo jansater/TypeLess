@@ -85,7 +85,7 @@ s1.If("s1").Or(s2, "s2").Or(s3, "s3").IsNull.ThenThrow().Otherwise(() => {...});
 ```
 string s1 = "some string";
 double d1 = 0;
-s1.If("s1").IsNull.Or(d1.IsGreaterThan(0)).ThenThrow();
+s1.If("s1").IsNull.Or(d1.If("d1").IsGreaterThan(0)).ThenThrow();
 ```
 
 **And of course you can use multiple checks as in the very unreal example below**
@@ -93,7 +93,7 @@ s1.If("s1").IsNull.Or(d1.IsGreaterThan(0)).ThenThrow();
 d1.If("1").Or(d2, "2").Or(d3, "3").IsSmallerThan(5).IsGreaterThan(0).ThenThrow();
 ```
 
-####And that is what you do with TypeLess! Nothing more, nothing less####
+####And that is what you do with TypeLess! Nothing more, nothing (but hopefully) less####
 
 **Example of output:**
 ``` c#
@@ -112,7 +112,7 @@ email.If("Email")
 email.If().IsNull.IsNotValidEmail.ThenThrow();
 ```
 
-**here is how you use custom error message (you can use <name> anywhere in the text to include the parameter name)**
+**here is how you use custom error message (you can use &lt;name&gt; anywhere in the text to include the parameter name)**
 ``` c#
 email.If("email").IsNull.IsNotValidEmail.ThenThrow("<name> was not a valid email address");
 ```
@@ -142,6 +142,7 @@ if (angle.If()
 {
  ...
 }
+else {...}
 
 or this would produce the same results
 
@@ -152,7 +153,14 @@ if (angle.If()
 {
  ...
 }
+else {...}
 
+or
+
+angle.If()
+ .IsWithin(315, 360)
+ .IsWithin(0, 45)
+ .IsWithin(135, 225).Then(a => {...}).Otherwise(a => {...});
 
 ```
 ####Custom validation with lambda expresions####
@@ -199,8 +207,21 @@ public static class PersonalNumber
 }
 ```
 This method extends the IStringAssertionU interface with a swedish personal number check for strings according to the
-Luhn algorithm. Note the U at the end of the interface and that it is not included in the return type. This is simply because the method should be available directly after the If() statement and not only after other assertions have been made. The Extend method will not show up in code completion but its there and it expects a function that receives the string (value) being checked and returns an AssertResult that takes the condition followed by the error message. Use <name> in the error message for replacement with parameter name
+Luhn algorithm. Note the U at the end of the interface and that it is not included in the return type. This is simply because the method should be available directly after the If() statement and not only after other assertions have been made. The Extend method will not show up in code completion but its there and it expects a function that receives the string (value) being checked and returns an AssertResult that takes the condition followed by the error message. Use &lt;name&gt; in the error message for replacement with parameter name
 
+**The following types can be extended**
+- ITimeSpanAssertionU / ITimeSpanAssertion
+- IStringAssertionU / IStringAssertion / IRegexAssertion
+- INumberAssertionU<T> / INumberAssertion<T>
+- INullableAssertionU<T> / INullableAssertion<T>
+- IMixedTypeAssertionU<T, U> / IMixedTypeAssertion<T, U>
+- IEnumerableAssertionU / IEnumerableAssertion
+- IDictionaryAssertionU<T1, T2> / IDictionaryAssertion<T1, T2>
+- IDateTimeAssertionU / IDateTimeAssertion
+- IClassAssertionU<T> / IClassAssertion<T>
+- IBoolAssertionU / IBoolAssertion
+- IAssertionU / IAssertion
+- IAssertionU<T> / IAssertion<T> / IAssertionOW<T>
 
 ###Features:###
 - Chain validation checks 
