@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace TypeLess.Helpers
 {
-    public class EnumerableTraverser 
+    public static class EnumerableTraverser 
     {
 
-        public TState Traverse<T, TState>(IEnumerable<T> enumeration, Action<int, T, T, TState> callback, TState state, bool traverseBackwards = false) where TState : class
+        public static TState Traverse<T, TState>(IEnumerable<T> enumeration, Action<int, T, T, TState> callback, ref TState state, bool traverseBackwards = false) where TState : class
         {
             if (enumeration == null || callback == null || enumeration.Count() <= 0) {
                 return state;
