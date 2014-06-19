@@ -52,6 +52,9 @@ namespace TypeLess
 
     public interface IAssertionU<T> : IAssertionU
     {
+        /// <summary>
+        /// Add a new assertion of a different type. Returns a mixed type assertion with only a few possible checks available.
+        /// </summary>
         IMixedTypeAssertionU<T, S> Or<S>(S obj, string withName = null) where S : class;
 
         /// <summary>
@@ -68,34 +71,82 @@ namespace TypeLess
         /// <param name="msgIfFalse">Message to return. Use <name> to include the parameter name in the string.</param>
         /// <returns></returns>
         IAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue);
+
+        /// <summary>
+        /// Checks whether the current Item is not equal to comparedTo
+        /// </summary>
         IAssertion<T> IsNotEqualTo(T comparedTo);
+
+        /// <summary>
+        /// Checks whether the current Item is equal to comparedTo
+        /// </summary>
         IAssertion<T> IsEqualTo(T comparedTo);
 
+        /// <summary>
+        /// Add the assertFunc to the validation chain
+        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         void Extend(Func<T, AssertResult> assertFunc);
     }
 
     public interface IAssertion : IAssertionU
     {
+        /// <summary>
+        /// Number of errors generated
+        /// </summary>
         int ErrorCount { get; }
+        /// <summary>
+        /// Skip checking further assertions
+        /// </summary>
         bool IgnoreFurtherChecks { get; }
+        /// <summary>
+        /// Return the current error message
+        /// </summary>
+        /// <param name="skipTrace">if set to <c>true</c> [skip trace].</param>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
         string ToString(bool skipTrace);
+        /// <summary>
+        /// Return the current error message
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
         string ToString();
+        /// <summary>
+        /// Add otherAssertion to the validation chain, use separator between
+        /// the two assertion error messages
+        /// </summary>
         IAssertion Or(IAssertion otherAssertion, string separator = ". ");
         
     }
 
     public interface IAssertionOW<T>
     {
+        /// <summary>
+        /// If no exception thrown, call action
+        /// </summary>
+        /// <param name="action">The action to run</param>
         void Otherwise(Action<T> action);
     }
 
-
     public interface IAssertion<T> : IAssertion, IAssertionU<T>
     {
+        /// <summary>
+        /// Add otherAssertion to the validation chain, use separator between
+        /// the two assertion error messages
+        /// </summary>
         IAssertion<T> Or<S>(IAssertion<S> otherAssertion, string separator = ". ");
-
+        /// <summary>
+        /// If the current validation chain is true then call action
+        /// </summary>
+        /// <param name="action">The method to call, T is the current Item</param>
         IAssertionOW<T> Then(Action<T> action);
+        /// <summary>
+        /// If the current validation chain is true then return the value from func
+        /// </summary>
+        /// <param name="func">The function to call, T is the current item. S is the type of value to return</param>
         S ThenReturn<S>(Func<T, S> func);
         /// <summary>
         /// Throws an argument null exception.
@@ -109,6 +160,14 @@ namespace TypeLess
         /// <param name="errorMsg">Override the system generated message with your own. Use <name> to include the paramater name in the message</param>
         /// <returns></returns>
         IAssertionOW<T> ThenThrow<E>(string errorMsg = null) where E : Exception;
+
+        /// <summary>
+        /// Tries to execute the specified try action.
+        /// </summary>
+        /// <param name="tryAction">The try action.</param>
+        /// <param name="catchAction">if the try fails catch action is called with the exception</param>
+        /// <param name="finallyAction">if set the finally action will always be called when the try/catch has run</param>
+        void Try(Action<T> tryAction, Action<Exception> catchAction, Action<T> finallyAction = null);
 
     }
 
@@ -440,6 +499,28 @@ namespace TypeLess
             action.If("action").IsNull.ThenThrow();
 
             action(Item);
+        }
+
+
+        public void Try(Action<T> tryAction, Action<Exception> catchAction, Action<T> finallyAction = null)
+        {
+            tryAction.If("tryAction")
+                .Or(catchAction, "catchAction")
+                .IsNull.ThenThrow();
+
+            try
+            {
+                tryAction(Item);
+            }
+            catch (Exception ex)
+            {
+                catchAction(ex);
+            }
+            finally {
+                if (finallyAction != null) {
+                    finallyAction(Item);
+                } 
+            }
         }
     }
 }

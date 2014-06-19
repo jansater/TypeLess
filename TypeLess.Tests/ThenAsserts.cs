@@ -18,6 +18,30 @@ namespace TypeLess.Tests
         }
 
         [Fact]
+        public void CallTryCatchFinally()
+        {
+            object o = null;
+
+            bool tryCalled = false;
+            bool catchCalled = false;
+            bool finallyCalled = false;
+
+            o.If().IsNull.Try(x =>
+            {
+                tryCalled = true;
+                var s = x.ToString();
+            }, ex =>
+            {
+                catchCalled = true;
+            }, x =>
+            {
+                finallyCalled = true;
+            });
+
+            Assert.True(tryCalled && catchCalled && finallyCalled);
+        }
+
+        [Fact]
         public void ThenCallsFuncOnTrue()
         {
             double d = 5;
