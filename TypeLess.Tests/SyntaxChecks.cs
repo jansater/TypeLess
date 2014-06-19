@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using TypeLess;
 using TypeLess.Extensions.Sweden;
 using TypeLess.DataTypes;
+using TypeLess.Helpers;
+using Xunit;
 
 namespace TypeLess.Tests
 {
@@ -39,6 +41,25 @@ namespace TypeLess.Tests
 
             });
 
+        }
+
+    }
+
+    public class TraverserChecks
+    {
+       
+        [Fact]
+        public void TraverseReturnsCorrectSum()
+        {
+            var s = new { Sum = 0 };
+
+            var total  = EnumerableTraverser.Traverse(new int[] { 1, 2, 4 }, (i, current, next, state) =>
+            {
+                state = new { Sum = state.Sum + current };
+                return state;
+            }, s);
+
+            Assert.True(total.Sum == 7);
         }
 
     }

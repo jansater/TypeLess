@@ -9,7 +9,7 @@ namespace TypeLess.Helpers
     public static class EnumerableTraverser 
     {
 
-        public static TState Traverse<T, TState>(IEnumerable<T> enumeration, Action<int, T, T, TState> callback, ref TState state, bool traverseBackwards = false) where TState : class
+        public static TState Traverse<T, TState>(IEnumerable<T> enumeration, Func<int, T, T, TState, TState> callback, TState state, bool traverseBackwards = false) where TState : class
         {
             if (enumeration == null || callback == null || enumeration.Count() <= 0) {
                 return state;
@@ -26,14 +26,14 @@ namespace TypeLess.Helpers
             {
                 for (int i = 0; i < len; i++)
                 {
-                    callback(i, enumeration.ElementAt(i), i == 0 ? default(T) : enumeration.ElementAt(i - 1), state);
+                    state = callback(i, enumeration.ElementAt(i), i == 0 ? default(T) : enumeration.ElementAt(i - 1), state);
                 }
                 return state;
             }
             else {
                 for (int i = len - 1; i >= 0; i--)
                 {
-                    callback(i, enumeration.ElementAt(i), i == (len - 1) ? default(T) : enumeration.ElementAt(i + 1), state);
+                    state = callback(i, enumeration.ElementAt(i), i == (len - 1) ? default(T) : enumeration.ElementAt(i + 1), state);
                 }
                 return state;
             }
