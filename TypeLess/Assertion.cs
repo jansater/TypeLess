@@ -177,15 +177,16 @@ namespace TypeLess
 #endif
     internal class Assertion<T> : TypeLess.IAssertion<T>, IAssertion, IAssertionOW<T>
     {
-        private StringBuilder _sb { get; set; }
+        protected internal StringBuilder _sb { get; set; }
         internal T Item { get; set; }
 
         internal string Name { get; set; }
-
+        protected  bool _isValid = false;
         private string _file;
         private int? _lineNr;
         private string _caller;
-        private List<Assertion<T>> _children = new List<Assertion<T>>();
+        protected  List<Assertion<T>> _children = new List<Assertion<T>>();
+        protected int _errorCount;
 
         public Assertion(string s, T source, string file, int? lineNumber, string caller)
         {
@@ -211,7 +212,7 @@ namespace TypeLess
                 _isValid = this._isValid,
                 _lineNr = this._lineNr,
             };
-            mixed._children.Add(this);
+            mixed._children.Add(this); 
             return mixed;
         }
 
@@ -317,7 +318,7 @@ namespace TypeLess
                 return this;
             }
 
-            if (Debugger.IsAttached && _errorCount != 0)
+            if (Debugger.IsAttached)
             {
                 throw new ArgumentNullException("", AppendTrace(errorMsg == null ?
                     String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name) : 
@@ -338,12 +339,12 @@ namespace TypeLess
 
         public string ToString(bool skipTrace)
         {
-            if (_errorCount <= 0)
+            if (!True)
             {
                 return String.Empty;
             }
 
-            if (Debugger.IsAttached && _errorCount != 0 && !skipTrace)
+            if (Debugger.IsAttached && !skipTrace)
             {
                 return AppendTrace(String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name));
             }
@@ -353,7 +354,7 @@ namespace TypeLess
             }
         }
 
-        private bool _isValid = false;
+        
         public bool True { get { return _isValid; } }
         public bool False { get { return !_isValid; } }
 
@@ -383,7 +384,7 @@ namespace TypeLess
             }
         }
 
-        private int _errorCount;
+       
 
         /// <summary>
         /// The number if validation errors.
@@ -483,7 +484,15 @@ namespace TypeLess
 
                     if (res != null && res.Message != null && res.IsValid)
                     {
-                        _sb.Append(". ").Append(String.Format(CultureInfo.InvariantCulture, res.Message.Replace("<name>", "{0}"), childAssertion.Name));
+                        _errorCount++;
+                        if (_sb.Length <= 0)
+                        {
+                            _sb.Append(String.Format(CultureInfo.InvariantCulture, res.Message.Replace("<name>", "{0}"), childAssertion.Name));
+                        }
+                        else {
+                            _sb.Append(". ").Append(String.Format(CultureInfo.InvariantCulture, res.Message.Replace("<name>", "{0}"), childAssertion.Name));
+                        }
+                        _isValid |= res.IsValid;
                     }
                     else if (res != null && !res.IsValid)
                     {

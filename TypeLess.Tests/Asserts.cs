@@ -43,6 +43,20 @@ namespace TypeLess.Tests
         }
 
         [Fact]
+        public void WhenOneOfMultipleObjectsIsNullThenOnlyMessageForOneIsReturned()
+        {
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                SomeClass o2 = null;
+                object o1 = new object();
+                
+                o2.If("o2").Or(o1, "o1").IsNull.ThenThrow();
+            });
+
+            Assert.True(res.Message.Equals("o2 is required"));
+        }
+
+        [Fact]
         public void WhenNullThenThrow()
         {
             var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
@@ -895,7 +909,7 @@ namespace TypeLess.Tests
                 .Or(s2, "s2")
                 .Or(d, "s3").IsNull.ToString();
 
-            Xunit.Assert.True(errMsg.Contains("1") && errMsg.Contains("2") && errMsg.Contains("3"));
+            Xunit.Assert.True(errMsg.Contains("s1") && errMsg.Contains("s2") && !errMsg.Contains("s3"));
 
         }
 
