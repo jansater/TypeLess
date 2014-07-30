@@ -63,14 +63,14 @@ namespace TypeLess
         /// <param name="assertFunc"></param>
         /// <param name="msgIfFalse">Message to return. Use <name> to include the parameter name in the string.</param>
         /// <returns></returns>
-        IAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse);
+        IAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse = null);
         /// <summary>
         /// Checks wether the given statement is false
         /// </summary>
         /// <param name="assertFunc"></param>
         /// <param name="msgIfFalse">Message to return. Use <name> to include the parameter name in the string.</param>
         /// <returns></returns>
-        IAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue);
+        IAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue = null);
 
         /// <summary>
         /// Checks whether the current Item is not equal to comparedTo
@@ -119,6 +119,7 @@ namespace TypeLess
         /// the two assertion error messages
         /// </summary>
         IAssertion Or(IAssertion otherAssertion, string separator = ". ");
+
         
     }
 
@@ -138,6 +139,7 @@ namespace TypeLess
         /// the two assertion error messages
         /// </summary>
         IAssertion<T> Or<S>(IAssertion<S> otherAssertion, string separator = ". ");
+
         /// <summary>
         /// If the current validation chain is true then call action
         /// </summary>
@@ -153,13 +155,13 @@ namespace TypeLess
         /// </summary>
         /// <param name="errorMsg">Override the system generated message with your own. Use <name> to include the paramater name in the message</param>
         /// <returns></returns>
-        IAssertionOW<T> ThenThrow(string errorMsg = null);
+        IAssertionOW<T> ThenThrow(string errorMsg = null, params object[] args);
         /// <summary>
         /// Throws an exception of type T.
         /// </summary>
         /// <param name="errorMsg">Override the system generated message with your own. Use <name> to include the paramater name in the message</param>
         /// <returns></returns>
-        IAssertionOW<T> ThenThrow<E>(string errorMsg = null) where E : Exception;
+        IAssertionOW<T> ThenThrow<E>(string errorMsg = null, params object[] args) where E : Exception;
 
         /// <summary>
         /// Tries to execute the specified try action.
@@ -288,11 +290,16 @@ namespace TypeLess
             return this;
         }
 
-        public IAssertionOW<T> ThenThrow<E>(string errorMsg = null) where E : Exception
+        public IAssertionOW<T> ThenThrow<E>(string errorMsg = null, params object[] args) where E : Exception
         {
             if (!True)
             {
                 return this;
+            }
+
+            if (errorMsg != null && args != null && args.Length > 0)
+            {
+                errorMsg = String.Format(CultureInfo.InvariantCulture, errorMsg, args);
             }
 
             if (Debugger.IsAttached)
@@ -311,11 +318,16 @@ namespace TypeLess
         /// Throws arg null instead of arg exception just because of the message created
         /// </summary>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public IAssertionOW<T> ThenThrow(string errorMsg = null)
+        public IAssertionOW<T> ThenThrow(string errorMsg = null, params object[] args)
         {
             if (!True)
             {
                 return this;
+            }
+
+            if (errorMsg != null && args != null && args.Length > 0)
+            {
+                errorMsg = String.Format(CultureInfo.InvariantCulture, errorMsg, args);
             }
 
             if (Debugger.IsAttached)

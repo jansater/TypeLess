@@ -18,8 +18,8 @@ namespace TypeLess
         IStringAssertion DoesNotContainAlphaChars { get; }
         IStringAssertion DoesNotContainDigit { get; }
         new IStringAssertion IsEqualTo(String comparedTo);
-        new IStringAssertion IsTrue(Func<string, bool> assertFunc, string msgIfFalse);
-        new IStringAssertion IsFalse(Func<string, bool> assertFunc, string msgIfTrue);
+        new IStringAssertion IsTrue(Func<string, bool> assertFunc, string msgIfFalse = null);
+        new IStringAssertion IsFalse(Func<string, bool> assertFunc, string msgIfTrue = null);
         new IStringAssertion IsNotEqualTo(string comparedTo);
 
         IStringAssertion IsValidUrl { get; }
@@ -34,6 +34,8 @@ namespace TypeLess
 
         IRegexAssertion Match(string regex, RegexOptions options = RegexOptions.None);
         IStringAssertion DoesNotMatch(string regex, RegexOptions options = RegexOptions.None);
+
+        
     }
 
     public interface IStringAssertion : IStringAssertionU, IAssertion<string>
@@ -175,12 +177,12 @@ namespace TypeLess
         }
 
 
-        public new IStringAssertion IsTrue(Func<string, bool> assertFunc, string msgIfFalse)
+        public new IStringAssertion IsTrue(Func<string, bool> assertFunc, string msgIfFalse = null)
         {
             return (IStringAssertion)base.IsTrue(assertFunc, msgIfFalse);
         }
 
-        public new IStringAssertion IsFalse(Func<string, bool> assertFunc, string msgIfTrue)
+        public new IStringAssertion IsFalse(Func<string, bool> assertFunc, string msgIfTrue = null)
         {
             return (IStringAssertion)base.IsFalse(assertFunc, msgIfTrue);
         }

@@ -13,8 +13,8 @@ namespace TypeLess
         IEnumerableAssertion ContainsMoreThan(int nElements);
         IEnumerableAssertionU Or(IEnumerable obj, string withName = null);
 
-        new IEnumerableAssertion IsTrue(Func<IEnumerable, bool> assertFunc, string msgIfFalse);
-        new IEnumerableAssertion IsFalse(Func<IEnumerable, bool> assertFunc, string msgIfTrue);
+        new IEnumerableAssertion IsTrue(Func<IEnumerable, bool> assertFunc, string msgIfFalse = null);
+        new IEnumerableAssertion IsFalse(Func<IEnumerable, bool> assertFunc, string msgIfTrue = null);
        
     }
 
@@ -79,12 +79,12 @@ namespace TypeLess
             return this;
         }
 
-        public new IEnumerableAssertion IsTrue(Func<IEnumerable, bool> assertFunc, string msgIfFalse)
+        public new IEnumerableAssertion IsTrue(Func<IEnumerable, bool> assertFunc, string msgIfFalse = null)
         {
             return (IEnumerableAssertion)base.IsTrue(assertFunc, msgIfFalse);
         }
 
-        public new IEnumerableAssertion IsFalse(Func<IEnumerable, bool> assertFunc, string msgIfTrue)
+        public new IEnumerableAssertion IsFalse(Func<IEnumerable, bool> assertFunc, string msgIfTrue = null)
         {
             return (IEnumerableAssertion)base.IsFalse(assertFunc, msgIfTrue);
         }

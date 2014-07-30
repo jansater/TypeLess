@@ -11,8 +11,8 @@ namespace TypeLess
     public interface ITimeSpanAssertionU : IAssertionU<TimeSpan> {
         ITimeSpanAssertion StopIfNotValid { get; }
         ITimeSpanAssertionU Or(TimeSpan obj, string withName = null);
-        new ITimeSpanAssertion IsTrue(Func<TimeSpan, bool> assertFunc, string msgIfFalse);
-        new ITimeSpanAssertion IsFalse(Func<TimeSpan, bool> assertFunc, string msgIfTrue);
+        new ITimeSpanAssertion IsTrue(Func<TimeSpan, bool> assertFunc, string msgIfFalse = null);
+        new ITimeSpanAssertion IsFalse(Func<TimeSpan, bool> assertFunc, string msgIfTrue = null);
         new ITimeSpanAssertion IsNotEqualTo(TimeSpan comparedTo);
         new ITimeSpanAssertion IsEqualTo(TimeSpan comparedTo);
         ITimeSpanAssertion IsLongerThan(TimeSpan span);
@@ -53,12 +53,12 @@ namespace TypeLess
             }
         }
 
-        public new ITimeSpanAssertion IsTrue(Func<TimeSpan, bool> assertFunc, string msgIfFalse)
+        public new ITimeSpanAssertion IsTrue(Func<TimeSpan, bool> assertFunc, string msgIfFalse = null)
         {
             return (ITimeSpanAssertion)base.IsTrue(assertFunc, msgIfFalse);
         }
 
-        public new ITimeSpanAssertion IsFalse(Func<TimeSpan, bool> assertFunc, string msgIfTrue)
+        public new ITimeSpanAssertion IsFalse(Func<TimeSpan, bool> assertFunc, string msgIfTrue = null)
         {
             return (ITimeSpanAssertion)base.IsFalse(assertFunc, msgIfTrue);
         }

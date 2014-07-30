@@ -15,8 +15,8 @@ namespace TypeLess
         IDateTimeAssertion IsBefore(DateTime date);
         IDateTimeAssertion IsAfter(DateTime date);
         IDateTimeAssertionU Or(DateTime obj, string withName = null);
-        new IDateTimeAssertion IsTrue(Func<DateTime, bool> assertFunc, string msgIfFalse);
-        new IDateTimeAssertion IsFalse(Func<DateTime, bool> assertFunc, string msgIfTrue);
+        new IDateTimeAssertion IsTrue(Func<DateTime, bool> assertFunc, string msgIfFalse = null);
+        new IDateTimeAssertion IsFalse(Func<DateTime, bool> assertFunc, string msgIfTrue = null);
         new IDateTimeAssertion IsNotEqualTo(DateTime comparedTo);
         new IDateTimeAssertion IsEqualTo(DateTime comparedTo);
 
@@ -106,12 +106,12 @@ namespace TypeLess
             return this;
         }
 
-        public new IDateTimeAssertion IsTrue(Func<DateTime, bool> assertFunc, string msgIfFalse)
+        public new IDateTimeAssertion IsTrue(Func<DateTime, bool> assertFunc, string msgIfFalse = null)
         {
             return (IDateTimeAssertion)base.IsTrue(assertFunc, msgIfFalse);
         }
 
-        public new IDateTimeAssertion IsFalse(Func<DateTime, bool> assertFunc, string msgIfTrue)
+        public new IDateTimeAssertion IsFalse(Func<DateTime, bool> assertFunc, string msgIfTrue = null)
         {
             return (IDateTimeAssertion)base.IsFalse(assertFunc, msgIfTrue);
         }

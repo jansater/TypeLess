@@ -241,6 +241,25 @@ namespace TypeLess.Tests
         }
 
         [Fact]
+        public void WhenIsFalseNoStringThenThrow()
+        {
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                string s = "";
+                s.If("s").IsFalse(x => false).ThenThrow("s must be true i guess");
+            });
+
+            Assert.True(res.Message.StartsWith("s must be true i guess"));
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                string s = "d";
+                s.If().IsFalse(x => true).ThenThrow();
+
+            });
+        }
+
+        [Fact]
         public void WhenIsEmptyThenThrow()
         {
             var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
@@ -399,7 +418,40 @@ namespace TypeLess.Tests
                 i.If().IsSmallerThan(0).ThenThrow();
             });
 
+            int requestId = 1;
+            int userId = 3;
+
+            Xunit.Assert.DoesNotThrow(() =>
+            {
+                requestId.If("request id").Or(userId, "user id").IsSmallerThan(1).ThenThrow();
+            });
         }
+
+        //[Fact]
+        //public void WhenSmallerThanOrEqualToThenThrow()
+        //{
+        //    var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
+        //    {
+        //        int i = 1;
+        //        i.If("s").IsSmallerThan(2).ThenThrow();
+        //    });
+
+        //    Assert.True(res.Message.StartsWith("s must be greater than 2"));
+
+        //    Xunit.Assert.DoesNotThrow(() =>
+        //    {
+        //        int i = 1;
+        //        i.If().IsSmallerThan(0).ThenThrow();
+        //    });
+
+        //    int requestId = 1;
+        //    int userId = 3;
+
+        //    Xunit.Assert.DoesNotThrow(() =>
+        //    {
+        //        requestId.If("request id").Or(userId, "user id").IsSmallerThan(1).ThenThrow();
+        //    });
+        //}
 
         [Fact]
         public void WhenLargerThanThenThrow()
@@ -914,6 +966,25 @@ namespace TypeLess.Tests
         }
 
         [Fact]
+        public void ErrorMsgCanProcessArgs()
+        {
+            var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
+                (1 == 0).If("expr").IsFalse.ThenThrow("1 must be equal to {0}", 0);
+            });
+
+            Assert.True(res.Message.StartsWith("1 must be equal to 0"));
+
+            var res2 = Xunit.Assert.Throws<SomeException>(() =>
+            {
+                (1 == 0).If("expr").IsFalse.ThenThrow<SomeException>("1 must be equal to {0}", 2);
+            });
+
+            Assert.True(res2.Message.StartsWith("1 must be equal to 2"));
+
+        }
+
+        [Fact]
         public void AnyAssertWorksForDoubles()
         {
 
@@ -1079,5 +1150,7 @@ namespace TypeLess.Tests
             });
 
         }
+
+     
     }
 }

@@ -15,8 +15,8 @@ namespace TypeLess
         IClassAssertion<T> IsInvalid { get; }
         IClassAssertion<T> IsNull { get; }
         IClassAssertion<T> IsNotNull { get; }
-        new IClassAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse);
-        new IClassAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue);
+        new IClassAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse = null);
+        new IClassAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue = null);
         new IClassAssertion<T> IsNotEqualTo(T comparedTo);
         new IClassAssertion<T> IsEqualTo(T comparedTo);
         IClassAssertion<T> IsNotEqualTo<S>(S comparedTo);
@@ -163,12 +163,12 @@ namespace TypeLess
 
         }
 
-        public new IClassAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse)
+        public new IClassAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse = null)
         {
             return (IClassAssertion<T>)base.IsTrue(assertFunc, msgIfFalse);
         }
 
-        public new IClassAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue)
+        public new IClassAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue = null)
         {
             return (IClassAssertion<T>)base.IsFalse(assertFunc, msgIfTrue);
         }

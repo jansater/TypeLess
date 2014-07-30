@@ -61,7 +61,9 @@
     <Compile Include="Data\StoredProcedure.cs" />
     <Compile Include="Data\StoredProcedureBuilder.cs" />
     <Compile Include="Helpers\DateHelper.cs" />
+    <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\LinqExtensions.cs" />
+    <Compile Include="Helpers\SimpleLog.cs" />
     <Compile Include="Helpers\SecurityHelper.cs" />
     <Compile Include="Other\Dynamic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
