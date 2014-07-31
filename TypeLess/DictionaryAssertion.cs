@@ -15,8 +15,8 @@ namespace TypeLess
         IDictionaryAssertion<T1, T2> IsEmpty { get; }
         IDictionaryAssertionU<T1, T2> Or(IDictionary<T1, T2> obj, string withName = null);
 
-        new IDictionaryAssertion<T1, T2> IsTrue(Func<IDictionary<T1, T2>, bool> assertFunc, string msgIfFalse = null);
-        new IDictionaryAssertion<T1, T2> IsFalse(Func<IDictionary<T1, T2>, bool> assertFunc, string msgIfTrue = null);
+        new IDictionaryAssertion<T1, T2> IsTrue(Func<IDictionary<T1, T2>, bool> assertFunc, string errMsg = null);
+        new IDictionaryAssertion<T1, T2> IsFalse(Func<IDictionary<T1, T2>, bool> assertFunc, string errMsg = null);
 
         IDictionaryAssertion<T1, T2> ContainsKey(T1 key);
         IDictionaryAssertion<T1, T2> DoesNotContainKey(T1 key);
@@ -75,14 +75,14 @@ namespace TypeLess
             return this;
         }
 
-        public new IDictionaryAssertion<T1, T2> IsTrue(Func<IDictionary<T1, T2>, bool> assertFunc, string msgIfFalse = null)
+        public new IDictionaryAssertion<T1, T2> IsTrue(Func<IDictionary<T1, T2>, bool> assertFunc, string errMsg = null)
         {
-            return (IDictionaryAssertion<T1, T2>)base.IsTrue(assertFunc, msgIfFalse);
+            return (IDictionaryAssertion<T1, T2>)base.IsTrue(assertFunc, errMsg);
         }
 
-        public new IDictionaryAssertion<T1, T2> IsFalse(Func<IDictionary<T1, T2>, bool> assertFunc, string msgIfTrue = null)
+        public new IDictionaryAssertion<T1, T2> IsFalse(Func<IDictionary<T1, T2>, bool> assertFunc, string errMsg = null)
         {
-            return (IDictionaryAssertion<T1, T2>)base.IsFalse(assertFunc, msgIfTrue);
+            return (IDictionaryAssertion<T1, T2>)base.IsFalse(assertFunc, errMsg);
         }
 
         public IDictionaryAssertion<T1, T2> ContainsKey(T1 key)

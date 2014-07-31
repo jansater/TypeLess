@@ -213,7 +213,7 @@ namespace TypeLess
             return new Assertion<T>(name ?? GetTypeName(typeof(T)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
-        internal static IAssertion<T> IsTrue<T>(this Assertion<T> source, Func<T, bool> assertFunc, string msgIfFalse = null)
+        internal static IAssertion<T> IsTrue<T>(this Assertion<T> source, Func<T, bool> assertFunc, string errMsg = null)
         {
             if (assertFunc == null)
             {
@@ -223,21 +223,21 @@ namespace TypeLess
             
             source.Extend(x =>
             {
-                if (msgIfFalse == null)
+                if (errMsg == null)
                 {
-                    return AssertResult.New(assertFunc(source.Item), msgIfFalse);
+                    return AssertResult.New(assertFunc(source.Item), errMsg);
                 }
                 else {
-                    msgIfFalse = msgIfFalse.Replace("<name>", "{0}");
+                    errMsg = errMsg.Replace("<name>", "{0}");
                     return AssertResult.New(assertFunc(source.Item),
-                        String.Format(CultureInfo.InvariantCulture, msgIfFalse, source.Name));
+                        String.Format(CultureInfo.InvariantCulture, errMsg, source.Name));
                 }
                 
             });
             return source;
         }
 
-        internal static IAssertion<T> IsFalse<T>(this Assertion<T> source, Func<T, bool> assertFunc, string msgIfTrue)
+        internal static IAssertion<T> IsFalse<T>(this Assertion<T> source, Func<T, bool> assertFunc, string errMsg)
         {
             if (assertFunc == null)
             {
@@ -248,13 +248,13 @@ namespace TypeLess
 
             source.Extend(x =>
             {
-                if (msgIfTrue == null)
+                if (errMsg == null)
                 {
-                    return AssertResult.New(!assertFunc(x), msgIfTrue);
+                    return AssertResult.New(!assertFunc(x), errMsg);
                 }
                 else {
-                    msgIfTrue = msgIfTrue.Replace("<name>", "{0}");
-                    return AssertResult.New(!assertFunc(x), String.Format(CultureInfo.InvariantCulture, msgIfTrue, source.Name));
+                    errMsg = errMsg.Replace("<name>", "{0}");
+                    return AssertResult.New(!assertFunc(x), String.Format(CultureInfo.InvariantCulture, errMsg, source.Name));
                 }
                 
             });

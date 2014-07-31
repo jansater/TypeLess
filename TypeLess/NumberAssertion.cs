@@ -20,8 +20,8 @@ namespace TypeLess
         INumberAssertion<T> IsWithin(T min, T max);
         INumberAssertionU<T> Or(T obj, string withName = null);
 
-        new INumberAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse = null);
-        new INumberAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue = null);
+        new INumberAssertion<T> IsTrue(Func<T, bool> assertFunc, string errMsg = null);
+        new INumberAssertion<T> IsFalse(Func<T, bool> assertFunc, string errMsg = null);
 
         INumberAssertion<T> IsSmallerThan(T comparedTo);
         INumberAssertion<T> IsGreaterThan(T comparedTo);
@@ -157,14 +157,14 @@ namespace TypeLess
             return this;
         }
 
-        public new INumberAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse = null)
+        public new INumberAssertion<T> IsTrue(Func<T, bool> assertFunc, string errMsg = null)
         {
-            return (INumberAssertion<T>)base.IsTrue(assertFunc, msgIfFalse);
+            return (INumberAssertion<T>)base.IsTrue(assertFunc, errMsg);
         }
 
-        public new INumberAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue = null)
+        public new INumberAssertion<T> IsFalse(Func<T, bool> assertFunc, string errMsg = null)
         {
-            return (INumberAssertion<T>)base.IsFalse(assertFunc, msgIfTrue);
+            return (INumberAssertion<T>)base.IsFalse(assertFunc, errMsg);
         }
 
         public new INumberAssertion<T> IsNotEqualTo(T comparedTo)

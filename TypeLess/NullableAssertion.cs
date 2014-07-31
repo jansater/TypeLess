@@ -13,8 +13,8 @@ namespace TypeLess
         INullableAssertion<T> IsNotNull { get; }
         INullableAssertionU<T> Or(T? obj, string withName = null);
 
-        new INullableAssertion<T> IsTrue(Func<T?, bool> assertFunc, string msgIfFalse = null);
-        new INullableAssertion<T> IsFalse(Func<T?, bool> assertFunc, string msgIfTrue = null);
+        new INullableAssertion<T> IsTrue(Func<T?, bool> assertFunc, string errMsg = null);
+        new INullableAssertion<T> IsFalse(Func<T?, bool> assertFunc, string errMsg = null);
         new INullableAssertion<T> IsNotEqualTo(T? comparedTo);
         new INullableAssertion<T> IsEqualTo(T? comparedTo);
     }
@@ -96,14 +96,14 @@ namespace TypeLess
             return this;
         }
 
-        public new INullableAssertion<T> IsTrue(Func<T?, bool> assertFunc, string msgIfFalse = null)
+        public new INullableAssertion<T> IsTrue(Func<T?, bool> assertFunc, string errMsg = null)
         {
-            return (INullableAssertion<T>)base.IsTrue(assertFunc, msgIfFalse);
+            return (INullableAssertion<T>)base.IsTrue(assertFunc, errMsg);
         }
 
-        public new INullableAssertion<T> IsFalse(Func<T?, bool> assertFunc, string msgIfTrue = null)
+        public new INullableAssertion<T> IsFalse(Func<T?, bool> assertFunc, string errMsg = null)
         {
-            return (INullableAssertion<T>)base.IsFalse(assertFunc, msgIfTrue);
+            return (INullableAssertion<T>)base.IsFalse(assertFunc, errMsg);
         }
 
         public new INullableAssertion<T> IsNotEqualTo(T? comparedTo)

@@ -63,14 +63,14 @@ namespace TypeLess
         /// <param name="assertFunc"></param>
         /// <param name="msgIfFalse">Message to return. Use <name> to include the parameter name in the string.</param>
         /// <returns></returns>
-        IAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse = null);
+        IAssertion<T> IsTrue(Func<T, bool> assertFunc, string errMsg = null);
         /// <summary>
         /// Checks wether the given statement is false
         /// </summary>
         /// <param name="assertFunc"></param>
         /// <param name="msgIfFalse">Message to return. Use <name> to include the parameter name in the string.</param>
         /// <returns></returns>
-        IAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue = null);
+        IAssertion<T> IsFalse(Func<T, bool> assertFunc, string errMsg = null);
 
         /// <summary>
         /// Checks whether the current Item is not equal to comparedTo
@@ -428,14 +428,14 @@ namespace TypeLess
             }
         }
 
-        public IAssertion<T> IsTrue(Func<T, bool> assertFunc, string msgIfFalse)
+        public IAssertion<T> IsTrue(Func<T, bool> assertFunc, string errMsg)
         {
-            return AssertExtensions.IsTrue(this, assertFunc, msgIfFalse);
+            return AssertExtensions.IsTrue(this, assertFunc, errMsg);
         }
 
-        public IAssertion<T> IsFalse(Func<T, bool> assertFunc, string msgIfTrue)
+        public IAssertion<T> IsFalse(Func<T, bool> assertFunc, string errMsg)
         {
-            return AssertExtensions.IsFalse(this, assertFunc, msgIfTrue);
+            return AssertExtensions.IsFalse(this, assertFunc, errMsg);
         }
 
         public IAssertion<T> IsNotEqualTo(T comparedTo)
