@@ -46,6 +46,7 @@
     <Compile Include="ExtensionAsserts.cs" />
     <Compile Include="AsAsserts.cs" />
     <Compile Include="SomeException.cs" />
+    <Compile Include="ObjectAssertionTest.cs" />
     <Compile Include="ThenAsserts.cs" />
     <Compile Include="Asserts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

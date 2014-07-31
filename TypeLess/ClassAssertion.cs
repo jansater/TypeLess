@@ -113,37 +113,17 @@ namespace TypeLess
                 {
                     if (x != null)
                     {
-                        StringBuilder sb = new StringBuilder();
+                        string errMsg = null;
                         int errCount = 0;
                         dynamic d = x;
                         try
                         {
                             ObjectAssertion classAssertions = null;
-                            try
-                            {
-                                classAssertions = d.IsInvalid() as ObjectAssertion;
-                            }
-                            catch (Exception)
-                            {
-                                throw;
-                            }
+                            classAssertions = d.IsInvalid() as ObjectAssertion;
                             
                             if (classAssertions != null)
                             {
-                                foreach (var item in classAssertions.Assertions)
-                                {
-                                    var s = item.ToString(skipTrace: true);
-                                    if (errCount > 0 && !String.IsNullOrWhiteSpace(s))
-                                    {
-                                        sb.Append(" and ").Append(s);
-                                        errCount += item.ErrorCount;
-                                    }
-                                    else {
-                                        errCount += item.ErrorCount;
-                                        sb.Append(s);
-                                    }
-                                    
-                                }
+                                errMsg = classAssertions.ToString(out errCount);     
                             }
                         }
                         catch (RuntimeBinderException)
@@ -151,7 +131,7 @@ namespace TypeLess
                             throw new System.MissingMemberException("You must define method public ObjectAssertion IsInvalid() {} in class " + typeof(T).Name);
                         }
 
-                        return AssertResult.New(errCount > 0, sb.ToString());
+                        return AssertResult.New(errCount > 0, errMsg);
                     }
                     else {
                         return AssertResult.New(x.If().IsNull.True, Name + " must not be null");
