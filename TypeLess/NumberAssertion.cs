@@ -29,6 +29,14 @@ namespace TypeLess
         INumberAssertion<T> IsGreaterThanOrEqualTo(T comparedTo);
         new INumberAssertion<T> IsNotEqualTo(T comparedTo);
         new INumberAssertion<T> IsEqualTo(T comparedTo);
+
+        /// <summary>
+        /// Expect statements to test validity. This effects how error messages are added. In the normal case this property is false and 
+        /// assertion methods are expected to test against a negative statement such as if x is smaller than or equal to 0 then throw e.
+        /// This means that the error message is added when the statement is true. This property will inverse so that error messages are added
+        /// when the statement is false so when you check x == 0 then the error message is added when x is not 0
+        /// </summary>
+        new INumberAssertion<T> EvalPositive { get; }
     }
 
     public interface INumberAssertion<T> : IAssertion<T>, INumberAssertionU<T> where T : struct, IComparable<T>
@@ -177,5 +185,9 @@ namespace TypeLess
             return (INumberAssertion<T>)base.IsEqualTo(comparedTo);
         }
 
+        public new INumberAssertion<T> EvalPositive
+        {
+            get { return (INumberAssertion<T>)base.EvalPositive; }
+        }
     }
 }

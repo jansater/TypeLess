@@ -48,6 +48,8 @@ namespace TypeLess
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         void ClearErrorMsg();
+
+
     }
 
     public interface IAssertionU<T> : IAssertionU
@@ -87,6 +89,14 @@ namespace TypeLess
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         void Extend(Func<T, AssertResult> assertFunc);
+
+        /// <summary>
+        /// Expect statements to test validity. This effects how error messages are added. In the normal case this property is false and 
+        /// assertion methods are expected to test against a negative statement such as if x is smaller than or equal to 0 then throw e.
+        /// This means that the error message is added when the statement is true. This property will inverse so that error messages are added
+        /// when the statement is false so when you check x == 0 then the error message is added when x is not 0
+        /// </summary>
+        IAssertionU<T> EvalPositive { get; }
     }
 
     public interface IAssertion : IAssertionU
@@ -120,7 +130,7 @@ namespace TypeLess
         /// </summary>
         IAssertion Or(IAssertion otherAssertion, string separator = ". ");
 
-        
+
     }
 
     public interface IAssertionOW<T>
@@ -189,6 +199,7 @@ namespace TypeLess
         private string _caller;
         protected  List<Assertion<T>> _children = new List<Assertion<T>>();
         protected int _errorCount;
+        protected bool _evalPositive = false;
 
         public Assertion(string s, T source, string file, int? lineNumber, string caller)
         {
@@ -214,8 +225,18 @@ namespace TypeLess
                 _isValid = this._isValid,
                 _lineNr = this._lineNr,
             };
-            mixed._children.Add(this); 
+            mixed._children.Add(this);
             return mixed;
+        }
+
+        public IAssertionU<T> EvalPositive
+        {
+            get
+            {
+                _isValid = true;
+                _evalPositive = true;
+                return this;
+            }
         }
 
         /// <summary>
@@ -224,10 +245,11 @@ namespace TypeLess
         /// <param name="assertion"></param>
         internal void AddWithOr(Assertion<T> assertion)
         {
-            if (assertion == null) {
+            if (assertion == null)
+            {
                 throw new ArgumentNullException("assertion is required");
             }
-            
+
             _children.Add(assertion);
         }
 
@@ -333,13 +355,13 @@ namespace TypeLess
             if (Debugger.IsAttached)
             {
                 throw new ArgumentNullException("", AppendTrace(errorMsg == null ?
-                    String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name) : 
+                    String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name) :
                     String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)));
             }
             else
             {
                 throw new ArgumentNullException("", errorMsg == null ?
-                    String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name) : 
+                    String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name) :
                     String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name));
             }
         }
@@ -351,7 +373,7 @@ namespace TypeLess
 
         public string ToString(bool skipTrace)
         {
-            if (!True)
+            if ((!True && !_evalPositive) || (True && _evalPositive))
             {
                 return String.Empty;
             }
@@ -366,7 +388,7 @@ namespace TypeLess
             }
         }
 
-        
+
         public bool True { get { return _isValid; } }
         public bool False { get { return !_isValid; } }
 
@@ -396,7 +418,7 @@ namespace TypeLess
             }
         }
 
-       
+
 
         /// <summary>
         /// The number if validation errors.
@@ -412,10 +434,11 @@ namespace TypeLess
 
         internal void Append(string s)
         {
-            if (String.IsNullOrWhiteSpace(s)) {
+            if (String.IsNullOrWhiteSpace(s))
+            {
                 return;
-            } 
-            
+            }
+
             _errorCount++;
 
             if (_errorCount <= 1)
@@ -480,13 +503,20 @@ namespace TypeLess
 
             var s = assertFunc(Item);
 
-            if (s != null && s.Message != null && s.IsValid)
+            if (s != null && s.Message != null && ((!_evalPositive && s.IsValid) || (_evalPositive && !s.IsValid)))
             {
                 Append(s.Message);
             }
-            
-            _isValid |= s.IsValid;
-                
+
+            if (!_evalPositive)
+            {
+                //default
+                _isValid |= s.IsValid;
+            }
+            else {
+                _isValid &= s.IsValid;
+            }
+
             foreach (var child in _children)
             {
                 if (child is Assertion<T>)
@@ -494,17 +524,28 @@ namespace TypeLess
                     var childAssertion = (Assertion<T>)child;
                     var res = assertFunc(childAssertion.Item);
 
-                    if (res != null && res.Message != null && res.IsValid)
+                    if (res != null && res.Message != null && ((!_evalPositive && res.IsValid) || (_evalPositive && !res.IsValid)))
                     {
                         _errorCount++;
                         if (_sb.Length <= 0)
                         {
                             _sb.Append(String.Format(CultureInfo.InvariantCulture, res.Message.Replace("<name>", "{0}"), childAssertion.Name));
                         }
-                        else {
+                        else
+                        {
                             _sb.Append(". ").Append(String.Format(CultureInfo.InvariantCulture, res.Message.Replace("<name>", "{0}"), childAssertion.Name));
                         }
-                        _isValid |= res.IsValid;
+
+                        if (!_evalPositive)
+                        {
+                            //default
+                            _isValid |= res.IsValid;
+                        }
+                        else
+                        {
+                            _isValid &= res.IsValid;
+                        }
+                        
                     }
                     else if (res != null && !res.IsValid)
                     {
@@ -537,10 +578,12 @@ namespace TypeLess
             {
                 catchAction(ex);
             }
-            finally {
-                if (finallyAction != null) {
+            finally
+            {
+                if (finallyAction != null)
+                {
                     finallyAction(Item);
-                } 
+                }
             }
         }
     }

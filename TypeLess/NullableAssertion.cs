@@ -17,6 +17,13 @@ namespace TypeLess
         new INullableAssertion<T> IsFalse(Func<T?, bool> assertFunc, string errMsg = null);
         new INullableAssertion<T> IsNotEqualTo(T? comparedTo);
         new INullableAssertion<T> IsEqualTo(T? comparedTo);
+        /// <summary>
+        /// Expect statements to test validity. This effects how error messages are added. In the normal case this property is false and 
+        /// assertion methods are expected to test against a negative statement such as if x is smaller than or equal to 0 then throw e.
+        /// This means that the error message is added when the statement is true. This property will inverse so that error messages are added
+        /// when the statement is false so when you check x == 0 then the error message is added when x is not 0
+        /// </summary>
+        new INullableAssertion<T> EvalPositive { get; }
     }
 
     public interface INullableAssertion<T> : IAssertion<T?>, INullableAssertionU<T> where T : struct
@@ -114,6 +121,12 @@ namespace TypeLess
         public new INullableAssertion<T> IsEqualTo(T? comparedTo)
         {
             return (INullableAssertion<T>)base.IsEqualTo(comparedTo);
+        }
+
+
+        public new INullableAssertion<T> EvalPositive
+        {
+            get { return (INullableAssertion<T>)base.EvalPositive; }
         }
     }
 }

@@ -15,7 +15,14 @@ namespace TypeLess
 
         new IEnumerableAssertion IsTrue(Func<IEnumerable, bool> assertFunc, string errMsg = null);
         new IEnumerableAssertion IsFalse(Func<IEnumerable, bool> assertFunc, string errMsg = null);
-       
+
+        /// <summary>
+        /// Expect statements to test validity. This effects how error messages are added. In the normal case this property is false and 
+        /// assertion methods are expected to test against a negative statement such as if x is smaller than or equal to 0 then throw e.
+        /// This means that the error message is added when the statement is true. This property will inverse so that error messages are added
+        /// when the statement is false so when you check x == 0 then the error message is added when x is not 0
+        /// </summary>
+        new IEnumerableAssertion EvalPositive { get; }
     }
 
     public interface IEnumerableAssertion : IEnumerableAssertionU, IAssertion<IEnumerable>
@@ -99,5 +106,11 @@ namespace TypeLess
             return (IEnumerableAssertion)base.IsEqualTo(comparedTo);
         }
 
+
+
+        public new IEnumerableAssertion EvalPositive
+        {
+            get { return (IEnumerableAssertion)base.EvalPositive; }
+        }
     }
 }

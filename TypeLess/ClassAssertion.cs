@@ -21,6 +21,13 @@ namespace TypeLess
         new IClassAssertion<T> IsEqualTo(T comparedTo);
         IClassAssertion<T> IsNotEqualTo<S>(S comparedTo);
         IClassAssertion<T> IsEqualTo<S>(S comparedTo);
+        /// <summary>
+        /// Expect statements to test validity. This effects how error messages are added. In the normal case this property is false and 
+        /// assertion methods are expected to test against a negative statement such as if x is smaller than or equal to 0 then throw e.
+        /// This means that the error message is added when the statement is true. This property will inverse so that error messages are added
+        /// when the statement is false so when you check x == 0 then the error message is added when x is not 0
+        /// </summary>
+        new IClassAssertion<T> EvalPositive { get; }
     }
 
     public interface IClassAssertion<T> : IClassAssertionU<T>, IAssertion<T> where T : class
@@ -190,6 +197,14 @@ namespace TypeLess
                 return AssertResult.New(x.Equals(comparedTo), Resources.IsEqualTo, comparedTo == null ? "null" : comparedTo.ToString());
             });
             return this;
+        }
+
+
+        public new IClassAssertion<T> EvalPositive
+        {
+            get {
+                return (IClassAssertion<T>)base.EvalPositive;
+            }
         }
     }
 }

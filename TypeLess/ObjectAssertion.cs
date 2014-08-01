@@ -1,15 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TypeLess
 {
-
+#if !DEBUG
+    [DebuggerStepThrough]
+#endif
     public class ObjectAssertion
     {
-        public IEnumerable<IAssertion> Assertions { get; set; }
+        private List<IAssertion> _assertions = new List<IAssertion>();
+
+        public IEnumerable<IAssertion> Assertions { get {
+            return _assertions;
+        }
+            set {
+                if (value == null)
+                {
+                    _assertions = null;
+                }
+                else {
+                    _assertions = value.ToList();
+                }
+            }
+        }
 
         public ObjectAssertion(params IAssertion[] assertions)
         {
@@ -18,14 +35,31 @@ namespace TypeLess
                 throw new ArgumentNullException("assertions");
             }
 
-            this.Assertions = assertions;
+            _assertions.AddRange(assertions);
         }
+
+        public void AddAssertions(params IAssertion[] assertions) { 
+            if (assertions == null)
+            {
+                throw new ArgumentNullException("assertions");
+            }
+
+             _assertions.AddRange(assertions);
+        }
+
+        public void RemoveAssertion(IAssertion assertion) {
+            if (assertion == null)
+            {
+                throw new ArgumentNullException("assertions");
+            }
+            _assertions.Remove(assertion);
+        } 
 
         public static ObjectAssertion New(params IAssertion[] assertions)
         {
-            if (assertions == null || !assertions.Any())
+            if (assertions == null)
             {
-                throw new ArgumentNullException("You must at least define 1 assertion");
+                throw new ArgumentNullException("assertions");
             }
 
             return new ObjectAssertion(assertions);
@@ -102,6 +136,9 @@ namespace TypeLess
         {
             if (False)
             {
+                //this means that at least 1 of the business rules are invalid = false ... and we only want to get that message in our exeption
+                //but as defined in the rest of the lib ToString only contains messages when the condition is invalid ... so tostring in this case returns 
+                //the wrong information
                 throw (Exception)Activator.CreateInstance(typeof(TException), new object[] { ToString() });
             }
         }

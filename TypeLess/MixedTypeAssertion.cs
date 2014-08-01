@@ -9,7 +9,7 @@ using TypeLess.Properties;
 
 namespace TypeLess
 {
-    public interface IMixedTypeAssertionU<T, U> : IAssertionU<T> 
+    public interface IMixedTypeAssertionU<T, U> : IAssertionU<T>
         where U : class
     {
         IMixedTypeAssertion<T, U> IsInvalid { get; }
@@ -17,12 +17,19 @@ namespace TypeLess
         IMixedTypeAssertion<T, U> IsNotNull { get; }
         IMixedTypeAssertion<T, U> IsNotEqualTo<S>(S comparedTo);
         IMixedTypeAssertion<T, U> IsEqualTo<S>(S comparedTo);
+        /// <summary>
+        /// Expect statements to test validity. This effects how error messages are added. In the normal case this property is false and 
+        /// assertion methods are expected to test against a negative statement such as if x is smaller than or equal to 0 then throw e.
+        /// This means that the error message is added when the statement is true. This property will inverse so that error messages are added
+        /// when the statement is false so when you check x == 0 then the error message is added when x is not 0
+        /// </summary>
+        new IMixedTypeAssertion<T, U> EvalPositive { get; }
     }
 
     public interface IMixedTypeAssertion<T, U> : IMixedTypeAssertionU<T, U>, IAssertion<T>
         where U : class
-    { 
-        
+    {
+
     }
 
 #if !DEBUG
@@ -34,8 +41,9 @@ namespace TypeLess
         private U _newType = null;
 
         public MixedTypeAssertion(string s, T source, U source2)
-            :base (s, source, null, null, null) {
-                _newType = source2;
+            : base(s, source, null, null, null)
+        {
+            _newType = source2;
         }
 
         public IMixedTypeAssertion<T, U> Combine(IMixedTypeAssertion<T, U> otherAssertion)
@@ -45,7 +53,8 @@ namespace TypeLess
 
         public new IMixedTypeAssertion<T, U> StopIfNotValid
         {
-            get {
+            get
+            {
                 base.IgnoreFurtherChecks = true;
                 return this;
             }
@@ -60,12 +69,20 @@ namespace TypeLess
 
             var s = assertFunc(Item, typeof(U));
 
-            if (s != null && s.Message != null && s.IsValid)
+            if (s != null && s.Message != null && ((!_evalPositive && s.IsValid) || (_evalPositive && !s.IsValid)))
             {
                 Append(s.Message);
             }
 
-            base._isValid |= s.IsValid;
+            if (!_evalPositive)
+            {
+                //default
+                base._isValid |= s.IsValid;
+            }
+            else
+            {
+                base._isValid &= s.IsValid;
+            }
 
             foreach (var child in _children)
             {
@@ -74,7 +91,7 @@ namespace TypeLess
                     var childAssertion = (Assertion<T>)child;
                     var res = assertFunc(childAssertion.Item, typeof(T));
 
-                    if (res != null && res.Message != null && res.IsValid)
+                    if (res != null && res.Message != null && ((!_evalPositive && res.IsValid) || (_evalPositive && !res.IsValid)))
                     {
                         _errorCount++;
                         if (_sb.Length <= 0)
@@ -85,7 +102,17 @@ namespace TypeLess
                         {
                             _sb.Append(". ").Append(String.Format(CultureInfo.InvariantCulture, res.Message.Replace("<name>", "{0}"), childAssertion.Name));
                         }
-                        _isValid |= res.IsValid;
+
+
+                        if (!_evalPositive)
+                        {
+                            //default
+                            base._isValid |= res.IsValid;
+                        }
+                        else
+                        {
+                            base._isValid &= res.IsValid;
+                        }
                     }
                     else if (res != null && !res.IsValid)
                     {
@@ -116,14 +143,15 @@ namespace TypeLess
                             return AssertResult.New(true, Resources.IsNull);
                         }
                     }
-                    else {
+                    else
+                    {
                         if (x == null)
                         {
                             var temp = StopIfNotValid;
                             return AssertResult.New(true, Resources.IsNull);
                         }
                     }
-                    
+
                     return AssertResult.New(false);
                 });
                 return this;
@@ -135,7 +163,7 @@ namespace TypeLess
         {
             get
             {
-                Extend((x,t) =>
+                Extend((x, t) =>
                 {
                     if (t == typeof(U))
                     {
@@ -145,14 +173,15 @@ namespace TypeLess
                             return AssertResult.New(true, Resources.IsNotNull);
                         }
                     }
-                    else {
+                    else
+                    {
                         if (x != null)
                         {
                             var temp = StopIfNotValid;
                             return AssertResult.New(true, Resources.IsNotNull);
                         }
                     }
-                    
+
                     return AssertResult.New(false);
                 });
                 return this;
@@ -170,7 +199,8 @@ namespace TypeLess
         /// <returns></returns>
         public IMixedTypeAssertion<T, U> IsInvalid
         {
-            get {
+            get
+            {
                 Extend((x, t) =>
                 {
                     var temp = this.IsNull;
@@ -224,7 +254,7 @@ namespace TypeLess
                         return null;
                     }
 
-                    
+
                 });
                 return this;
             }
@@ -254,7 +284,7 @@ namespace TypeLess
                     return AssertResult.New(!x.Equals(comparedTo), Resources.IsNotEqualTo, comparedTo == null ? "null" : comparedTo.ToString());
                 }
 
-                
+
             });
             return this;
         }
@@ -282,10 +312,16 @@ namespace TypeLess
                     return AssertResult.New(x.Equals(comparedTo), Resources.IsEqualTo, comparedTo == null ? "null" : comparedTo.ToString());
                 }
 
-                
+
             });
             return this;
         }
 
+
+
+        public new IMixedTypeAssertion<T, U> EvalPositive
+        {
+            get { return (IMixedTypeAssertion<T, U>)base.EvalPositive; }
+        }
     }
 }
