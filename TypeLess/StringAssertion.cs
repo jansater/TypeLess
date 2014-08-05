@@ -12,6 +12,7 @@ namespace TypeLess
 {
     public interface IStringAssertionU : IAssertionU<string> {
         IStringAssertion IsNull { get; }
+        IStringAssertion IsNotNull { get; }
         IStringAssertion IsEmpty { get; }
         IStringAssertion IsEmptyOrWhitespace { get; }
         IStringAssertion IsNotValidEmail { get; }
@@ -93,6 +94,15 @@ namespace TypeLess
             get
             {
                 var x = base.IsNull;
+                return this;
+            }
+        }
+
+        public new IStringAssertion IsNotNull
+        {
+            get
+            {
+                var x = base.IsNotNull;
                 return this;
             }
         }

@@ -14,15 +14,20 @@ namespace TypeLess
     {
         private List<IAssertion> _assertions = new List<IAssertion>();
 
-        public IEnumerable<IAssertion> Assertions { get {
-            return _assertions;
-        }
-            set {
+        public IEnumerable<IAssertion> Assertions
+        {
+            get
+            {
+                return _assertions;
+            }
+            set
+            {
                 if (value == null)
                 {
                     _assertions = null;
                 }
-                else {
+                else
+                {
                     _assertions = value.ToList();
                 }
             }
@@ -35,25 +40,42 @@ namespace TypeLess
                 throw new ArgumentNullException("assertions");
             }
 
-            _assertions.AddRange(assertions);
+
+            foreach (var assertion in assertions)
+            {
+                if (assertion != null)
+                {
+                    _assertions.Add(assertion);
+                }
+            }
+
         }
 
-        public void AddAssertions(params IAssertion[] assertions) { 
+        public void AddAssertions(params IAssertion[] assertions)
+        {
             if (assertions == null)
             {
                 throw new ArgumentNullException("assertions");
             }
 
-             _assertions.AddRange(assertions);
+            foreach (var assertion in assertions)
+            {
+                if (assertion != null)
+                {
+                    _assertions.Add(assertion);
+                }
+            }
+
         }
 
-        public void RemoveAssertion(IAssertion assertion) {
+        public void RemoveAssertion(IAssertion assertion)
+        {
             if (assertion == null)
             {
                 throw new ArgumentNullException("assertions");
             }
             _assertions.Remove(assertion);
-        } 
+        }
 
         public static ObjectAssertion New(params IAssertion[] assertions)
         {
