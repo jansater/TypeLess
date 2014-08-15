@@ -2,6 +2,7 @@ TypeLess
 =========
 ##More code - less typing##
 ###No dependencies | Portal library | Easy to extend with your own validations###
+###Licensed under MIT, feel free to use in commercial projects###
 
 ###Available on nuget: PM> Install-Package TypeLess###
 
