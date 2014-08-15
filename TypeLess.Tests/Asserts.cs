@@ -906,6 +906,63 @@ namespace TypeLess.Tests
         }
 
         [Fact]
+        public void EnumerableContains()
+        {
+
+            var list = new List<string>() { "1", "2", "3", "4", "5" };
+
+            Assert.DoesNotThrow(() =>
+            {
+                list.If().DoesNotContain("1").ThenThrow();
+            });
+
+            var res = Assert.Throws<ArgumentNullException>(() =>
+            {
+                list.If("list").DoesNotContain("6").ThenThrow();
+            });
+
+            Assert.Equal("list must contain 6", res.Message);
+
+            Assert.DoesNotThrow(() =>
+            {
+                list.If().Contains("6").ThenThrow();
+            });
+
+            res = Assert.Throws<ArgumentNullException>(() =>
+            {
+                list.If("list").Contains("1").ThenThrow();
+            });
+
+            Assert.Equal("list must not contain 1", res.Message);
+
+            //subset
+            Assert.DoesNotThrow(() =>
+            {
+                list.If().DoesNotContain("1", "2", "5").ThenThrow();
+            });
+
+            res = Assert.Throws<ArgumentNullException>(() =>
+            {
+                list.If("list").DoesNotContain("1", "2", "6").ThenThrow();
+            });
+
+            Assert.Equal("list must contain 1,2,6", res.Message);
+
+            Assert.DoesNotThrow(() =>
+            {
+                list.If().Contains("0", "6", "7").ThenThrow();
+            });
+
+            res = Assert.Throws<ArgumentNullException>(() =>
+            {
+                list.If("list").Contains("1", "2", "5").ThenThrow();
+            });
+
+            Assert.Equal("list must not contain 1,2,5", res.Message);
+
+        }
+
+        [Fact]
         public void WhenDTOIsInValidThenThrow()
         {
 

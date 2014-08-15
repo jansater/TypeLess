@@ -294,4 +294,10 @@
   <data name="TimeSpanIsShorterThan" xml:space="preserve">
     <value>&lt;name&gt; must be longer than {0:c}</value>
   </data>
+  <data name="ContainsItems" xml:space="preserve">
+    <value>&lt;name&gt; must not contain {0}</value>
+  </data>
+  <data name="DoesNotContainItems" xml:space="preserve">
+    <value>&lt;name&gt; must contain {0}</value>
+  </data>
 </root>

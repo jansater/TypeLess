@@ -11,6 +11,7 @@ namespace TypeLess
         IEnumerableAssertion IsEmpty { get; }
         IEnumerableAssertion ContainsLessThan(int nElements);
         IEnumerableAssertion ContainsMoreThan(int nElements);
+        
         IEnumerableAssertionU Or(IEnumerable obj, string withName = null);
 
         new IEnumerableAssertion IsTrue(Func<IEnumerable, bool> assertFunc, string errMsg = null);
@@ -29,6 +30,8 @@ namespace TypeLess
     { 
         
     }
+
+    
 
 #if !DEBUG
     [DebuggerStepThrough]

@@ -73,6 +73,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Debugging\PerfLogger.cs" />
+    <Compile Include="GenericEnumerableAssertion.cs" />
     <Compile Include="Extensions\Books\Isbn.cs" />
     <Compile Include="Extensions\Misc\NumberExtensions.cs" />
     <Compile Include="Extensions\Usa\ZipCode.cs" />

@@ -80,6 +80,15 @@ namespace TypeLess.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;name&gt; must not contain {0}.
+        /// </summary>
+        internal static string ContainsItems {
+            get {
+                return ResourceManager.GetString("ContainsItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;name&gt; must not contain key {0}.
         /// </summary>
         internal static string ContainsKey {
@@ -130,6 +139,15 @@ namespace TypeLess.Properties {
         internal static string DoesNotContainDigit {
             get {
                 return ResourceManager.GetString("DoesNotContainDigit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;name&gt; must contain {0}.
+        /// </summary>
+        internal static string DoesNotContainItems {
+            get {
+                return ResourceManager.GetString("DoesNotContainItems", resourceCulture);
             }
         }
         

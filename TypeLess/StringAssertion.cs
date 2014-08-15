@@ -53,9 +53,10 @@ namespace TypeLess
     public interface IRegexAssertion : IStringAssertion {
         /// <summary>
         /// Return result of group. Ex. $0 for the first group or ${group1} for named groups
+        /// 
         /// </summary>
         /// <param name="groupName"></param>
-        /// <returns></returns>
+        /// <returns>The value of the group. If there was no match then the original string is returned.</returns>
         string ThenReturnResultOf(string groupName);
     }
 
@@ -235,7 +236,7 @@ namespace TypeLess
         public string ThenReturnResultOf(string groupName)
         {
             if (_previousMatch == null || !_previousMatch.Success) {
-                return null;
+                return Item;
             }
 
             return _previousMatch.Result(groupName);

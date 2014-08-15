@@ -31,7 +31,7 @@ namespace TypeLess
     }
 
     public interface IClassAssertion<T> : IClassAssertionU<T>, IAssertion<T> where T : class
-    { 
+    {
         
     }
 
@@ -206,5 +206,6 @@ namespace TypeLess
                 return (IClassAssertion<T>)base.EvalPositive;
             }
         }
+
     }
 }

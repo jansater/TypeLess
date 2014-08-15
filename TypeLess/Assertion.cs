@@ -563,6 +563,7 @@ namespace TypeLess
             action(Item);
         }
 
+        
 
         public void Try(Action<T> tryAction, Action<Exception> catchAction, Action<T> finallyAction = null)
         {
