@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using TypeLess.Net.Contracts;
 
 
@@ -18,8 +19,19 @@ namespace TypeLess.Net.Data
             _proc.Connection = connection;
         }
 
+        public StoredProcedureBuilder(string connectionString)
+        {
+            this._proc = new StoredProcedure();
+            this._proc.Connection = new SqlConnection(connectionString);
+        }
+
         public ISprocBuilderParams WithName(string name)
         {
+            if (this._proc.Parameters != null)
+            {
+                this._proc.Parameters.Clear();
+            }
+
             _proc.Name = name;
             return this;
         }
