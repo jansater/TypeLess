@@ -18,11 +18,11 @@ namespace TypeLess.Net.Data
 
         internal List<Parameter> Parameters { get; set; }
 
-        internal IDbConnection Connection { get; set; }
+        internal string ConnectionString { get; set; }
 
-        public StoredProcedure(IDbConnection connection, string procedureName, params Parameter[] parameters)
+        public StoredProcedure(string connectionString, string procedureName, params Parameter[] parameters)
         {
-            this.Connection = connection;
+            this.ConnectionString = connectionString;
             this.Name = procedureName;
             Parameters = new List<Parameter>(parameters.Length);
             this.Parameters.AddRange(parameters);
@@ -39,13 +39,12 @@ namespace TypeLess.Net.Data
 
         public T Execute<T>(Func<DbDataReader, T> responseCallback)
         {
-            var cString = Connection.ConnectionString;
-
+            
             //if we use the existing connection then we will get net packets out of order if two procs are called at the same time by
             //multiple threads
 
             //var myConnection = Connection as MySqlConnection;
-            var myConnection = new SqlConnection(cString);
+            var myConnection = new SqlConnection(ConnectionString);
             SqlCommand cmd = new SqlCommand(Name, myConnection);
             if (this.Parameters != null)
             {
@@ -85,7 +84,7 @@ namespace TypeLess.Net.Data
 
         public void ExecuteUpdate()
         {
-            var myConnection = Connection as SqlConnection;
+            var myConnection = new SqlConnection(ConnectionString);
             var cmd = new SqlCommand(Name, myConnection);
             if (this.Parameters != null)
             {

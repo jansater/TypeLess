@@ -13,16 +13,10 @@ namespace TypeLess.Net.Data
     {
         private StoredProcedure _proc;
 
-        public StoredProcedureBuilder(IDbConnection connection)
-        {
-            _proc = new StoredProcedure();
-            _proc.Connection = connection;
-        }
-
         public StoredProcedureBuilder(string connectionString)
         {
             this._proc = new StoredProcedure();
-            this._proc.Connection = new SqlConnection(connectionString);
+            this._proc.ConnectionString = connectionString;
         }
 
         public ISprocBuilderParams WithName(string name)
