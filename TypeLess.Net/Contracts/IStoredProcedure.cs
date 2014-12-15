@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Data.Common;
 
 namespace TypeLess.Net.Contracts
@@ -10,6 +11,7 @@ namespace TypeLess.Net.Contracts
 
     public interface ISprocBuilderParams
     {
+        ISprocBuilderParams AndTransaction(IDbTransaction transaction);
         ISprocBuilderComplete AndParameters(params Parameter[] parameters);
         ISprocBuilderParams AndParameter(string name, object value);
         IStoredProcedure Build();
