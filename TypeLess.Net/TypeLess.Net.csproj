@@ -55,6 +55,7 @@
     <Compile Include="Data\Materializers\BaseMaterializer.cs" />
     <Compile Include="Data\Materializers\DynamicMaterializer.cs" />
     <Compile Include="Data\Materializers\Materializer.cs" />
+    <Compile Include="Data\Materializers\MaterializerExtensions.cs" />
     <Compile Include="Data\ObjectSetExtensions.cs" />
     <Compile Include="Contracts\Parameter.cs" />
     <Compile Include="Data\QueryExtensions.cs" />
