@@ -38,6 +38,10 @@ namespace TypeLess.Net.Helpers
 
         public static string GetDescription(this Enum value)
         {
+            if (value == null) {
+                return String.Empty;
+            }
+
             FieldInfo fi = value.GetType().GetField(value.ToString());
             var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
             if (attributes.Length > 0)
@@ -50,6 +54,12 @@ namespace TypeLess.Net.Helpers
 
         public static EnumAttr GetDisplayAttributes(this Enum value)
         {
+            if (value == null)
+            {
+                return EnumAttr.Empty;
+            }
+
+
             FieldInfo fi = value.GetType().GetField(value.ToString());
             var attributes = (DisplayAttribute[])fi.GetCustomAttributes(typeof(DisplayAttribute), false);
 
