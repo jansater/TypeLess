@@ -294,4 +294,7 @@
   <data name="TimeSpanIsShorterThan" xml:space="preserve">
     <value>&lt;name&gt; måste vara längre än {0:c}</value>
   </data>
+  <data name="IsNotValidSwiftCode" xml:space="preserve">
+    <value>&lt;name&gt; måste vara en giltig Swiftkod</value>
+  </data>
 </root>

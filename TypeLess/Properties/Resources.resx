@@ -300,4 +300,7 @@
   <data name="DoesNotContainItems" xml:space="preserve">
     <value>&lt;name&gt; must contain {0}</value>
   </data>
+  <data name="IsNotValidSwiftCode" xml:space="preserve">
+    <value>&lt;name&gt;must be a valid Swift code</value>
+  </data>
 </root>
