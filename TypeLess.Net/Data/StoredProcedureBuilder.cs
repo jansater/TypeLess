@@ -2,11 +2,11 @@
 using System.Data;
 using System.Data.SqlClient;
 using TypeLess.Net.Contracts;
-
+using TypeLess;
 
 namespace TypeLess.Net.Data
 {
-    public class StoredProcedureBuilder : 
+    public class StoredProcedureBuilder :
         ISprocBuilder, 
         ISprocBuilderParams, 
         ISprocBuilderComplete
@@ -21,6 +21,8 @@ namespace TypeLess.Net.Data
 
         public ISprocBuilderParams WithName(string name)
         {
+            name.If("name").IsNull.ThenThrow();
+
             if (this._proc.Parameters != null)
             {
                 this._proc.Parameters.Clear();
@@ -32,6 +34,8 @@ namespace TypeLess.Net.Data
 
         public ISprocBuilderComplete AndParameters(params Parameter[] parameters)
         {
+            parameters.If("parameters").IsNull.ThenThrow();
+
             _proc.Parameters = new List<Parameter>(parameters);
             return this;
         }
@@ -42,6 +46,7 @@ namespace TypeLess.Net.Data
 
         public ISprocBuilderParams AndParameter(string name, object value)
         {
+            name.If("name").IsNull.ThenThrow();
             _proc.AddParameter(name, value);
             return this;
         }

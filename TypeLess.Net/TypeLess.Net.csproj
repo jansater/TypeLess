@@ -44,6 +44,7 @@
     <Compile Include="Contracts\ICriteria.cs" />
     <Compile Include="Contracts\IMaterializer.cs" />
     <Compile Include="Contracts\IResolver.cs" />
+    <Compile Include="Contracts\IDbQuery.cs" />
     <Compile Include="Contracts\IStoredProcedure.cs" />
     <Compile Include="Data\EFMergeOptions.cs" />
     <Compile Include="Data\InMemoryContext.cs" />
@@ -60,7 +61,9 @@
     <Compile Include="Contracts\Parameter.cs" />
     <Compile Include="Data\QueryExtensions.cs" />
     <Compile Include="Data\QueryOptions.cs" />
+    <Compile Include="Data\DbQuery.cs" />
     <Compile Include="Data\StoredProcedure.cs" />
+    <Compile Include="Data\DbQueryBuilder.cs" />
     <Compile Include="Data\StoredProcedureBuilder.cs" />
     <Compile Include="Helpers\DateHelper.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>tl_propAssign</Title>
+      <Author>jansater</Author>
+      <Description>
+      </Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>tl_propAssign</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal Editable="true">
+          <ID>arg</ID>
+          <ToolTip>stream</ToolTip>
+          <Default>stream</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>propName</ID>
+          <ToolTip>stream</ToolTip>
+          <Default>stream</Default>
+          <Function>
+          </Function>
+        </Literal>
+      </Declarations>
+      <Code Language="csharp" Delimiter="$"><![CDATA[$arg$.If("$arg$").IsNull.ThenThrow().Otherwise(x => this.$propName$ = x);]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

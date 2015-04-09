@@ -7,29 +7,35 @@ using TypeLess.Net.Contracts;
 
 namespace TypeLess.Net.Data
 {
-    public class StoredProcedure : IStoredProcedure
+    public class DbQuery : IDbQuery
     {
-        internal StoredProcedure()
+        internal DbQuery()
         {
 
         }
 
-        internal string Name { get; set; }
+        internal string Sql { get; set; }
 
         internal List<Parameter> Parameters { get; set; }
 
         internal string ConnectionString { get; set; }
 
-        public StoredProcedure(string connectionString, string procedureName, params Parameter[] parameters)
+        public DbQuery(string connectionString, string sql, params Parameter[] parameters)
         {
+            connectionString.If("connectionString").IsNull.ThenThrow();
+            sql.If("sql").IsNull.ThenThrow();
+            parameters.If("parameters").IsNull.ThenThrow();
+            
             this.ConnectionString = connectionString;
-            this.Name = procedureName;
+            this.Sql = sql;
             Parameters = new List<Parameter>(parameters.Length);
             this.Parameters.AddRange(parameters);
         }
 
         internal void AddParameter(string name, object value)
         {
+            name.If("name").IsNull.ThenThrow();
+
             if (this.Parameters == null)
             {
                 this.Parameters = new List<Parameter>(5);
@@ -40,13 +46,13 @@ namespace TypeLess.Net.Data
         public T Execute<T>(Func<DbDataReader, T> responseCallback)
         {
             responseCallback.If("responseCallback").IsNull.ThenThrow();
-
             //if we use the existing connection then we will get net packets out of order if two procs are called at the same time by
             //multiple threads
 
             //var myConnection = Connection as MySqlConnection;
             var myConnection = new SqlConnection(ConnectionString);
-            SqlCommand cmd = new SqlCommand(Name, myConnection);
+            SqlCommand cmd = new SqlCommand(Sql, myConnection);
+            
             if (this.Parameters != null)
             {
                 foreach (var item in this.Parameters)
@@ -55,15 +61,9 @@ namespace TypeLess.Net.Data
                 }
             }
 
-            cmd.CommandType = CommandType.StoredProcedure;
-
+            cmd.CommandType = CommandType.Text;
             myConnection.Open();
-            //var command = myConnection.CreateCommand();
-            ////command.CommandText = "SET NAMES 'utf8';SET CHARACTER SET 'UTF8';SET COLLATION_CONNECTION='utf8_general_ci';";  
-            //command.CommandText = " SET SESSION optimizer_search_depth = 0;";  
-            //command.CommandType = CommandType.Text;
-            //int x = command.ExecuteNonQuery();
-
+            
             T result = default(T);
             try
             {
@@ -86,7 +86,7 @@ namespace TypeLess.Net.Data
         public void ExecuteUpdate()
         {
             var myConnection = new SqlConnection(ConnectionString);
-            var cmd = new SqlCommand(Name, myConnection);
+            var cmd = new SqlCommand(Sql, myConnection);
             if (this.Parameters != null)
             {
                 foreach (var item in this.Parameters)
@@ -95,7 +95,7 @@ namespace TypeLess.Net.Data
                 }
             }
 
-            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandType = CommandType.Text;
 
             myConnection.Open();
             try

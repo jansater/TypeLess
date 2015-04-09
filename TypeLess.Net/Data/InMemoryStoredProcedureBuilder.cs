@@ -6,7 +6,7 @@ using TypeLess.Net.Contracts;
 
 namespace TypeLess.Net.Data
 {
-    public class InMemoryStoredProcedureBuilder : 
+    public class InMemoryStoredProcedureBuilder :
         ISprocBuilder, 
         ISprocBuilderParams, 
         ISprocBuilderComplete
