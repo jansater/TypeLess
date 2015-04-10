@@ -74,11 +74,10 @@ namespace TypeLess.Tests
                 s.If().Match("\\d").ThenThrow("s must contain digits");
             });
 
-            Assert.DoesNotThrow(() =>
-            {
-                string s = "some 2 string";
-                s.If().Match("anotherString").ThenThrow();
-            });
+           
+                string s2 = "some 2 string";
+                s2.If().Match("anotherString").ThenThrow();
+           
 
         }
 
@@ -91,11 +90,10 @@ namespace TypeLess.Tests
                 s.If().DoesNotMatch("another string").ThenThrow();
             });
 
-            Assert.DoesNotThrow(() =>
-            {
-                string s = "some string";
-                s.If().DoesNotMatch("some").ThenThrow();
-            });
+            
+                var s2 = "some string";
+                s2.If().DoesNotMatch("some").ThenThrow();
+           
 
         }
 

@@ -22,6 +22,10 @@ namespace TypeLess.Net.Helpers
         {
             DisplayName = name ?? String.Empty;
             Description = description ?? String.Empty;
+            GroupName = groupName ?? String.Empty;
+            Order = order;
+            Prompt = prompt ?? String.Empty;
+            ShortName = shortName ?? String.Empty;
         }
 
         public static EnumAttr Empty

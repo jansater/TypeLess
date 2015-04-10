@@ -79,10 +79,9 @@ namespace TypeLess.Tests
             Assert.Equal("B must be 1", msg); 
 
             a.B = 1;
-            Assert.DoesNotThrow(() =>
-            {
+            
                 CanUpdate(a).ThrowIfFalse<ArgumentNullException>();
-            });
+            
 
             a.C = 3;
             ex = Assert.Throws<ArgumentException>(() =>
@@ -122,10 +121,9 @@ namespace TypeLess.Tests
 
 
             a.B = 2;
-            Assert.DoesNotThrow(() =>
-            {
+            
                 CanDelete(a).ThrowIfTrue<ArgumentNullException>();
-            });
+            
         }
     }
 }

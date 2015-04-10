@@ -32,11 +32,10 @@ namespace TypeLess.Tests
 
             Assert.True(res.Message.StartsWith("s must be a valid social security number"));
 
-            Xunit.Assert.DoesNotThrow(() =>
-            {
-                string s = "457-55-5462";
-                s.If().IsNotValidSocialSecurityNumber().ThenThrow();
-            });
+            
+                var s2 = "457-55-5462";
+                s2.If().IsNotValidSocialSecurityNumber().ThenThrow();
+            
 
         }
 
@@ -51,11 +50,10 @@ namespace TypeLess.Tests
 
             Assert.True(res.Message.StartsWith("s must be a valid phone number"));
 
-            Xunit.Assert.DoesNotThrow(() =>
-            {
-                string s = "(425) 555-0123";
-                s.If().IsNotValidPhoneNumber().ThenThrow();
-            });
+            
+                var s2 = "(425) 555-0123";
+                s2.If().IsNotValidPhoneNumber().ThenThrow();
+            
 
         }
 
@@ -70,11 +68,10 @@ namespace TypeLess.Tests
 
             Assert.True(res.Message.StartsWith("s must be a valid zip code"));
 
-            Xunit.Assert.DoesNotThrow(() =>
-            {
-                string s = "95124";
-                s.If().IsNotValidZipCode().ThenThrow();
-            });
+            
+                var s2 = "95124";
+                s2.If().IsNotValidZipCode().ThenThrow();
+            
 
         }
 
