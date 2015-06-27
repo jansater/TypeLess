@@ -5,7 +5,6 @@ using Xunit;
 using TypeLess.Extensions.Shipping;
 using TypeLess.Extensions.Usa;
 using TypeLess.Extensions.Books;
-using TypeLess.Net.Helpers;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
