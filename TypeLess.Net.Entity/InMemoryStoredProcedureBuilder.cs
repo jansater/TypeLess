@@ -50,9 +50,10 @@ namespace TypeLess.Net.Entity
             return this;
         }
 
-        public void UseTransaction(System.Data.SqlClient.SqlTransaction transaction)
+        public ISprocBuilder WithTransaction(IDbTransaction transaction)
         {
             //do nothing
+            return this;
         }
     }
 }

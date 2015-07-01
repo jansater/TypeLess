@@ -8,6 +8,7 @@ namespace TypeLess.Net.Entity.Contracts
     public interface ISprocBuilder
     {
         ISprocBuilderParams WithName(string name);
+        ISprocBuilder WithTransaction(IDbTransaction transaction);
     }
 
     public interface ISprocBuilderParams

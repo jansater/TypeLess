@@ -29,6 +29,12 @@ namespace TypeLess.Net.Entity
             this._proc.TransactionProvider = transactionProvider;
         }
 
+        public ISprocBuilder WithTransaction(IDbTransaction transaction)
+        {
+            _proc.TransactionProvider = () => transaction as SqlTransaction;
+            return this;
+        }
+
         public ISprocBuilderParams WithName(string name)
         {
             name.If("name").IsNull.ThenThrow();
@@ -61,5 +67,8 @@ namespace TypeLess.Net.Entity
             return this;
         }
 
+
+
+       
     }
 }

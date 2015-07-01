@@ -25,9 +25,17 @@ namespace TypeLess.Net.Entity
 
         private bool _ownsConnection = false;
 
-        public StoredProcedure(string connectionString, string procedureName = null, bool ownsConnection = true, params Parameter[] parameters) : this (new SqlConnection(connectionString), procedureName, ownsConnection, parameters)
+        public StoredProcedure(string connectionString, string procedureName = null, bool ownsConnection = true, params Parameter[] parameters) 
         {
-           
+            Name = procedureName;
+            _ownsConnection = ownsConnection;
+            ConnectionString = connectionString;
+
+            if (parameters != null)
+            {
+                Parameters = new List<Parameter>(parameters.Length);
+                this.Parameters.AddRange(parameters);
+            }
         }
 
         public StoredProcedure(SqlConnection existingConnection, string procedureName = null, bool ownsConnection = true, params Parameter[] parameters) {
@@ -67,7 +75,25 @@ namespace TypeLess.Net.Entity
         private T ExecuteWithConnection<T>(Func<SqlCommand, T> func) {
 
             Name.If("Name").IsNull.ThenThrow();
-            Connection.If("Connection").IsNull.ThenThrow();
+
+            SqlTransaction transaction = null;
+            if (TransactionProvider != null)
+            {
+                transaction = TransactionProvider();
+            }
+
+            if (Connection == null) {
+                if (transaction != null)
+                {
+                    _ownsConnection = false;
+                    Connection = transaction.Connection;
+                }
+                else {
+                    _ownsConnection = true;
+                    Connection = new SqlConnection(ConnectionString);
+                    Connection.Open();
+                }
+            }
 
             var cmd = new SqlCommand(Name, Connection);
             
@@ -86,12 +112,9 @@ namespace TypeLess.Net.Entity
                 Connection.Open();
             }
 
-            if (TransactionProvider != null)
+            if (transaction != null)
             {
-                var transaction = TransactionProvider();
-                if (transaction != null) {
-                    cmd.Transaction = transaction;
-                }
+                cmd.Transaction = transaction;
             }
 
             try
@@ -102,10 +125,7 @@ namespace TypeLess.Net.Entity
             {
                 if (_ownsConnection)
                 {
-                    if (Connection.State == ConnectionState.Open)
-                    {
-                        Connection.Close();
-                    }
+                    Connection.Dispose();
                 }
             }
         }
