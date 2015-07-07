@@ -6,6 +6,8 @@ using System.Globalization;
 using System.Text;
 using TypeLess.DataTypes;
 using TypeLess.Properties;
+using System.Reflection;
+using System.Linq;
 
 namespace TypeLess
 {
@@ -28,6 +30,24 @@ namespace TypeLess
         /// when the statement is false so when you check x == 0 then the error message is added when x is not 0
         /// </summary>
         new IClassAssertion<T> EvalPositive { get; }
+
+        /// <summary>
+        /// Returns a positive if all property values in T match the same properties on object S otherwise negative. This requires that S contains a property of same type and name otherwise an
+        /// expception will be thrown.
+        /// </summary>
+        /// <typeparam name="S"></typeparam>
+        /// <param name="item">The item.</param>
+        /// <returns>IClassAssertion&lt;T&gt;.</returns>
+        IClassAssertion<T> PropertyValuesMatch<S>(S item);
+
+        /// <summary>
+        /// Inverse of PropertyValuesMatch
+        /// expception will be thrown.
+        /// </summary>
+        /// <typeparam name="S"></typeparam>
+        /// <param name="item">The item.</param>
+        /// <returns>IClassAssertion&lt;T&gt;.</returns>
+        IClassAssertion<T> PropertyValuesDoNotMatch<S>(S item);
     }
 
     public interface IClassAssertion<T> : IClassAssertionU<T>, IAssertion<T> where T : class
@@ -207,5 +227,74 @@ namespace TypeLess
             }
         }
 
+        private bool PropertiesMatch(T source, object target) {
+            if (target == null && source != null)
+            {
+                return false;
+            }
+            else if (target == null && source == null)
+            {
+                return true;
+            }
+            else if (target != null && source == null)
+            {
+                return false;
+            }
+
+            var sourceProperties = source.GetType().GetTypeInfo().DeclaredProperties;
+            var targetProperties = target.GetType().GetTypeInfo().DeclaredProperties;
+
+            var containsNonMatchingProp = sourceProperties.Any(sourceProp =>
+            {
+                var targetProp = targetProperties.Where(y => y.Name == sourceProp.Name).FirstOrDefault();
+                if (targetProp == null)
+                {
+                    return true;
+                }
+
+                if (sourceProp.PropertyType != targetProp.PropertyType)
+                {
+                    return true;
+                }
+
+                var sourceValue = sourceProp.GetValue(source);
+                var targetValue = targetProp.GetValue(target);
+
+                if (sourceValue == null)
+                {
+                    if (targetValue == null)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+
+                return !sourceValue.Equals(targetValue);
+            });
+
+            return !containsNonMatchingProp;
+        }
+
+        public IClassAssertion<T> PropertyValuesMatch<S>(S item)
+        {
+            Extend(x =>
+            {
+                return AssertResult.New(PropertiesMatch(x, item), "Property values do not match"); 
+            });
+            return this;
+        }
+
+
+        public IClassAssertion<T> PropertyValuesDoNotMatch<S>(S item)
+        {
+            Extend(x =>
+            {
+                return AssertResult.New(!PropertiesMatch(x, item), "Property values match");
+            });
+            return this;
+        }
     }
 }
