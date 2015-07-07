@@ -12,6 +12,18 @@ using Xunit;
 
 namespace TypeLess.Tests
 {
+    public class ThenThenReturnChecks
+    {
+        public ThenThenReturnChecks()
+        {
+            object s = null;
+            s.If().IsNotNull.Then(x => x = null).ThenReturn(4);
+
+
+        }
+
+    }
+
     public class ComparableSyntaxChecks<T> where T : IComparable<T>
     {
         public ComparableSyntaxChecks()

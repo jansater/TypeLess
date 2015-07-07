@@ -140,6 +140,30 @@ namespace TypeLess
         /// </summary>
         /// <param name="action">The action to run</param>
         void Otherwise(Action<T> action);
+
+        /// <summary>
+        /// If no exception thrown, call action
+        /// </summary>
+        /// <param name="action">The action to run</param>
+        S OtherwiseReturn<S>(Func<T,S> func);
+
+        /// <summary>
+        /// If the current validation chain is true then return the value from func
+        /// </summary>
+        /// <param name="func">The function to call, T is the current item. S is the type of value to return</param>
+        S ThenReturn<S>(Func<T, S> func);
+
+        /// <summary>
+        /// If the current validation chain is true then return the value from func
+        /// </summary>
+        /// <param name="func">The function to call, T is the current item. S is the type of value to return</param>
+        S ThenReturn<S>(Func<S> func);
+
+        /// <summary>
+        /// If the current validation chain is true then return the value from func
+        /// </summary>
+        /// <param name="func">The function to call, T is the current item. S is the type of value to return</param>
+        S ThenReturn<S>(S valueToReturn);
     }
 
     public interface IAssertion<T> : IAssertion, IAssertionU<T>
@@ -160,6 +184,19 @@ namespace TypeLess
         /// </summary>
         /// <param name="func">The function to call, T is the current item. S is the type of value to return</param>
         S ThenReturn<S>(Func<T, S> func);
+
+        /// <summary>
+        /// If the current validation chain is true then return the value from func
+        /// </summary>
+        /// <param name="func">The function to call, T is the current item. S is the type of value to return</param>
+        S ThenReturn<S>(Func<S> func);
+
+        /// <summary>
+        /// If the current validation chain is true then return the value from func
+        /// </summary>
+        /// <param name="func">The function to call, T is the current item. S is the type of value to return</param>
+        S ThenReturn<S>(S valueToReturn);
+
         /// <summary>
         /// Throws an argument null exception.
         /// </summary>
@@ -563,7 +600,6 @@ namespace TypeLess
             action(Item);
         }
 
-        
 
         public void Try(Action<T> tryAction, Action<Exception> catchAction, Action<T> finallyAction = null)
         {
@@ -586,6 +622,36 @@ namespace TypeLess
                     finallyAction(Item);
                 }
             }
+        }
+
+
+        public S ThenReturn<S>(Func<S> func)
+        {
+            if (!True)
+            {
+                return default(S);
+            }
+
+            return func();
+        }
+
+
+        public S ThenReturn<S>(S valueToReturn)
+        {
+            if (!True)
+            {
+                return default(S);
+            }
+
+            return valueToReturn;
+        }
+
+
+        public S OtherwiseReturn<S>(Func<T, S> func)
+        {
+            func.If("func").IsNull.ThenThrow();
+
+            return func(Item);
         }
     }
 }

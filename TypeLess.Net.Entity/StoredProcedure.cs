@@ -91,7 +91,6 @@ namespace TypeLess.Net.Entity
                 else {
                     _ownsConnection = true;
                     Connection = new SqlConnection(ConnectionString);
-                    Connection.Open();
                 }
             }
 
@@ -126,6 +125,7 @@ namespace TypeLess.Net.Entity
                 if (_ownsConnection)
                 {
                     Connection.Dispose();
+                    Connection = null;
                 }
             }
         }
