@@ -249,12 +249,12 @@ namespace TypeLess
                 var targetProp = targetProperties.Where(y => y.Name == sourceProp.Name).FirstOrDefault();
                 if (targetProp == null)
                 {
-                    return true;
+                    throw new MissingMemberException("Missing member in target: " + sourceProp.Name);
                 }
 
                 if (sourceProp.PropertyType != targetProp.PropertyType)
                 {
-                    return true;
+                    throw new InvalidCastException("Property types for property " + sourceProp.Name + " do not match");
                 }
 
                 var sourceValue = sourceProp.GetValue(source);

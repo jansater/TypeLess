@@ -58,9 +58,9 @@ namespace TypeLess.Tests
             var classA = new ClassA(null, "Test");
             var classAMissingProp = new ClassAWithMissingProp("Test");
 
-            Assert.Throws<ArgumentException>(() =>
+            Assert.Throws<MissingMemberException>(() =>
             {
-                classA.If().PropertyValuesDoNotMatch(classAMissingProp).ThenThrow<ArgumentException>();
+                classA.If().PropertyValuesMatch(classAMissingProp).ThenReturn(true);
             });
         }
 
@@ -70,9 +70,9 @@ namespace TypeLess.Tests
             var classA = new ClassA(1, "Test");
             var classAWithWrongPropType = new ClassAWithWrongPropType(1, "Test");
 
-            Assert.Throws<ArgumentException>(() =>
+            Assert.Throws<InvalidCastException>(() =>
             {
-                classA.If().PropertyValuesDoNotMatch(classAWithWrongPropType).ThenThrow<ArgumentException>();
+                classA.If().PropertyValuesMatch(classAWithWrongPropType).ThenReturn(true);
             });
         }
 
