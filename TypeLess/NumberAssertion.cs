@@ -23,9 +23,9 @@ namespace TypeLess
         new INumberAssertion<T> IsTrue(Func<T, bool> assertFunc, string errMsg = null);
         new INumberAssertion<T> IsFalse(Func<T, bool> assertFunc, string errMsg = null);
 
-        INumberAssertion<T> IsSmallerThan(T comparedTo);
+        INumberAssertion<T> IsLessThan(T comparedTo);
         INumberAssertion<T> IsGreaterThan(T comparedTo);
-        INumberAssertion<T> IsSmallerThanOrEqualTo(T comparedTo);
+        INumberAssertion<T> IsLessThanOrEqualTo(T comparedTo);
         INumberAssertion<T> IsGreaterThanOrEqualTo(T comparedTo);
         new INumberAssertion<T> IsNotEqualTo(T comparedTo);
         new INumberAssertion<T> IsEqualTo(T comparedTo);
@@ -133,7 +133,7 @@ namespace TypeLess
             return this;
         }
 
-        public INumberAssertion<T> IsSmallerThan(T comparedTo)
+        public INumberAssertion<T> IsLessThan(T comparedTo)
         {
             Extend(x => AssertResult.New(x.CompareTo(comparedTo) < 0, Resources.IsSmallerThan, comparedTo));
 
@@ -146,7 +146,7 @@ namespace TypeLess
             return this;
         }
 
-        public INumberAssertion<T> IsSmallerThanOrEqualTo(T comparedTo)
+        public INumberAssertion<T> IsLessThanOrEqualTo(T comparedTo)
         {
             Extend(x => AssertResult.New(x.CompareTo(comparedTo) <= 0, Resources.IsSmallerThan, comparedTo));
 

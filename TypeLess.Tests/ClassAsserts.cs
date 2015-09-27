@@ -83,6 +83,7 @@ namespace TypeLess.Tests
             var classB = new ClassB(null, "Test");
 
             Assert.True(classA.If().PropertyValuesMatch(classB).ThenReturn(true));
+            Assert.False(classA.If().PropertyValuesDoNotMatch(classB).ThenReturn(true));
         }
 
         [Fact]
@@ -90,7 +91,22 @@ namespace TypeLess.Tests
             var classA = new ClassA(1, "Test");
             var classB = new ClassB(2, "Test");
 
-            Assert.False(classA.If().PropertyValuesMatch(classB).ThenReturn(true));
+            var match = classA.If().PropertyValuesMatch(classB).ThenReturn(true);
+            Assert.False(match);
+
+            match = classA.If().PropertyValuesDoNotMatch(classB).ThenReturn(true);
+            Assert.True(match);
+        }
+
+        [Fact]
+        public void WhenPropertyDiffIsIgnoredThenPositiveResultIsReturned() {
+            var classA = new ClassA(1, "Test");
+            var classB = new ClassB(2, "Test");
+
+            Assert.False(classA.If().PropertyValuesDoNotMatch(classB, (prop, expected, actual) =>
+            {
+                return false;
+            }).ThenReturn(true));
         }
     }
 }

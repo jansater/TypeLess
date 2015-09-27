@@ -145,7 +145,7 @@ namespace TypeLess
         /// If no exception thrown, call action
         /// </summary>
         /// <param name="action">The action to run</param>
-        S OtherwiseReturn<S>(Func<T,S> func);
+        S OtherwiseReturn<S>(Func<T, S> func);
 
         /// <summary>
         /// If the current validation chain is true then return the value from func
@@ -237,6 +237,8 @@ namespace TypeLess
         protected  List<Assertion<T>> _children = new List<Assertion<T>>();
         protected int _errorCount;
         protected bool _evalPositive = false;
+        private string _andFailure = "";
+        private bool _isPartOfAndOperation = false;
 
         public Assertion(string s, T source, string file, int? lineNumber, string caller)
         {
@@ -363,12 +365,12 @@ namespace TypeLess
 
             if (Debugger.IsAttached)
             {
-                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { AppendTrace(errorMsg == null ? String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name) : String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)) });
+                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)) });
 
             }
             else
             {
-                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name) : String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name) });
+                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name) });
             }
 
         }
@@ -391,14 +393,13 @@ namespace TypeLess
 
             if (Debugger.IsAttached)
             {
-                throw new ArgumentNullException("", AppendTrace(errorMsg == null ?
-                    String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name) :
+                throw new ArgumentNullException("", errorMsg == null ? ToString() : AppendTrace(
                     String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)));
             }
             else
             {
                 throw new ArgumentNullException("", errorMsg == null ?
-                    String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name) :
+                   ToString() :
                     String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name));
             }
         }
@@ -415,16 +416,45 @@ namespace TypeLess
                 return String.Empty;
             }
 
+            var errMessage = _sb.ToString();
+
+            if (!String.IsNullOrEmpty(_andFailure))
+            {
+                errMessage = ConvertErrorMessageToAndErrorMessage(errMessage);
+                errMessage = _andFailure + errMessage;
+            }
+
             if (Debugger.IsAttached && !skipTrace)
             {
-                return AppendTrace(String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name));
+                return AppendTrace(String.Format(CultureInfo.InvariantCulture, errMessage.Replace("<name>", "{0}"), Name));
             }
             else
             {
-                return String.Format(CultureInfo.InvariantCulture, _sb.ToString().Replace("<name>", "{0}"), Name);
+                return String.Format(CultureInfo.InvariantCulture, errMessage.Replace("<name>", "{0}"), Name);
             }
         }
 
+        private string ConvertErrorMessageToAndErrorMessage(string errMessage)
+        {
+            errMessage = errMessage.Replace("must contain more than", "contain less than");
+            errMessage = errMessage.Replace("must contain less than", "contain more than");
+            errMessage = errMessage.Replace("must end with", "does not end with");
+            errMessage = errMessage.Replace("must match", "does not match");
+            errMessage = errMessage.Replace("must not match", "match");
+            errMessage = errMessage.Replace("must start with", "does not start with");
+            errMessage = errMessage.Replace("must be smaller than", "is larger than");
+            errMessage = errMessage.Replace("must be larger than", "is smaller than");
+            errMessage = errMessage.Replace("must not be empty", "is empty");
+            errMessage = errMessage.Replace("must not be", "is");
+            errMessage = errMessage.Replace("must be", "is not");
+            errMessage = errMessage.Replace("must not contain", "contain");
+            errMessage = errMessage.Replace("must contain", "does not contain");
+            errMessage = errMessage.Replace("is required", "is not required");
+            errMessage = errMessage.Replace("  ", " ");
+            errMessage = errMessage.Trim();
+
+            return errMessage;
+        }
 
         public bool True { get { return _isValid; } }
         public bool False { get { return !_isValid; } }
@@ -466,6 +496,27 @@ namespace TypeLess
             get
             {
                 return _errorCount;
+            }
+        }
+
+        internal void MakePartOfAndOperation(string s)
+        {
+            _isPartOfAndOperation = true;
+            if (String.IsNullOrWhiteSpace(s))
+            {
+                //Then we did not have a failure on the previous operator which means 
+                //that the andOperation will succeed ... we don't have to check any further
+                IgnoreFurtherChecks = true;
+                return;
+            }
+
+            if (s.Contains(" when "))
+            {
+                _andFailure = s + " and ";
+            }
+            else
+            {
+                _andFailure = s + " when ";
             }
         }
 
@@ -530,8 +581,7 @@ namespace TypeLess
             return func(Item);
         }
 
-
-        public void Extend(Func<T, AssertResult> assertFunc) //Func<IAssertionU, IAssertion> selfFunc
+        public void Extend(Func<T, AssertResult> assertFunc)
         {
             if (IgnoreFurtherChecks)
             {
@@ -550,7 +600,8 @@ namespace TypeLess
                 //default
                 _isValid |= s.IsValid;
             }
-            else {
+            else
+            {
                 _isValid &= s.IsValid;
             }
 
@@ -582,7 +633,7 @@ namespace TypeLess
                         {
                             _isValid &= res.IsValid;
                         }
-                        
+
                     }
                     else if (res != null && !res.IsValid)
                     {
@@ -591,6 +642,10 @@ namespace TypeLess
                 }
             }
 
+            if (_errorCount <= 0)
+            {
+                _sb.Clear();
+            }
         }
 
         public void Otherwise(Action<T> action)

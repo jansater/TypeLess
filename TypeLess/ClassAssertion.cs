@@ -41,13 +41,14 @@ namespace TypeLess
         IClassAssertion<T> PropertyValuesMatch<S>(S item);
 
         /// <summary>
-        /// Inverse of PropertyValuesMatch
+        /// Inverse of PropertyValuesMatch. The propertyChanged handler will be invoked for each not matching property and will contain values for
+        /// the property name, expected value, actual value. It should return false if the changed property should be ignored otherwise true;
         /// expception will be thrown.
         /// </summary>
         /// <typeparam name="S"></typeparam>
         /// <param name="item">The item.</param>
         /// <returns>IClassAssertion&lt;T&gt;.</returns>
-        IClassAssertion<T> PropertyValuesDoNotMatch<S>(S item);
+        IClassAssertion<T> PropertyValuesDoNotMatch<S>(S item, Func<string, object, object, bool> propertyChanged = null);
     }
 
     public interface IClassAssertion<T> : IClassAssertionU<T>, IAssertion<T> where T : class
@@ -227,7 +228,8 @@ namespace TypeLess
             }
         }
 
-        private bool PropertiesMatch(T source, object target) {
+        private bool PropertiesMatch(T source, object target, Func<string, object, object, bool> propertyChanged = null)
+        {
             if (target == null && source != null)
             {
                 return false;
@@ -244,7 +246,7 @@ namespace TypeLess
             var sourceProperties = source.GetType().GetTypeInfo().DeclaredProperties;
             var targetProperties = target.GetType().GetTypeInfo().DeclaredProperties;
 
-            var containsNonMatchingProp = sourceProperties.Any(sourceProp =>
+            var containsMatchingProps = sourceProperties.All(sourceProp =>
             {
                 var targetProp = targetProperties.Where(y => y.Name == sourceProp.Name).FirstOrDefault();
                 if (targetProp == null)
@@ -257,25 +259,42 @@ namespace TypeLess
                     throw new InvalidCastException("Property types for property " + sourceProp.Name + " do not match");
                 }
 
-                var sourceValue = sourceProp.GetValue(source);
-                var targetValue = targetProp.GetValue(target);
+                var expectedValue = sourceProp.GetValue(source);
+                var actualValue = targetProp.GetValue(target);
 
-                if (sourceValue == null)
+                if (expectedValue == null)
                 {
-                    if (targetValue == null)
+                    if (actualValue == null)
                     {
-                        return false;
+                        return true;
                     }
                     else
                     {
+                        if (propertyChanged != null) {
+                            if (!propertyChanged(sourceProp.Name, expectedValue, actualValue))
+                            {
+                                //then ignore this diff
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                }
+
+                var equals = expectedValue.Equals(actualValue);
+
+                if (!equals && propertyChanged != null) {
+                    if (!propertyChanged(sourceProp.Name, expectedValue, actualValue))
+                    {
+                        //then ignore this diff
                         return true;
                     }
                 }
 
-                return !sourceValue.Equals(targetValue);
+                return equals;
             });
 
-            return !containsNonMatchingProp;
+            return containsMatchingProps;
         }
 
         public IClassAssertion<T> PropertyValuesMatch<S>(S item)
@@ -288,11 +307,11 @@ namespace TypeLess
         }
 
 
-        public IClassAssertion<T> PropertyValuesDoNotMatch<S>(S item)
+        public IClassAssertion<T> PropertyValuesDoNotMatch<S>(S item, Func<string, object, object, bool> propertyChanged = null)
         {
             Extend(x =>
             {
-                return AssertResult.New(!PropertiesMatch(x, item), "Property values match");
+                return AssertResult.New(!PropertiesMatch(x, item, propertyChanged), "Property values match");
             });
             return this;
         }

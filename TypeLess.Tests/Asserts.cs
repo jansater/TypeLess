@@ -384,21 +384,21 @@ namespace TypeLess.Tests
             var res = Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
                 int i = 1;
-                i.If("s").IsSmallerThan(2).ThenThrow();
+                i.If("s").IsLessThan(2).ThenThrow();
             });
 
             Assert.True(res.Message.StartsWith("s must be greater than 2"));
 
             
                 int i2 = 1;
-                i2.If().IsSmallerThan(0).ThenThrow();
+                i2.If().IsLessThan(0).ThenThrow();
             
 
             int requestId = 1;
             int userId = 3;
 
             
-                requestId.If("request id").Or(userId, "user id").IsSmallerThan(1).ThenThrow();
+                requestId.If("request id").Or(userId, "user id").IsLessThan(1).ThenThrow();
             
         }
 
@@ -986,7 +986,7 @@ namespace TypeLess.Tests
             double d2 = 3;
             double d3 = 4;
 
-            var errMsg = d1.If("d1").Or(d2, "d2").Or(d3, "d3").IsSmallerThan(5).IsGreaterThan(0).ToString();
+            var errMsg = d1.If("d1").Or(d2, "d2").Or(d3, "d3").IsLessThan(5).IsGreaterThan(0).ToString();
 
             Xunit.Assert.True(errMsg.StartsWith("d1 must be greater than 5. d2 must be greater than 5. d3 must be greater than 5 and d1 must be smaller than 0. d2 must be smaller than 0. d3 must be smaller than 0"));
 

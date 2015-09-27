@@ -90,6 +90,7 @@
     <Compile Include="Helpers\Maps\Kml\PolygonPoint.cs" />
     <Compile Include="Helpers\Maps\Kml\PolygonReader.cs" />
     <Compile Include="Helpers\Maps\Kml\PolygonStyle.cs" />
+    <Compile Include="Helpers\ObjectFactory.cs" />
     <Compile Include="Helpers\RangeExtensions.cs" />
     <Compile Include="Helpers\RegexHelper.cs" />
     <Compile Include="Helpers\SpreadFunctions.cs" />

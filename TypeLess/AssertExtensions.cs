@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using TypeLess.DataTypes;
+using TypeLess.Helpers;
 using TypeLess.Properties;
 
 namespace TypeLess
@@ -40,7 +41,15 @@ namespace TypeLess
             }
         }
 
-        #region Numbers
+        public static T ShallowCopy<T>(this T obj) where T : class {
+
+            var t = typeof(T);
+            var newInstance = ObjectFactory.CreateObject<T>();
+            ObjectFactory.ShallowCopyProperties(obj, newInstance);
+            return newInstance;
+        }
+
+        #region IfAsserts
 
         public static INumberAssertionU<byte> If(this byte source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
@@ -114,103 +123,311 @@ namespace TypeLess
             return new NumberAssertion<double>(name ?? GetTypeName(typeof(double)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
-
-        #endregion
-
         public static INullableAssertionU<T> If<T>(this Nullable<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null) where T : struct
         {
-            
+
             return new NullableAssertion<T>(name ?? GetTypeName(typeof(T)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static ITimeSpanAssertionU If(this TimeSpan source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            
+
             return new TimeSpanAssertion(name ?? GetTypeName(typeof(TimeSpan)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static IDateTimeAssertionU If(this DateTime source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            
+
             return new DateTimeAssertion(name ?? GetTypeName(typeof(DateTime)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static IBoolAssertionU If(this bool source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            
+
             return new BoolAssertion(name ?? GetTypeName(typeof(bool)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static IDictionaryAssertionU<T, T2> If<T, T2>(this IDictionary<T, T2> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            
+
             return new DictionaryAssertion<T, T2>(name ?? GetTypeName(typeof(IDictionary<T, T2>)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static IDictionaryAssertionU<T, T2> If<T, T2>(this Dictionary<T, T2> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            
+
             return new DictionaryAssertion<T, T2>(name ?? GetTypeName(typeof(Dictionary<T, T2>)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static IEnumerableAssertionU<T> If<T>(this T[] source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            
+
             return new GenericEnumerableAssertion<T>(name ?? GetTypeName(typeof(T[])), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static IEnumerableAssertionU<T> If<T>(this Stack<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            
+
             return new GenericEnumerableAssertion<T>(name ?? GetTypeName(typeof(Stack<T>)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static IEnumerableAssertionU<T> If<T>(this Queue<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            
+
             return new GenericEnumerableAssertion<T>(name ?? GetTypeName(typeof(Queue<T>)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static IEnumerableAssertionU<T> If<T>(this IList<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            
+
             return new GenericEnumerableAssertion<T>(name ?? GetTypeName(typeof(IList<T>)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static IEnumerableAssertionU<T> If<T>(this List<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            
+
             return new GenericEnumerableAssertion<T>(name ?? GetTypeName(typeof(List<T>)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static IEnumerableAssertionU If(this IEnumerable source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            
+
             return new EnumerableAssertion(name ?? GetTypeName(typeof(IEnumerable)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static IEnumerableAssertionU<T> If<T>(this IEnumerable<T> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            
+
             return new GenericEnumerableAssertion<T>(name ?? GetTypeName(typeof(IEnumerable<T>)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static IStringAssertionU If(this string source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            
+
             return new StringAssertion(name ?? GetTypeName(typeof(string)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
         public static IClassAssertionU<T> If<T>(this T source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null) where T : class
         {
-            
+
             return new ClassAssertion<T>(name ?? GetTypeName(typeof(T)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
-        internal static Assertion<T> CreateAssert<T>(this T source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null) //where T : class
+        #endregion
+
+        #region AndAsserts 
+
+        public static IEnumerableAssertionU<S> And<T, S>(this IAssertion<T> assert, S[] source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
         {
-            
-            return new Assertion<T>(name ?? GetTypeName(typeof(T)), source, Path.GetFileName(file), lineNumber, caller);
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, IEnumerable<S>>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static INumberAssertionU<byte> And<T>(this IAssertion<T> assert, byte source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, byte>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static INumberAssertionU<sbyte> And<T>(this IAssertion<T> assert, sbyte source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, sbyte>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static INumberAssertionU<ushort> And<T>(this IAssertion<T> assert, ushort source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, ushort>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static INumberAssertionU<uint> And<T>(this IAssertion<T> assert, uint source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, uint>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static INumberAssertionU<ulong> And<T>(this IAssertion<T> assert, ulong source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, ulong>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static INumberAssertionU<short> And<T>(this IAssertion<T> assert, short source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, short>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static INumberAssertionU<long> And<T>(this IAssertion<T> assert, long source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, long>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static INumberAssertionU<char> And<T>(this IAssertion<T> assert, char source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, char>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static INumberAssertionU<int> And<T>(this IAssertion<T> assert, int source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, int>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static INumberAssertionU<decimal> And<T>(this IAssertion<T> assert, decimal source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, decimal>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static INumberAssertionU<float> And<T>(this IAssertion<T> assert, float source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, float>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static INumberAssertionU<double> And<T, S>(this IAssertion<T> assert, double source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, double>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static INullableAssertionU<S> And<T, S>(this IAssertion<T> assert, Nullable<S> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null) where S : struct
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, Nullable<S>>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static ITimeSpanAssertionU And<T>(this IAssertion<T> assert, TimeSpan source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, TimeSpan>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static IDateTimeAssertionU And<T>(this IAssertion<T> assert, DateTime source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, DateTime>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static IBoolAssertionU And<T, S>(this IAssertion<T> assert, bool source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, bool>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static IDictionaryAssertionU<S, S2> And<T, S, S2>(this IAssertion<T> assert, IDictionary<S, S2> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, IDictionary<S, S2>>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static IDictionaryAssertionU<S, S2> And<T, S, S2>(this IAssertion<T> assert, Dictionary<S, S2> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, Dictionary<S, S2>>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static IEnumerableAssertionU<S> And<T, S>(this IAssertion<T> assert, Stack<S> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, Stack<S>>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static IEnumerableAssertionU<S> And<T, S>(this IAssertion<T> assert, Queue<S> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, Queue<S>>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static IEnumerableAssertionU<S> And<T, S>(this IAssertion<T> assert, IList<S> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, IList<S>>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static IEnumerableAssertionU<S> And<T, S>(this IAssertion<T> assert, List<S> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, List<S>>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static IEnumerableAssertionU And<T>(this IAssertion<T> assert, IEnumerable source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, IEnumerable>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static IEnumerableAssertionU<S> And<T, S>(this IAssertion<T> assert, IEnumerable<S> source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, IEnumerable<S>>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static IStringAssertionU And<T>(this IAssertion<T> assert, string source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, string>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        public static IClassAssertionU<S> And<T, S>(this IAssertion<T> assert, S source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null) where S : class
+        {
+            var nextAssert = source.If(name, file, lineNumber, caller);
+            InternalAndOperation<T, S>(assert, nextAssert);
+            return nextAssert;
+        }
+
+        #endregion
+
+        private static void InternalAndOperation<T, S>(IAssertion assert, IAssertionU nextAssert)
+        {
+            var assertObj = assert as Assertion<T>;
+            if (assertObj == null)
+            {
+                throw new InvalidOperationException("And operations are not allowed on this type of assertion");
+            }
+
+            var nextAssertObj = nextAssert as Assertion<S>;
+
+            if (nextAssertObj == null)
+            {
+                throw new InvalidOperationException("And operations are not allowed on this type of assertion");
+            }
+
+            nextAssertObj.MakePartOfAndOperation(assertObj.ToString(skipTrace: true));
         }
 
         internal static IAssertion<T> IsTrue<T>(this Assertion<T> source, Func<T, bool> assertFunc, string errMsg = null)

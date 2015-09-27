@@ -87,7 +87,7 @@ namespace TypeLess.Tests
             d.If().IsPositive.ThenThrow();
             d.If().IsNegative.ThenThrow();
             d.If().IsZero.ThenThrow();
-            d.If().IsSmallerThan(5).ThenThrow();
+            d.If().IsLessThan(5).ThenThrow();
             d.If().IsGreaterThan(5).ThenThrow();
             d.If().IsEqualTo(5).ThenThrow();
             d.If().IsFalse(x => true, "is not false").ThenThrow();
@@ -158,6 +158,16 @@ namespace TypeLess.Tests
             i.If().ContainsLessThan(5).ThenThrow();
         }
 
+    }
+
+    public class AndChecks {
+
+        public AndChecks() {
+            var arr1 = new int[] {1,2,3,4};
+            var arr2 = new int[] {1,2};
+
+            arr1.If("Arr1").Contains(new int[] {1,2}).And(arr2, "Arr2").Contains(new int[] { 1, 2 }).ThenThrow<ArgumentException>();
+        }
     }
 
     public class DictionaryChecks

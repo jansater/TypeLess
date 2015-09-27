@@ -10,52 +10,45 @@ namespace TypeLess.Net.Entity
 {
     public class StoredProcedure : IStoredProcedure
     {
-        internal StoredProcedure()
+        private string _name;
+        private List<Parameter> _parameters = new List<Parameter>();
+        private string _connectionString;
+        private IDbConnection _connection;
+        private IDbTransaction _transaction;
+
+        public StoredProcedure(string connectionString, string procedureName = null, params Parameter[] parameters) 
         {
-
-        }
-
-        internal string Name { get; set; }
-
-        internal List<Parameter> Parameters { get; set; }
-
-        private string ConnectionString { get; set; }
-
-        private SqlConnection Connection { get; set; }
-
-        private bool _ownsConnection = false;
-
-        public StoredProcedure(string connectionString, string procedureName = null, bool ownsConnection = true, params Parameter[] parameters) 
-        {
-            Name = procedureName;
-            _ownsConnection = ownsConnection;
-            ConnectionString = connectionString;
+            _name = procedureName;
+            _connectionString = connectionString;
 
             if (parameters != null)
             {
-                Parameters = new List<Parameter>(parameters.Length);
-                this.Parameters.AddRange(parameters);
+                _parameters = new List<Parameter>(parameters);
             }
         }
 
-        public StoredProcedure(SqlConnection existingConnection, string procedureName = null, bool ownsConnection = true, params Parameter[] parameters) {
-            existingConnection.If("existingConnection").IsNull.ThenThrow().Otherwise(x => Connection = x);
-            Name = procedureName;
-            _ownsConnection = ownsConnection;
-
-            if (parameters != null) {
-                Parameters = new List<Parameter>(parameters.Length);
-                this.Parameters.AddRange(parameters);
-            }
-        }
-
-        internal void AddParameter(string name, object value)
+        public StoredProcedure(IDbConnection existingConnection, string procedureName = null, params Parameter[] parameters)
         {
-            if (this.Parameters == null)
+            existingConnection.If("existingConnection").IsNull.ThenThrow().Otherwise(x => _connection = x);
+            _name = procedureName;
+
+            if (parameters != null)
             {
-                this.Parameters = new List<Parameter>(5);
+                _parameters = new List<Parameter>(parameters);
             }
-            this.Parameters.Add(new Parameter(name, value));
+        }
+
+        public StoredProcedure(IDbConnection existingConnection, IDbTransaction transaction, string procedureName = null, params Parameter[] parameters)
+        {
+            existingConnection.If("existingConnection").IsNull.ThenThrow().Otherwise(x => _connection = x);
+            transaction.If("transaction").IsNull.ThenThrow().Otherwise(x => _transaction = x);
+
+            _name = procedureName;
+
+            if (parameters != null)
+            {
+                _parameters = new List<Parameter>(parameters);
+            }
         }
 
         public T Execute<T>(Func<DbDataReader, T> responseCallback)
@@ -64,7 +57,7 @@ namespace TypeLess.Net.Entity
             return ExecuteWithConnection(cmd =>
                 {
                     T result = default(T);
-                    using (var reader = cmd.ExecuteReader(_ownsConnection ? CommandBehavior.CloseConnection : CommandBehavior.Default))
+                    using (var reader = cmd.ExecuteReader(_connection == null ? CommandBehavior.CloseConnection : CommandBehavior.Default))
                     {
                         result = responseCallback.Invoke(reader);
                     }
@@ -74,31 +67,20 @@ namespace TypeLess.Net.Entity
 
         private T ExecuteWithConnection<T>(Func<SqlCommand, T> func) {
 
-            Name.If("Name").IsNull.ThenThrow();
+            _name.If("Name").IsNull.ThenThrow();
 
-            SqlTransaction transaction = null;
-            if (TransactionProvider != null)
+            bool ownsConnection = _connection == null;
+
+            if (ownsConnection)
             {
-                transaction = TransactionProvider();
+                _connection = new SqlConnection(_connectionString);
             }
 
-            if (Connection == null) {
-                if (transaction != null)
-                {
-                    _ownsConnection = false;
-                    Connection = transaction.Connection;
-                }
-                else {
-                    _ownsConnection = true;
-                    Connection = new SqlConnection(ConnectionString);
-                }
-            }
-
-            var cmd = new SqlCommand(Name, Connection);
+            var cmd = new SqlCommand(_name, _connection as SqlConnection);
             
-            if (this.Parameters != null)
+            if (this._parameters != null)
             {
-                foreach (var item in this.Parameters)
+                foreach (var item in _parameters)
                 {
                     cmd.Parameters.Add(new SqlParameter(item.Name, item.Value));
                 }
@@ -106,14 +88,14 @@ namespace TypeLess.Net.Entity
 
             cmd.CommandType = CommandType.StoredProcedure;
 
-            if (_ownsConnection)
+            if (ownsConnection)
             {
-                Connection.Open();
+                _connection.Open();
             }
 
-            if (transaction != null)
+            if (_transaction != null)
             {
-                cmd.Transaction = transaction;
+                cmd.Transaction = _transaction as SqlTransaction;
             }
 
             try
@@ -122,10 +104,10 @@ namespace TypeLess.Net.Entity
             }
             finally
             {
-                if (_ownsConnection)
+                if (ownsConnection)
                 {
-                    Connection.Dispose();
-                    Connection = null;
+                    _connection.Dispose();
+                    _connection = null;
                 }
             }
         }
@@ -135,6 +117,5 @@ namespace TypeLess.Net.Entity
             ExecuteWithConnection(cmd => cmd.ExecuteNonQuery() );
         }
 
-        public Func<SqlTransaction> TransactionProvider { get; set; }
     }
 }

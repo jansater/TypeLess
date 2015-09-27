@@ -50,7 +50,7 @@ namespace TypeLess.Net.Entity
             return this;
         }
 
-        public ISprocBuilder WithTransaction(IDbTransaction transaction)
+        public ISprocBuilder WithTransaction(Func<IDbTransaction> transaction)
         {
             //do nothing
             return this;
