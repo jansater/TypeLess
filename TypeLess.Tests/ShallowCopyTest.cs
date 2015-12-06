@@ -112,9 +112,25 @@ namespace TypeLess.Tests
         }
     }
 
+    public class ClassWithOnlyGetter {
+        public int IntVal { get { return 1; } }
+    }
+
+    public class ClassWithConstantField
+    {
+        public const int Prop = 2;
+        public static readonly int Prop2 = 2;
+    }
+
     public class InheritedClass : ClassWithPublicProperties
     {
         
+    }
+
+    public class ClassWithNullables
+    {
+        public int? intField;
+        public int? IntProp { get; set; }
     }
 
     public class ShallowCopyTest
@@ -147,6 +163,17 @@ namespace TypeLess.Tests
             var newC = c.ShallowCopy();
             Assert.Equal(c.GetIntProp(), newC.GetIntProp());
             Assert.Equal(c.GetStringProp(), newC.GetStringProp());
+        }
+
+        [Fact]
+        public void CanCopyNullables() {
+            var c = new ClassWithNullables();
+            c.intField = 2;
+            c.IntProp = 4;
+
+            var newC = c.ShallowCopy();
+            Assert.Equal(c.intField, newC.intField);
+            Assert.Equal(c.IntProp, newC.IntProp);
         }
 
         [Fact]
@@ -216,7 +243,17 @@ namespace TypeLess.Tests
             Assert.Equal(c.StringProp, newC.StringProp);
         }
 
+        [Fact]
+        public void GetOnlyPropertiesAreIgnored() {
+            var c = new ClassWithOnlyGetter();
+            c.ShallowCopy();
+        }
 
+        [Fact]
+        public void ConstFieldsAreIgnored() {
+            var c = new ClassWithConstantField();
+            c.ShallowCopy();
+        }
         
     }
 

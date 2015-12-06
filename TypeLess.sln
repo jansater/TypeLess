@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeLess.Net.Tests", "TypeL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeLess.Net.Entity", "TypeLess.Net.Entity\TypeLess.Net.Entity.csproj", "{6D167154-729D-43CA-A99F-47EA2C51044A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeLess.Id", "TypeLess.Id\TypeLess.Id.csproj", "{82F2291E-4725-4D73-8472-37587B3E2DEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeLess.Id.Tests", "TypeLess.Id.Tests\TypeLess.Id.Tests.csproj", "{06AAF2FB-8AB9-450C-A581-487DD7DCFA8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{6D167154-729D-43CA-A99F-47EA2C51044A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D167154-729D-43CA-A99F-47EA2C51044A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D167154-729D-43CA-A99F-47EA2C51044A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82F2291E-4725-4D73-8472-37587B3E2DEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82F2291E-4725-4D73-8472-37587B3E2DEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82F2291E-4725-4D73-8472-37587B3E2DEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82F2291E-4725-4D73-8472-37587B3E2DEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06AAF2FB-8AB9-450C-A581-487DD7DCFA8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06AAF2FB-8AB9-450C-A581-487DD7DCFA8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06AAF2FB-8AB9-450C-A581-487DD7DCFA8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06AAF2FB-8AB9-450C-A581-487DD7DCFA8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

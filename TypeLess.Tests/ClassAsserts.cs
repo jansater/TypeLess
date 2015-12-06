@@ -19,6 +19,21 @@ namespace TypeLess.Tests
                 this.PropertyA = a;
                 this.PropertyB = b;
             }
+
+            public override bool Equals(object obj)
+            {
+                var c = obj as ClassA;
+                if (c == null) {
+                    return false;
+                }
+
+                return PropertyA.Equals(c.PropertyA) && PropertyB.Equals(c.PropertyB);
+            }
+
+            public override int GetHashCode()
+            {
+                return PropertyA.GetHashCode() ^ PropertyB.GetHashCode();
+            }
         }
 
         public class ClassB {
@@ -85,7 +100,7 @@ namespace TypeLess.Tests
             Assert.True(classA.If().PropertyValuesMatch(classB).ThenReturn(true));
             Assert.False(classA.If().PropertyValuesDoNotMatch(classB).ThenReturn(true));
         }
-
+        
         [Fact]
         public void WhenNotAllPropertiesMatchThenNegativeIsReturned() {
             var classA = new ClassA(1, "Test");
@@ -107,6 +122,39 @@ namespace TypeLess.Tests
             {
                 return false;
             }).ThenReturn(true));
+        }
+
+        [Fact]
+        public void WhenCollectionContainItemExceptionIsThrownOtherwiseNot() {
+            var item = new ClassA(1, "Test");
+            var item2 = new ClassA(2, "Test2");
+            var list = new List<ClassA>();
+
+            list.Add(item);
+
+            var ex = Assert.Throws<ArgumentException>(() =>
+            {
+                item.If().IsPartOf(list).ThenThrow<ArgumentException>();
+            });
+
+            item2.If().IsPartOf(list).ThenThrow<ArgumentException>();
+        }
+
+        [Fact]
+        public void WhenCollectionDoesNotContainItemExceptionIsThrownOtherwiseNot()
+        {
+            var item = new ClassA(1, "Test");
+            var item2 = new ClassA(2, "Test2");
+            var list = new List<ClassA>();
+
+            list.Add(item);
+
+            var ex = Assert.Throws<ArgumentException>(() =>
+            {
+                item2.If().IsNotPartOf(list).ThenThrow<ArgumentException>();
+            });
+
+            item.If().IsNotPartOf(list).ThenThrow<ArgumentException>();
         }
     }
 }

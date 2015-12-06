@@ -303,4 +303,10 @@
   <data name="IsNotValidSwiftCode" xml:space="preserve">
     <value>&lt;name&gt;must be a valid Swift code</value>
   </data>
+  <data name="IsNotPartOf" xml:space="preserve">
+    <value>Collection must contain &lt;name&gt;</value>
+  </data>
+  <data name="IsPartOf" xml:space="preserve">
+    <value>Collection must not contain &lt;name&gt;</value>
+  </data>
 </root>

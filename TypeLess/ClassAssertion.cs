@@ -23,6 +23,8 @@ namespace TypeLess
         new IClassAssertion<T> IsEqualTo(T comparedTo);
         IClassAssertion<T> IsNotEqualTo<S>(S comparedTo);
         IClassAssertion<T> IsEqualTo<S>(S comparedTo);
+        IClassAssertion<T> IsPartOf(IEnumerable<T> enumerable);
+        IClassAssertion<T> IsNotPartOf(IEnumerable<T> enumerable);
         /// <summary>
         /// Expect statements to test validity. This effects how error messages are added. In the normal case this property is false and 
         /// assertion methods are expected to test against a negative statement such as if x is smaller than or equal to 0 then throw e.
@@ -216,6 +218,34 @@ namespace TypeLess
                 }
 
                 return AssertResult.New(x.Equals(comparedTo), Resources.IsEqualTo, comparedTo == null ? "null" : comparedTo.ToString());
+            });
+            return this;
+        }
+
+        public IClassAssertion<T> IsPartOf(IEnumerable<T> enumerable)
+        {
+            Extend(x =>
+            {
+                if (enumerable == null || x == null)
+                {
+                    return AssertResult.New(false, Resources.IsPartOf);
+                }
+
+                return AssertResult.New(enumerable.Contains(x), Resources.IsPartOf);
+            });
+            return this;
+        }
+
+        public IClassAssertion<T> IsNotPartOf(IEnumerable<T> enumerable)
+        {
+            Extend(x =>
+            {
+                if (enumerable == null || x == null)
+                {
+                    return AssertResult.New(true, Resources.IsNotPartOf);
+                }
+
+                return AssertResult.New(!enumerable.Contains(x), Resources.IsNotPartOf);
             });
             return this;
         }

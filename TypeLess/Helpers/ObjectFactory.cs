@@ -67,12 +67,17 @@ namespace TypeLess.Helpers
                 }
 
                 var info = targetProp.PropertyType.GetTypeInfo();
+
+                if (!prop.CanRead || !targetProp.CanWrite) {
+                    continue;
+                }
+                
                 if (info.IsClass && info.Namespace != "System")
                 {
                     continue;
                 }
 
-                if (info.IsGenericType)
+                if (info.IsGenericType && info.Name != "Nullable`1")
                 {
                     continue;
                 }
@@ -90,13 +95,18 @@ namespace TypeLess.Helpers
                     continue;
                 }
 
+                if (targetField.IsStatic || targetField.IsInitOnly) {
+                    continue;
+                }
+
                 var info = targetField.FieldType.GetTypeInfo();
+
                 if (info.IsClass && info.Namespace != "System")
                 {
                     continue;
                 }
 
-                if (info.IsGenericType)
+                if (info.IsGenericType && info.Name != "Nullable`1")
                 {
                     continue;
                 }
