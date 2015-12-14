@@ -49,6 +49,25 @@ namespace TypeLess
             return newInstance;
         }
 
+        #region QuickAsserts
+
+        public static IAssertionOW<bool> ThenThrow<E>(this bool b, string errorMsg, params object[] args) where E : Exception
+        {
+            if (!b)
+            {
+                return new Assertion<bool>(errorMsg, b, null, null, null);
+            }
+
+            if (errorMsg != null && args != null && args.Length > 0)
+            {
+                errorMsg = String.Format(CultureInfo.InvariantCulture, errorMsg, args);
+            }
+
+            throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg });
+        }
+
+        #endregion
+
         #region IfAsserts
 
         public static INumberAssertionU<byte> If(this byte source, string name = null, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null)

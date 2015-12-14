@@ -29,8 +29,8 @@ namespace TypeLess.Tests
         public ComparableSyntaxChecks()
         {
             Range<int> i = new Range<int>();
-           
-            
+
+
         }
 
     }
@@ -42,7 +42,7 @@ namespace TypeLess.Tests
             ListSyntaxChecks o = new ListSyntaxChecks();
             DoubleSyntaxChecks o2 = new DoubleSyntaxChecks();
             DictionaryChecks o3 = new DictionaryChecks();
-            
+
             o.If().IsFalse(x => true, "is not false").ThenThrow();
             o.If().IsTrue(x => false, "is not true").ThenThrow();
             o.If().Or(o2).Or(o3).IsNull.ThenThrow(); //this should not be possible
@@ -59,17 +59,17 @@ namespace TypeLess.Tests
 
     public class TraverserChecks
     {
-       
+
         [Fact]
         public void TraverseReturnsCorrectSum()
         {
             var s = new { Sum = 0 };
 
-            var total  = EnumerableTraverser.Traverse(new int[] { 1, 2, 4 }, (i, current, next, state) =>
-            {
-                state = new { Sum = state.Sum + current };
-                return state;
-            }, s);
+            var total = EnumerableTraverser.Traverse(new int[] { 1, 2, 4 }, (i, current, next, state) =>
+           {
+               state = new { Sum = state.Sum + current };
+               return state;
+           }, s);
 
             Assert.True(total.Sum == 7);
         }
@@ -159,6 +159,8 @@ namespace TypeLess.Tests
         }
 
     }
+
+    
 
     public class AndChecks {
 

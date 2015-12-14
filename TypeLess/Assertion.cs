@@ -238,8 +238,7 @@ namespace TypeLess
         protected int _errorCount;
         protected bool _evalPositive = false;
         private string _andFailure = "";
-        private bool _isPartOfAndOperation = false;
-
+        
         public Assertion(string s, T source, string file, int? lineNumber, string caller)
         {
             Name = s;
@@ -501,7 +500,6 @@ namespace TypeLess
 
         internal void MakePartOfAndOperation(string s)
         {
-            _isPartOfAndOperation = true;
             if (String.IsNullOrWhiteSpace(s))
             {
                 //Then we did not have a failure on the previous operator which means 
