@@ -379,22 +379,15 @@ namespace TypeLess
             {
                 errorMsg = String.Format(CultureInfo.InvariantCulture, errorMsg, args);
             }
-
-            var sb = new StringBuilder();
-            if (innerException != null)
-            {
-                ExtractDetails(sb, innerException);
-                errorMsg += " " + sb.ToString();
-            }
-
+            
             if (Debugger.IsAttached)
             {
-                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)) });
+                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)), innerException });
 
             }
             else
             {
-                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name) });
+                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name), innerException });
             }
         }
 
@@ -439,23 +432,16 @@ namespace TypeLess
                 errorMsg = String.Format(CultureInfo.InvariantCulture, errorMsg, args);
             }
 
-            var sb = new StringBuilder();
-            if (innerException != null)
-            {
-                ExtractDetails(sb, innerException);
-                errorMsg += " " + sb.ToString();
-            }
-
             if (Debugger.IsAttached)
             {
-                throw new ArgumentNullException("", errorMsg == null ? ToString() : AppendTrace(
-                    String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)));
+                throw new ArgumentNullException(errorMsg == null ? ToString() : AppendTrace(
+                    String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)), innerException);
             }
             else
             {
-                throw new ArgumentNullException("", errorMsg == null ?
+                throw new ArgumentNullException(errorMsg == null ?
                    ToString() :
-                    String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name));
+                    String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name), innerException);
             }
         }
 
