@@ -230,15 +230,15 @@ namespace TypeLess
         internal T Item { get; set; }
 
         internal string Name { get; set; }
-        protected  bool _isValid = false;
+        protected bool _isValid = false;
         private string _file;
         private int? _lineNr;
         private string _caller;
-        protected  List<Assertion<T>> _children = new List<Assertion<T>>();
+        protected List<Assertion<T>> _children = new List<Assertion<T>>();
         protected int _errorCount;
         protected bool _evalPositive = false;
         private string _andFailure = "";
-        
+
         public Assertion(string s, T source, string file, int? lineNumber, string caller)
         {
             Name = s;
@@ -350,6 +350,54 @@ namespace TypeLess
             return this;
         }
 
+        private static string ExtractDetails(StringBuilder sb, Exception e)
+        {
+            if (!String.IsNullOrEmpty(e.Message))
+            {
+                sb.Append(e.Message);
+            }
+
+            int i = 1;
+            while (e.InnerException != null)
+            {
+                sb.AppendLine("INNER EXCEPTION ").Append(i).Append(":").AppendLine();
+                i++;
+                sb.Append(e.InnerException.StackTrace);
+                e = e.InnerException;
+            }
+            return sb.ToString();
+        }
+
+        public IAssertionOW<T> ThenThrow<E>(Exception innerException, string errorMsg = null, params object[] args) where E : Exception
+        {
+            if (!True)
+            {
+                return this;
+            }
+
+            if (errorMsg != null && args != null && args.Length > 0)
+            {
+                errorMsg = String.Format(CultureInfo.InvariantCulture, errorMsg, args);
+            }
+
+            var sb = new StringBuilder();
+            if (innerException != null)
+            {
+                ExtractDetails(sb, innerException);
+                errorMsg += " " + sb.ToString();
+            }
+
+            if (Debugger.IsAttached)
+            {
+                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)) });
+
+            }
+            else
+            {
+                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name) });
+            }
+        }
+
         public IAssertionOW<T> ThenThrow<E>(string errorMsg = null, params object[] args) where E : Exception
         {
             if (!True)
@@ -372,6 +420,43 @@ namespace TypeLess
                 throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name) });
             }
 
+        }
+
+
+        /// <summary>
+        /// Throws arg null instead of arg exception just because of the message created
+        /// </summary>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        public IAssertionOW<T> ThenThrow(Exception innerException, string errorMsg = null, params object[] args)
+        {
+            if (!True)
+            {
+                return this;
+            }
+
+            if (errorMsg != null && args != null && args.Length > 0)
+            {
+                errorMsg = String.Format(CultureInfo.InvariantCulture, errorMsg, args);
+            }
+
+            var sb = new StringBuilder();
+            if (innerException != null)
+            {
+                ExtractDetails(sb, innerException);
+                errorMsg += " " + sb.ToString();
+            }
+
+            if (Debugger.IsAttached)
+            {
+                throw new ArgumentNullException("", errorMsg == null ? ToString() : AppendTrace(
+                    String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)));
+            }
+            else
+            {
+                throw new ArgumentNullException("", errorMsg == null ?
+                   ToString() :
+                    String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name));
+            }
         }
 
         /// <summary>

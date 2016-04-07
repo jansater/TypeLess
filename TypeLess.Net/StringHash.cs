@@ -23,7 +23,6 @@ namespace TypeLess.Net
             }
             return builder.ToString();
         }
-
-
+        
     }
 }

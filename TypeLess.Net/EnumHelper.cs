@@ -47,6 +47,10 @@ namespace TypeLess.Net
             }
 
             FieldInfo fi = value.GetType().GetField(value.ToString());
+            if (fi == null) {
+                return String.Empty;
+            }
+
             var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
             if (attributes.Length > 0)
             {
@@ -65,6 +69,10 @@ namespace TypeLess.Net
 
 
             FieldInfo fi = value.GetType().GetField(value.ToString());
+            if (fi == null) {
+                return EnumAttr.Empty;
+            }
+
             var attributes = (DisplayAttribute[])fi.GetCustomAttributes(typeof(DisplayAttribute), false);
 
             if (attributes.Length > 0)

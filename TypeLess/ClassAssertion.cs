@@ -40,7 +40,7 @@ namespace TypeLess
         /// <typeparam name="S"></typeparam>
         /// <param name="item">The item.</param>
         /// <returns>IClassAssertion&lt;T&gt;.</returns>
-        IClassAssertion<T> PropertyValuesMatch<S>(S item);
+        IClassAssertion<T> PropertyValuesMatch<S>(S item, params string[] ignoreProperties);
 
         /// <summary>
         /// Inverse of PropertyValuesMatch. The propertyChanged handler will be invoked for each not matching property and will contain values for
@@ -50,7 +50,7 @@ namespace TypeLess
         /// <typeparam name="S"></typeparam>
         /// <param name="item">The item.</param>
         /// <returns>IClassAssertion&lt;T&gt;.</returns>
-        IClassAssertion<T> PropertyValuesDoNotMatch<S>(S item, Func<string, object, object, bool> propertyChanged = null);
+        IClassAssertion<T> PropertyValuesDoNotMatch<S>(S item, Func<string, object, object, bool> propertyChanged = null, params string[] ignoreProperties);
     }
 
     public interface IClassAssertion<T> : IClassAssertionU<T>, IAssertion<T> where T : class
@@ -258,7 +258,7 @@ namespace TypeLess
             }
         }
 
-        private bool PropertiesMatch(T source, object target, Func<string, object, object, bool> propertyChanged = null)
+        private bool PropertiesMatch(T source, object target, Func<string, object, object, bool> propertyChanged = null, params string[] ignoreProperties)
         {
             if (target == null && source != null)
             {
@@ -273,8 +273,12 @@ namespace TypeLess
                 return false;
             }
 
-            var sourceProperties = source.GetType().GetTypeInfo().DeclaredProperties;
-            var targetProperties = target.GetType().GetTypeInfo().DeclaredProperties;
+            if (ignoreProperties == null) {
+                ignoreProperties = new string[0];
+            }
+
+            var sourceProperties = source.GetType().GetTypeInfo().DeclaredProperties.Where(x => !ignoreProperties.Any(y => String.Equals(y, x.Name, StringComparison.CurrentCultureIgnoreCase)));
+            var targetProperties = target.GetType().GetTypeInfo().DeclaredProperties.Where(x => !ignoreProperties.Any(y => String.Equals(y, x.Name, StringComparison.CurrentCultureIgnoreCase))).ToList();
 
             var containsMatchingProps = sourceProperties.All(sourceProp =>
             {
@@ -327,21 +331,21 @@ namespace TypeLess
             return containsMatchingProps;
         }
 
-        public IClassAssertion<T> PropertyValuesMatch<S>(S item)
+        public IClassAssertion<T> PropertyValuesMatch<S>(S item, params string[] ignoreProperties)
         {
             Extend(x =>
             {
-                return AssertResult.New(PropertiesMatch(x, item), "Property values do not match"); 
+                return AssertResult.New(PropertiesMatch(x, item, ignoreProperties: ignoreProperties), "Property values do not match"); 
             });
             return this;
         }
 
 
-        public IClassAssertion<T> PropertyValuesDoNotMatch<S>(S item, Func<string, object, object, bool> propertyChanged = null)
+        public IClassAssertion<T> PropertyValuesDoNotMatch<S>(S item, Func<string, object, object, bool> propertyChanged = null, params string[] ignoreProperties)
         {
             Extend(x =>
             {
-                return AssertResult.New(!PropertiesMatch(x, item, propertyChanged), "Property values match");
+                return AssertResult.New(!PropertiesMatch(x, item, propertyChanged, ignoreProperties), "Property values match");
             });
             return this;
         }
