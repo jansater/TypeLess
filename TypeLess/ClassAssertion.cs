@@ -257,8 +257,8 @@ namespace TypeLess
                 return (IClassAssertion<T>)base.EvalPositive;
             }
         }
-
-        private bool PropertiesMatch(T source, object target, Func<string, object, object, bool> propertyChanged = null, params string[] ignoreProperties)
+        
+        internal bool PropertiesMatch(T source, object target, Func<string, object, object, bool> propertyChanged = null, params string[] ignoreProperties)
         {
             if (target == null && source != null)
             {
@@ -329,6 +329,71 @@ namespace TypeLess
             });
 
             return containsMatchingProps;
+        }
+
+        internal IEnumerable<Difference> DiffProperties(T source, object target, params string[] ignoreProperties)
+        {
+            var diff = new List<Difference>();
+
+            if (target == null && source != null)
+            {
+                return diff;
+            }
+            else if (target == null && source == null)
+            {
+                return diff;
+            }
+            else if (target != null && source == null)
+            {
+                return diff;
+            }
+
+            if (ignoreProperties == null)
+            {
+                ignoreProperties = new string[0];
+            }
+
+            var sourceProperties = source.GetType().GetTypeInfo().DeclaredProperties.Where(x => !ignoreProperties.Any(y => String.Equals(y, x.Name, StringComparison.CurrentCultureIgnoreCase)));
+            var targetProperties = target.GetType().GetTypeInfo().DeclaredProperties.Where(x => !ignoreProperties.Any(y => String.Equals(y, x.Name, StringComparison.CurrentCultureIgnoreCase))).ToList();
+
+            foreach (var sourceProp in sourceProperties)
+            {
+                var targetProp = targetProperties.Where(y => y.Name == sourceProp.Name).FirstOrDefault();
+                if (targetProp == null)
+                {
+                    throw new MissingMemberException("Missing member in target: " + sourceProp.Name);
+                }
+
+                if (sourceProp.PropertyType != targetProp.PropertyType)
+                {
+                    throw new InvalidCastException("Property types for property " + sourceProp.Name + " do not match");
+                }
+
+                var expectedValue = sourceProp.GetValue(source);
+                var actualValue = targetProp.GetValue(target);
+
+                if (expectedValue == null)
+                {
+                    if (actualValue == null)
+                    {
+                        continue;
+                    }
+                }
+
+                var equals = expectedValue.Equals(actualValue);
+
+                if (!equals)
+                {
+                    diff.Add(new Difference()
+                    {
+                        Property = sourceProp.Name,
+                        SourceValue = expectedValue,
+                        TargetValue = actualValue
+                    });
+                }
+            }
+
+            return diff;
         }
 
         public IClassAssertion<T> PropertyValuesMatch<S>(S item, params string[] ignoreProperties)

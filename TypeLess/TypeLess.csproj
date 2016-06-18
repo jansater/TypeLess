@@ -73,6 +73,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Debugging\PerfLogger.cs" />
+    <Compile Include="Difference.cs" />
     <Compile Include="Extensions\Banks\Swift.cs" />
     <Compile Include="GenericEnumerableAssertion.cs" />
     <Compile Include="Extensions\Books\Isbn.cs" />

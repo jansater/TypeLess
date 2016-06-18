@@ -93,7 +93,7 @@ namespace TypeLess.Tests
             int x = 1;
             int[] y = new int[] { 1,4,5 };
             int z = 4;
-
+            
             var ex = Assert.Throws<ArgumentException>(() =>
             {
                 x.If("x").IsEqualTo(1).And(y, "y").DoesNotContain(3,4,5).And(z, "z").IsNotEqualTo(3).ThenThrow<ArgumentException>();

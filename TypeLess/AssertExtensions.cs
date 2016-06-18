@@ -66,6 +66,21 @@ namespace TypeLess
             throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg });
         }
 
+        public static IAssertionOW<bool> ThenThrow<E>(this bool b, Exception innerException, string errorMsg, params object[] args) where E : Exception
+        {
+            if (!b)
+            {
+                return new Assertion<bool>(errorMsg, b, null, null, null);
+            }
+
+            if (errorMsg != null && args != null && args.Length > 0)
+            {
+                errorMsg = String.Format(CultureInfo.InvariantCulture, errorMsg, args);
+            }
+
+            throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg, innerException });
+        }
+
         #endregion
 
         #region IfAsserts
@@ -230,6 +245,11 @@ namespace TypeLess
         {
 
             return new ClassAssertion<T>(name ?? GetTypeName(typeof(T)), source, Path.GetFileName(file), lineNumber, caller);
+        }
+
+        public static IEnumerable<Difference> DiffObjects<T>(this T source, object target, params string[] ignoreProperties) where T : class
+        {
+            return (source.If() as ClassAssertion<T>).DiffProperties(source, target, ignoreProperties);
         }
 
         #endregion

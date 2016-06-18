@@ -211,6 +211,19 @@ namespace TypeLess
         IAssertionOW<T> ThenThrow<E>(string errorMsg = null, params object[] args) where E : Exception;
 
         /// <summary>
+        /// Throws an argument null exception.
+        /// </summary>
+        /// <param name="errorMsg">Override the system generated message with your own. Use <name> to include the paramater name in the message</param>
+        /// <returns></returns>
+        IAssertionOW<T> ThenThrow(Exception innerException, string errorMsg = null, params object[] args);
+        /// <summary>
+        /// Throws an exception of type T.
+        /// </summary>
+        /// <param name="errorMsg">Override the system generated message with your own. Use <name> to include the paramater name in the message</param>
+        /// <returns></returns>
+        IAssertionOW<T> ThenThrow<E>(Exception innerException, string errorMsg = null, params object[] args) where E : Exception;
+
+        /// <summary>
         /// Tries to execute the specified try action.
         /// </summary>
         /// <param name="tryAction">The try action.</param>
