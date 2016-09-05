@@ -287,14 +287,14 @@ namespace TypeLess
                 {
                     throw new MissingMemberException("Missing member in target: " + sourceProp.Name);
                 }
+                
+                var expectedValue = sourceProp.GetValue(source);
+                var actualValue = targetProp.GetValue(target);
 
                 if (sourceProp.PropertyType != targetProp.PropertyType)
                 {
-                    throw new InvalidCastException("Property types for property " + sourceProp.Name + " do not match");
+                    actualValue = Convert.ChangeType(actualValue, sourceProp.PropertyType);
                 }
-
-                var expectedValue = sourceProp.GetValue(source);
-                var actualValue = targetProp.GetValue(target);
 
                 if (expectedValue == null)
                 {
@@ -355,7 +355,7 @@ namespace TypeLess
 
             var sourceProperties = source.GetType().GetTypeInfo().DeclaredProperties.Where(x => !ignoreProperties.Any(y => String.Equals(y, x.Name, StringComparison.CurrentCultureIgnoreCase)));
             var targetProperties = target.GetType().GetTypeInfo().DeclaredProperties.Where(x => !ignoreProperties.Any(y => String.Equals(y, x.Name, StringComparison.CurrentCultureIgnoreCase))).ToList();
-
+            
             foreach (var sourceProp in sourceProperties)
             {
                 var targetProp = targetProperties.Where(y => y.Name == sourceProp.Name).FirstOrDefault();
@@ -363,14 +363,14 @@ namespace TypeLess
                 {
                     throw new MissingMemberException("Missing member in target: " + sourceProp.Name);
                 }
+                
+                var expectedValue = sourceProp.GetValue(source);
+                var actualValue = targetProp.GetValue(target);
 
                 if (sourceProp.PropertyType != targetProp.PropertyType)
                 {
-                    throw new InvalidCastException("Property types for property " + sourceProp.Name + " do not match");
+                    actualValue = Convert.ChangeType(actualValue, sourceProp.PropertyType);
                 }
-
-                var expectedValue = sourceProp.GetValue(source);
-                var actualValue = targetProp.GetValue(target);
 
                 if (expectedValue == null)
                 {
@@ -378,19 +378,30 @@ namespace TypeLess
                     {
                         continue;
                     }
-                }
-
-                var equals = expectedValue.Equals(actualValue);
-
-                if (!equals)
-                {
-                    diff.Add(new Difference()
+                    else
                     {
-                        Property = sourceProp.Name,
-                        SourceValue = expectedValue,
-                        TargetValue = actualValue
-                    });
+                        diff.Add(new Difference()
+                        {
+                            Property = sourceProp.Name,
+                            SourceValue = null,
+                            TargetValue = actualValue
+                        });
+                    }
                 }
+                else {
+                    var equals = expectedValue.Equals(actualValue);
+
+                    if (!equals)
+                    {
+                        diff.Add(new Difference()
+                        {
+                            Property = sourceProp.Name,
+                            SourceValue = expectedValue,
+                            TargetValue = actualValue
+                        });
+                    }
+                }
+                
             }
 
             return diff;

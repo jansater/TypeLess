@@ -65,7 +65,18 @@ namespace TypeLess
 
             throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg });
         }
+        
+        public static T ThenReturn<T>(this bool b, Func<T> action) {
+            var assertion = b.If().IsTrue;
+            return assertion.ThenReturn(action);
+        }
 
+        public static IAssertionOW<bool> Then(this bool b, Action<bool> action)
+        {
+            var assertion = b.If().IsTrue;
+            return assertion.Then(action);
+        }
+        
         public static IAssertionOW<bool> ThenThrow<E>(this bool b, Exception innerException, string errorMsg, params object[] args) where E : Exception
         {
             if (!b)
