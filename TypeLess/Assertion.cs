@@ -201,6 +201,13 @@ namespace TypeLess
         S ThenReturn<S>(S valueToReturn);
 
         /// <summary>
+        /// Sets the error message to s. Useful for object assertions
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        IAssertion<T> ThenSetErrorMessage(string s);
+
+        /// <summary>
         /// Throws an argument null exception.
         /// </summary>
         /// <param name="errorMsg">Override the system generated message with your own. Use <name> to include the paramater name in the message</param>
@@ -488,6 +495,13 @@ namespace TypeLess
                    ToString() :
                     String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name));
             }
+        }
+
+        public IAssertion<T> ThenSetErrorMessage(string s) {
+            _sb.Clear();
+            _sb.Append(s);
+
+            return this;
         }
 
         public override string ToString()
