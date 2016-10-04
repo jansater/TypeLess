@@ -129,8 +129,11 @@ namespace TypeLess
         /// the two assertion error messages
         /// </summary>
         IAssertion Or(IAssertion otherAssertion, string separator = ". ");
-
-
+        /// <summary>
+        /// Returns the property name
+        /// </summary>
+        string Name { get; }
+        
     }
 
     public interface IAssertionOW<T>
@@ -242,7 +245,7 @@ namespace TypeLess
         protected internal StringBuilder _sb { get; set; }
         internal T Item { get; set; }
 
-        internal string Name { get; set; }
+        public string Name { get; internal set; }
         protected bool _isValid = false;
         private string _file;
         private int? _lineNr;

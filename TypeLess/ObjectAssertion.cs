@@ -110,6 +110,36 @@ namespace TypeLess
             return sb.ToString();
         }
 
+        public IDictionary<string, string> ToDictionary(string separator = null) {
+            var dict = new Dictionary<string, string>();
+
+            foreach (var item in Assertions)
+            {
+                var s = item.ToString(skipTrace: true);
+                if (item.ErrorCount > 0 && !String.IsNullOrWhiteSpace(s) && !String.IsNullOrEmpty(item.Name))
+                {
+                    if (dict.ContainsKey(item.Name))
+                    {
+                        var current = dict[item.Name];
+                        if (separator != null)
+                        {
+                            current = current + separator + s;
+                        }
+                        else
+                        {
+                            current = current + ". " + s;
+                        }
+                        dict[item.Name] = current;
+                    }
+                    else {
+                        dict[item.Name] = s;
+                    }
+                }
+            }
+
+            return dict;
+        }
+
         public override string ToString()
         {
             int errors = 0;

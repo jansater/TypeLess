@@ -8,6 +8,7 @@ using TypeLess.DataTypes;
 using TypeLess.Properties;
 using System.Reflection;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace TypeLess
 {
@@ -293,7 +294,7 @@ namespace TypeLess
 
                 if (sourceProp.PropertyType != targetProp.PropertyType)
                 {
-                    actualValue = Convert.ChangeType(actualValue, sourceProp.PropertyType);
+                    actualValue = Cast(sourceProp.PropertyType, actualValue);
                 }
 
                 if (expectedValue == null)
@@ -369,7 +370,7 @@ namespace TypeLess
 
                 if (sourceProp.PropertyType != targetProp.PropertyType)
                 {
-                    actualValue = Convert.ChangeType(actualValue, sourceProp.PropertyType);
+                    actualValue = Cast(sourceProp.PropertyType, actualValue);
                 }
 
                 if (expectedValue == null)
@@ -405,6 +406,16 @@ namespace TypeLess
             }
 
             return diff;
+        }
+
+        public static object Cast(Type Type, object data)
+        {
+            var DataParam = Expression.Parameter(typeof(object), "data");
+            var Body = Expression.Block(Expression.Convert(Expression.Convert(DataParam, data.GetType()), Type));
+
+            var Run = Expression.Lambda(Body, DataParam).Compile();
+            var ret = Run.DynamicInvoke(data);
+            return ret;
         }
 
         public IClassAssertion<T> PropertyValuesMatch<S>(S item, params string[] ignoreProperties)
