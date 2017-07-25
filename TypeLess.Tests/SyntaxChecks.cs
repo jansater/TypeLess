@@ -244,4 +244,19 @@ namespace TypeLess.Tests
         }
 
     }
+
+    public class ThenOtherwiseTests
+    {
+        public ThenOtherwiseTests()
+        {
+            object o = null;
+            //how can we make a decision to call and return a value .. or another value without a execute function... 
+            //we can't evaluate until the last function call ... so how do we know when the last function has been added ... 
+          
+
+            //o.If().IsNotNull.ThenReturn(x => "").Otherwise(x => x. "");
+            
+        }
+
+    }
 }

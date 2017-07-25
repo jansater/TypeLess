@@ -18,6 +18,42 @@ namespace TypeLess.Tests
         }
 
         [Fact]
+        public void ItsPossibleToRunThenAndThenThrowException()
+        {
+            double d = 5;
+            bool val = false;
+            bool exThrown = false;
+            try
+            {
+                d.If().IsEqualTo(5).Then(x => val = true).ThenThrow<ArgumentException>("Just throwing an exception");
+            }
+            catch (Exception)
+            {
+                exThrown = true;
+            }
+            Xunit.Assert.True(exThrown);
+            Xunit.Assert.True(val);
+        }
+
+        [Fact]
+        public void ExceptionIsOnlyThrownAfterThenOnValidStatement()
+        {
+            double d = 4;
+            bool val = false;
+            bool exThrown = false;
+            try
+            {
+                d.If().IsEqualTo(5).Then(x => val = true).ThenThrow<ArgumentException>("Just throwing an exception");
+            }
+            catch (Exception)
+            {
+                exThrown = true;
+            }
+            Xunit.Assert.False(exThrown);
+            Xunit.Assert.False(val);
+        }
+
+        [Fact]
         public void CallTryCatchFinally()
         {
             object o = null;
