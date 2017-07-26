@@ -228,6 +228,19 @@ namespace TypeLess
         S ThenReturn<S>(S valueToReturn);
 
         /// <summary>
+        /// Logs all details of the method such as line number and file
+        /// </summary>
+        /// <param name="logMethod"></param>
+        /// <returns></returns>
+        IAssertion<T> ThenLogTo(Action<string> logMethod);
+        /// <summary>
+        /// Logs all details of the method such as line number and file
+        /// </summary>
+        /// <param name="logMethod"></param>
+        /// <returns></returns>
+        IAssertion<T> ThenLogTo(string customMsg, Action<string> logMethod);
+
+        /// <summary>
         /// Sets the error message to s. Useful for object assertions
         /// </summary>
         /// <param name="s"></param>
@@ -439,6 +452,29 @@ namespace TypeLess
             {
                 throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name), innerException });
             }
+        }
+
+        public IAssertion<T> ThenLogTo(Action<string> logMethod) {
+            if (logMethod == null)
+            {
+                throw new ArgumentNullException("logMethod");
+            }
+
+            var toLog = AppendTrace(ToString(skipTrace: true));
+            logMethod(toLog);
+            return this;
+        }
+
+        public IAssertion<T> ThenLogTo(string customMsg, Action<string> logMethod) {
+            if (logMethod == null) {
+                throw new ArgumentNullException("logMethod");
+            }
+
+            var toLog = customMsg == null ? ToString(skipTrace:true) : String.Format(CultureInfo.InvariantCulture, customMsg.Replace("<name>", "{0}"), Name);
+            toLog = AppendTrace(toLog);
+
+            logMethod(toLog);
+            return this;
         }
 
         public IAssertionOW<T> ThenThrow<E>(string errorMsg = null, params object[] args) where E : Exception

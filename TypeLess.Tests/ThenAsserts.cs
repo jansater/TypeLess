@@ -35,6 +35,27 @@ namespace TypeLess.Tests
             Xunit.Assert.True(val);
         }
 
+        public void Log(string msg) {
+
+        }
+
+        [Fact]
+        public void ItsPossibleToLogToAndThenThrowException()
+        {
+            double d = 5;
+            bool exThrown = false;
+            try
+            {
+                d.If().IsEqualTo(5).ThenLogTo(Log).ThenThrow<ArgumentException>("Just throwing an exception");
+            }
+            catch (Exception)
+            {
+                exThrown = true;
+            }
+            Xunit.Assert.True(exThrown);
+            
+        }
+
         [Fact]
         public void ExceptionIsOnlyThrownAfterThenOnValidStatement()
         {
