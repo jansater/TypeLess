@@ -455,6 +455,12 @@ namespace TypeLess
         }
 
         public IAssertion<T> ThenLogTo(Action<string> logMethod) {
+
+            if (!True)
+            {
+                return this;
+            }
+
             if (logMethod == null)
             {
                 throw new ArgumentNullException("logMethod");
@@ -466,6 +472,12 @@ namespace TypeLess
         }
 
         public IAssertion<T> ThenLogTo(string customMsg, Action<string> logMethod) {
+
+            if (!True)
+            {
+                return this;
+            }
+
             if (logMethod == null) {
                 throw new ArgumentNullException("logMethod");
             }

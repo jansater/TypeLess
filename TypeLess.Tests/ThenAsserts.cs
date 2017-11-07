@@ -46,7 +46,7 @@ namespace TypeLess.Tests
             bool exThrown = false;
             try
             {
-                d.If().IsEqualTo(5).ThenLogTo(Log).ThenThrow<ArgumentException>("Just throwing an exception");
+                d.If("d").IsEqualTo(5).ThenLogTo(Log).ThenThrow<ArgumentException>("Just throwing an exception");
             }
             catch (Exception)
             {
@@ -54,6 +54,32 @@ namespace TypeLess.Tests
             }
             Xunit.Assert.True(exThrown);
             
+        }
+
+        [Fact]
+        public void LogIsNotWrittenIfStatementIsFalse()
+        {
+            string s = "";
+            double d = 5;
+            d.If("d").IsEqualTo(4).ThenLogTo(x => s = "test").ThenThrow<ArgumentException>("Just throwing an exception");
+            Assert.Equal("", s);
+        }
+
+        [Fact]
+        public void LogIsWrittenIfStatementIsTrue()
+        {
+            string s = "";
+            double d = 5;
+            try
+            {
+                d.If("d").IsEqualTo(5).ThenLogTo(x => s = "test").ThenThrow<ArgumentException>("Just throwing an exception");
+            }
+            catch (Exception)
+            {
+                
+            }
+            
+            Assert.Equal("test", s);
         }
 
         [Fact]
