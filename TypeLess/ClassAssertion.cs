@@ -41,7 +41,7 @@ namespace TypeLess
         /// <typeparam name="S"></typeparam>
         /// <param name="item">The item.</param>
         /// <returns>IClassAssertion&lt;T&gt;.</returns>
-        IClassAssertion<T> PropertyValuesMatch<S>(S item, params string[] ignoreProperties);
+        IClassAssertion<T> PropertyValuesMatch<S>(S item, bool throwExceptionOnPropertyMismatch = false, string[] ignoreProperties = null);
 
         /// <summary>
         /// Inverse of PropertyValuesMatch. The propertyChanged handler will be invoked for each not matching property and will contain values for
@@ -51,7 +51,7 @@ namespace TypeLess
         /// <typeparam name="S"></typeparam>
         /// <param name="item">The item.</param>
         /// <returns>IClassAssertion&lt;T&gt;.</returns>
-        IClassAssertion<T> PropertyValuesDoNotMatch<S>(S item, Func<string, object, object, bool> propertyChanged = null, params string[] ignoreProperties);
+        IClassAssertion<T> PropertyValuesDoNotMatch<S>(S item, bool throwExceptionOnPropertyMismatch = false, Func<string, object, object, bool> propertyChanged = null, string[] ignoreProperties = null);
     }
 
     public interface IClassAssertion<T> : IClassAssertionU<T>, IAssertion<T> where T : class
@@ -259,7 +259,7 @@ namespace TypeLess
             }
         }
         
-        internal bool PropertiesMatch(T source, object target, Func<string, object, object, bool> propertyChanged = null, params string[] ignoreProperties)
+        internal bool PropertiesMatch(T source, object target, bool throwExceptionOnPropertyMismatch = false, Func<string, object, object, bool> propertyChanged = null, params string[] ignoreProperties)
         {
             if (target == null && source != null)
             {
@@ -274,7 +274,8 @@ namespace TypeLess
                 return false;
             }
 
-            if (ignoreProperties == null) {
+            if (ignoreProperties == null)
+            {
                 ignoreProperties = new string[0];
             }
 
@@ -286,9 +287,17 @@ namespace TypeLess
                 var targetProp = targetProperties.Where(y => y.Name == sourceProp.Name).FirstOrDefault();
                 if (targetProp == null)
                 {
-                    throw new MissingMemberException("Missing member in target: " + sourceProp.Name);
+                    if (throwExceptionOnPropertyMismatch)
+                    {
+                        throw new MissingMemberException("Missing member in target: " + sourceProp.Name);
+                    }
+                    else
+                    {
+                        //ignore
+                        return true;
+                    }
                 }
-                
+
                 var expectedValue = sourceProp.GetValue(source);
                 var actualValue = targetProp.GetValue(target);
 
@@ -305,7 +314,8 @@ namespace TypeLess
                     }
                     else
                     {
-                        if (propertyChanged != null) {
+                        if (propertyChanged != null)
+                        {
                             if (!propertyChanged(sourceProp.Name, expectedValue, actualValue))
                             {
                                 //then ignore this diff
@@ -318,7 +328,8 @@ namespace TypeLess
 
                 var equals = expectedValue.Equals(actualValue);
 
-                if (!equals && propertyChanged != null) {
+                if (!equals && propertyChanged != null)
+                {
                     if (!propertyChanged(sourceProp.Name, expectedValue, actualValue))
                     {
                         //then ignore this diff
@@ -332,7 +343,8 @@ namespace TypeLess
             return containsMatchingProps;
         }
 
-        internal IEnumerable<Difference> DiffProperties(T source, object target, params string[] ignoreProperties)
+
+        internal IEnumerable<Difference> DiffProperties(T source, object target, bool throwExceptionOnPropertyMismatch = false, params string[] ignoreProperties)
         {
             var diff = new List<Difference>();
 
@@ -362,7 +374,13 @@ namespace TypeLess
                 var targetProp = targetProperties.Where(y => y.Name == sourceProp.Name).FirstOrDefault();
                 if (targetProp == null)
                 {
-                    throw new MissingMemberException("Missing member in target: " + sourceProp.Name);
+                    if (throwExceptionOnPropertyMismatch)
+                    {
+                        throw new MissingMemberException("Missing member in target: " + sourceProp.Name);
+                    }
+                    else {
+                        continue;
+                    }
                 }
                 
                 var expectedValue = sourceProp.GetValue(source);
@@ -418,21 +436,21 @@ namespace TypeLess
             return ret;
         }
 
-        public IClassAssertion<T> PropertyValuesMatch<S>(S item, params string[] ignoreProperties)
+        public IClassAssertion<T> PropertyValuesMatch<S>(S item, bool throwExceptionOnPropertyMismatch = false, string[] ignoreProperties = null)
         {
             Extend(x =>
             {
-                return AssertResult.New(PropertiesMatch(x, item, ignoreProperties: ignoreProperties), "Property values do not match"); 
+                return AssertResult.New(PropertiesMatch(x, item, throwExceptionOnPropertyMismatch: throwExceptionOnPropertyMismatch, ignoreProperties: ignoreProperties), "Property values do not match"); 
             });
             return this;
         }
 
 
-        public IClassAssertion<T> PropertyValuesDoNotMatch<S>(S item, Func<string, object, object, bool> propertyChanged = null, params string[] ignoreProperties)
+        public IClassAssertion<T> PropertyValuesDoNotMatch<S>(S item, bool throwExceptionOnPropertyMismatch = false, Func<string, object, object, bool> propertyChanged = null, string[] ignoreProperties = null)
         {
             Extend(x =>
             {
-                return AssertResult.New(!PropertiesMatch(x, item, propertyChanged, ignoreProperties), "Property values match");
+            return AssertResult.New(!PropertiesMatch(x, item, throwExceptionOnPropertyMismatch: throwExceptionOnPropertyMismatch, propertyChanged: propertyChanged, ignoreProperties: ignoreProperties), "Property values match");
             });
             return this;
         }

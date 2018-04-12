@@ -26,6 +26,17 @@ namespace TypeLess
 #pragma warning disable 0436,1685
     public static class AssertExtensions
     {
+        
+        public static bool In<T>(this T val, params T[] values) where T : struct
+        {
+            return values.Contains(val);
+        }
+
+        public static bool NotIn<T>(this T val, params T[] values) where T : struct
+        {
+            return !values.Contains(val);
+        }
+
         internal static string GetTypeName(Type type)
         {
             var genericArgs = type.GenericTypeArguments;
@@ -258,9 +269,9 @@ namespace TypeLess
             return new ClassAssertion<T>(name ?? GetTypeName(typeof(T)), source, Path.GetFileName(file), lineNumber, caller);
         }
 
-        public static IEnumerable<Difference> DiffObjects<T>(this T source, object target, params string[] ignoreProperties) where T : class
+        public static IEnumerable<Difference> DiffObjects<T>(this T source, object target, bool throwExceptionOnPropertyMismatch = false, string[] ignoreProperties = null) where T : class
         {
-            return (source.If() as ClassAssertion<T>).DiffProperties(source, target, ignoreProperties);
+            return (source.If() as ClassAssertion<T>).DiffProperties(source, target, throwExceptionOnPropertyMismatch: throwExceptionOnPropertyMismatch, ignoreProperties: ignoreProperties);
         }
 
         #endregion

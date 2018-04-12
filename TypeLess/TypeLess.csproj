@@ -68,6 +68,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\Luhn.cs" />
+    <Compile Include="AssignmentException.cs" />
+    <Compile Include="AssignmentExtensions.cs" />
     <Compile Include="DataTypes\AssertResult.cs" />
     <Compile Include="DataTypes\Range.cs">
       <SubType>Code</SubType>

@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AndAsserts.cs" />
+    <Compile Include="AssignmentSyntax.cs" />
     <Compile Include="CheckDigitTest.cs" />
     <Compile Include="ClassAsserts.cs" />
     <Compile Include="ExtensionAsserts.cs" />
