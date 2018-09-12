@@ -46,8 +46,22 @@ namespace TypeLess.Net
                 return String.Empty;
             }
 
+            return String.Join(" & ", Enum.GetValues(value.GetType()).OfType<Enum>().Where(x => value.HasFlag(x)).Select(e =>
+            {
+                return e.InternalGetDescription();
+            }));
+        }
+
+        private static string InternalGetDescription(this Enum value)
+        {
+            if (value == null)
+            {
+                return String.Empty;
+            }
+
             FieldInfo fi = value.GetType().GetField(value.ToString());
-            if (fi == null) {
+            if (fi == null)
+            {
                 return String.Empty;
             }
 

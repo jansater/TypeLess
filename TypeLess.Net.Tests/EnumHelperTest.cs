@@ -11,12 +11,13 @@ using System.ComponentModel.DataAnnotations;
 namespace TypeLess.Net.Tests
 {
 
+    [Flags]
     public enum Types { 
         [Description("Much better than type B")]
-        [Display(Name="TYPE A", Order=1)]
+        [Display(Name="TYPE A", Order=1, Description = "Much better than type B")]
         TypeA,
         [Description("Much worse than type A")]
-        [Display(Name = "TYPE B", Order = 2)]
+        [Display(Name = "TYPE B", Order = 2, Description = "Much better than type A")]
         TypeB
     }
 
@@ -25,19 +26,25 @@ namespace TypeLess.Net.Tests
         [Fact]
         public void ItsPossibleToGetDescriptionAndDisplayNameFromEnum() {
 
-            var typeA = Types.TypeA.GetDisplayAttributes();
+            var typeA = Types.TypeA;
+            
+            Assert.Equal("Much better than type B", typeA.GetDescription());   
+        }
 
-            Assert.Equal("Much better than type B", typeA.Description);
-            Assert.Equal("TYPE A", typeA.DisplayName);
+        [Fact]
+        public void ItsPossibleToGetAMergedDescriptionForFlags()
+        {
+            var type = (Types.TypeA | Types.TypeB);
+            Assert.Equal("Much better than type B & Much worse than type A", type.GetDescription());
         }
 
         [Fact]
         public void ItsPossibleToGetOrder()
         {
             var typeA = Types.TypeA.GetDisplayAttributes();
-
-            Assert.Equal("Much better than type B", typeA.Description);
-            Assert.Equal("TYPE A", typeA.DisplayName);
+            var typeB = Types.TypeB.GetDisplayAttributes();
+            Assert.Equal(1, typeA.Order);
+            Assert.Equal(2, typeB.Order);
         }
     }
 }
