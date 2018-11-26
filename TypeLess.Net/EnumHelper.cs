@@ -46,7 +46,23 @@ namespace TypeLess.Net
                 return String.Empty;
             }
 
-            return String.Join(" & ", Enum.GetValues(value.GetType()).OfType<Enum>().Where(x => value.HasFlag(x)).Select(e =>
+            
+            return value.InternalGetDescription();
+        }
+
+        public static IEnumerable<T> AllValues<T>()
+        {
+            return Enum.GetValues(typeof(T)).OfType<Enum>().Where(x => ((int)(object)x) > 0).OrderBy(x => x.GetDisplayAttributes().Order).Select(x => (T)(object)x).ToList();
+        }
+
+        public static string GetFlagDescription(this Enum value)
+        {
+            if (value == null)
+            {
+                return String.Empty;
+            }
+
+            return String.Join(" & ", Enum.GetValues(value.GetType()).OfType<Enum>().Where(x => ((int)(object)x) > 0).Where(x => (((int)(object)value) & ((int)(object)x)) != 0).OrderBy(x => x.GetDisplayAttributes().Order).Select(e =>
             {
                 return e.InternalGetDescription();
             }));

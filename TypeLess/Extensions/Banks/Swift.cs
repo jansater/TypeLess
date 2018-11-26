@@ -27,7 +27,7 @@ namespace TypeLess.Extensions.Banks
      */
     public static class Swift
     {
-        private static string _regex = "^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$";
+        private static string _regex = "^[A-Za-z]{6}[A-Za-z0-9]{2}([A-Za-z0-9]{3})?$";
 
         public static IStringAssertion IsNotValidSwiftCode(this IStringAssertionU source)
         {
