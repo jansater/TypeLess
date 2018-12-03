@@ -75,7 +75,7 @@ namespace TypeLess.Tests
 
             Assert.Throws<MissingMemberException>(() =>
             {
-                classA.If().PropertyValuesMatch(classAMissingProp).ThenReturn(true);
+                classA.If().PropertyValuesMatch(classAMissingProp, throwExceptionOnPropertyMismatch: true).ThenReturn(true);
             });
         }
 
@@ -87,7 +87,7 @@ namespace TypeLess.Tests
 
             Assert.Throws<InvalidCastException>(() =>
             {
-                classA.If().PropertyValuesMatch(classAWithWrongPropType).ThenReturn(true);
+                classA.If().PropertyValuesMatch(classAWithWrongPropType, throwExceptionOnPropertyMismatch: true).ThenReturn(true);
             });
         }
 
@@ -97,8 +97,8 @@ namespace TypeLess.Tests
             var classA = new ClassA(null, "Test");
             var classB = new ClassB(null, "Test");
 
-            Assert.True(classA.If().PropertyValuesMatch(classB).ThenReturn(true));
-            Assert.False(classA.If().PropertyValuesDoNotMatch(classB).ThenReturn(true));
+            Assert.True(classA.If().PropertyValuesMatch(classB, throwExceptionOnPropertyMismatch: true).ThenReturn(true));
+            Assert.False(classA.If().PropertyValuesDoNotMatch(classB, throwExceptionOnPropertyMismatch: true).ThenReturn(true));
         }
         
         [Fact]
@@ -106,10 +106,10 @@ namespace TypeLess.Tests
             var classA = new ClassA(1, "Test");
             var classB = new ClassB(2, "Test");
 
-            var match = classA.If().PropertyValuesMatch(classB).ThenReturn(true);
+            var match = classA.If().PropertyValuesMatch(classB, throwExceptionOnPropertyMismatch: true).ThenReturn(true);
             Assert.False(match);
 
-            match = classA.If().PropertyValuesDoNotMatch(classB).ThenReturn(true);
+            match = classA.If().PropertyValuesDoNotMatch(classB, throwExceptionOnPropertyMismatch: true).ThenReturn(true);
             Assert.True(match);
         }
 
@@ -118,7 +118,7 @@ namespace TypeLess.Tests
             var classA = new ClassA(1, "Test");
             var classB = new ClassB(2, "Test");
 
-            Assert.False(classA.If().PropertyValuesDoNotMatch(classB, (prop, expected, actual) =>
+            Assert.False(classA.If().PropertyValuesDoNotMatch(classB, throwExceptionOnPropertyMismatch: true, propertyChanged: (prop, expected, actual) =>
             {
                 return false;
             }).ThenReturn(true));

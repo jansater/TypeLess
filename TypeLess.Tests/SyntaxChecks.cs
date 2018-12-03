@@ -9,6 +9,7 @@ using TypeLess.Extensions.Sweden;
 using TypeLess.DataTypes;
 using TypeLess.Helpers;
 using Xunit;
+using TypeLess.Extensions.Banks;
 
 namespace TypeLess.Tests
 {
@@ -29,7 +30,6 @@ namespace TypeLess.Tests
         public ComparableSyntaxChecks()
         {
             Range<int> i = new Range<int>();
-
 
         }
 
@@ -63,6 +63,8 @@ namespace TypeLess.Tests
         [Fact]
         public void TraverseReturnsCorrectSum()
         {
+            "aaaaRSBG".If().IsNotValidSwiftCode().ThenThrow();
+
             var s = new { Sum = 0 };
 
             var total = EnumerableTraverser.Traverse(new int[] { 1, 2, 4 }, (i, current, next, state) =>
