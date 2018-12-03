@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
 using TypeLess.DataTypes;
+using TypeLess.Helpers;
 
 namespace TypeLess
 {
@@ -450,7 +451,8 @@ namespace TypeLess
             }
             else
             {
-                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name), innerException });
+                var lineException = new TypeLessException(AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)), innerException);
+                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name), lineException });
             }
         }
 
@@ -508,7 +510,8 @@ namespace TypeLess
             }
             else
             {
-                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name) });
+                var lineException = new TypeLessException(AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)));
+                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name), lineException });
             }
 
         }
@@ -537,9 +540,11 @@ namespace TypeLess
             }
             else
             {
+                var lineException = new TypeLessException(AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)), innerException);
+
                 throw new ArgumentNullException(errorMsg == null ?
                    ToString() :
-                    String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name), innerException);
+                    String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name), lineException);
             }
         }
 
@@ -566,9 +571,10 @@ namespace TypeLess
             }
             else
             {
-                throw new ArgumentNullException("", errorMsg == null ?
+                var lineException = new TypeLessException(AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)));
+                throw new ArgumentNullException(errorMsg == null ?
                    ToString() :
-                    String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name));
+                    String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name), lineException);
             }
         }
 
