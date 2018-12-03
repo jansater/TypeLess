@@ -36,8 +36,33 @@ namespace TypeLess.Net.Tests
         TypeC
     }
 
+    [Flags]
+    public enum TypesShortEnum
+    {
+        Undefined = 0,
+        [Description("Type A")]
+        TypeA = 1,
+        [Description("Type B")]
+        TypeB = 2,
+        [Description("Type C")]
+        TypeC = 4,
+        [Description("Type D")]
+        TypeD = 8
+    }
+
     public class EnumHelperTest
     {
+
+        [Fact]
+        public void ThreeFlagsCreateCorrectMessage()
+        {
+
+            var typeA = TypesShortEnum.TypeA | TypesShortEnum.TypeB | TypesShortEnum.TypeC | TypesShortEnum.TypeD;
+
+            Assert.Equal("Type A, Type B, Type C & Type D", typeA.GetFlagDescription());
+            Assert.Equal("Type A & Type B", (TypesShortEnum.TypeA | TypesShortEnum.TypeB).GetFlagDescription());
+            Assert.Equal("Type A", (TypesShortEnum.TypeA).GetFlagDescription());
+        }
 
         [Fact]
         public void ItsPossibasdfasdfleToGetDescriptionForEnum()
