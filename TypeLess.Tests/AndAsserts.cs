@@ -87,6 +87,17 @@ namespace TypeLess.Tests
         }
 
         [Fact]
+        public void ThrowsCorrectExceptionType()
+        {
+            int x = 1;
+            Assert.Throws<ArgumentException>(() =>
+            {
+                x.If("x").IsEqualTo(1).ThenThrow<ArgumentException>();
+            });
+            
+        }
+
+        [Fact]
         public void WhenContainOperatorIsUsedErrorMessageMakesSense()
         {
 

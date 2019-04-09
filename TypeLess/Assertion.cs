@@ -446,13 +446,13 @@ namespace TypeLess
             
             if (Debugger.IsAttached)
             {
-                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)), innerException });
+                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg?.Replace("<name>", "{0}") ?? String.Empty, Name)), innerException });
 
             }
             else
             {
-                var lineException = new TypeLessException(AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)), innerException);
-                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name), lineException });
+                var lineException = new TypeLessException(AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg?.Replace("<name>", "{0}") ?? String.Empty, Name)), innerException);
+                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : String.Format(CultureInfo.InvariantCulture, errorMsg?.Replace("<name>", "{0}") ?? String.Empty, Name), lineException });
             }
         }
 
@@ -505,13 +505,13 @@ namespace TypeLess
 
             if (Debugger.IsAttached)
             {
-                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)) });
+                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg?.Replace("<name>", "{0}") ?? String.Empty, Name)) });
 
             }
             else
             {
-                var lineException = new TypeLessException(AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)));
-                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name), lineException });
+                var lineException = new TypeLessException(AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg?.Replace("<name>", "{0}") ?? String.Empty, Name)));
+                throw (Exception)Activator.CreateInstance(typeof(E), new object[] { errorMsg == null ? ToString() : String.Format(CultureInfo.InvariantCulture, errorMsg?.Replace("<name>", "{0}"), Name) ?? String.Empty, lineException });
             }
 
         }
@@ -536,15 +536,15 @@ namespace TypeLess
             if (Debugger.IsAttached)
             {
                 throw new ArgumentNullException(errorMsg == null ? ToString() : AppendTrace(
-                    String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)), innerException);
+                    String.Format(CultureInfo.InvariantCulture, errorMsg?.Replace("<name>", "{0}") ?? String.Empty, Name)), innerException);
             }
             else
             {
-                var lineException = new TypeLessException(AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)), innerException);
+                var lineException = new TypeLessException(AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg?.Replace("<name>", "{0}") ?? String.Empty, Name)), innerException);
 
                 throw new ArgumentNullException(errorMsg == null ?
                    ToString() :
-                    String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name), lineException);
+                    String.Format(CultureInfo.InvariantCulture, errorMsg?.Replace("<name>", "{0}") ?? String.Empty, Name), lineException);
             }
         }
 
@@ -567,14 +567,14 @@ namespace TypeLess
             if (Debugger.IsAttached)
             {
                 throw new ArgumentNullException("", errorMsg == null ? ToString() : AppendTrace(
-                    String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)));
+                    String.Format(CultureInfo.InvariantCulture, errorMsg?.Replace("<name>", "{0}") ?? String.Empty, Name)));
             }
             else
             {
-                var lineException = new TypeLessException(AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name)));
+                var lineException = new TypeLessException(AppendTrace(String.Format(CultureInfo.InvariantCulture, errorMsg?.Replace("<name>", "{0}") ?? String.Empty, Name)));
                 throw new ArgumentNullException(errorMsg == null ?
                    ToString() :
-                    String.Format(CultureInfo.InvariantCulture, errorMsg.Replace("<name>", "{0}"), Name), lineException);
+                    String.Format(CultureInfo.InvariantCulture, errorMsg?.Replace("<name>", "{0}") ?? String.Empty, Name), lineException);
             }
         }
 
