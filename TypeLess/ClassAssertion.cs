@@ -428,6 +428,10 @@ namespace TypeLess
 
         public static object Cast(Type Type, object data)
         {
+            if (data == null) {
+                return null;
+            }
+
             var DataParam = Expression.Parameter(typeof(object), "data");
             var Body = Expression.Block(Expression.Convert(Expression.Convert(DataParam, data.GetType()), Type));
 

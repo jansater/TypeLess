@@ -68,6 +68,56 @@ namespace TypeLess.Tests
         }
 
         [Fact]
+        public void NullValuesCanBeDiffed()
+        {
+            var classA = new ClassA(null, "Test");
+            var classB = new ClassB(null, "Test");
+
+            var diff = classA.DiffObjects(classB);
+            Assert.Empty(diff);
+        }
+
+        [Fact]
+        public void NullValueInSourceCanBeDiffed()
+        {
+            var classA = new ClassA(null, "Test");
+            var classB = new ClassB(1, "Test");
+
+            var diff = classA.DiffObjects(classB);
+            Assert.Single(diff);
+        }
+
+        [Fact]
+        public void NullValueInTargetCanBeDiffed()
+        {
+            var classA = new ClassA(1, "Test");
+            var classB = new ClassB(null, "Test");
+
+            var diff = classA.DiffObjects(classB);
+            Assert.Single(diff);
+        }
+
+        [Fact]
+        public void WrongTypeInTargetCanBeDiffed()
+        {
+            var classA = new ClassA(null, "Test");
+            var classB = new ClassAWithWrongPropType(10, "Test");
+
+            var diff = classA.DiffObjects(classB);
+            Assert.Single(diff);
+        }
+
+        [Fact]
+        public void WrongTypeInSourceCanBeDiffed()
+        {
+            var classA = new ClassA(null, "Test");
+            var classB = new ClassAWithWrongPropType(10, "Test");
+
+            var diff = classB.DiffObjects(classA);
+            Assert.Single(diff);
+        }
+
+        [Fact]
         public void WhenMissingPropertyInTargetObjectThenExceptionIsRaised()
         {
             var classA = new ClassA(null, "Test");
