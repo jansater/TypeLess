@@ -74,18 +74,18 @@
     <Compile Include="SyntaxChecks.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TypeLess\TypeLess.csproj">
-      <Project>{01bd2432-e1fb-4c96-9607-653b45950669}</Project>
-      <Name>TypeLess</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TypeLess\TypeLess.csproj">
+      <Project>{997f40e9-980d-4bf4-935b-21b9ac052291}</Project>
+      <Name>TypeLess</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -92,6 +92,9 @@ DocProject/Help/html
 # Click-Once directory
 publish/
 
+lib/
+packages/
+
 # Publish Web Output
 *.Publish.xml
 
