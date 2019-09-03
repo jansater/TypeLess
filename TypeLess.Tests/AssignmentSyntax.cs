@@ -59,13 +59,10 @@ namespace TypeLess.Tests
         [Fact]
         public void AssignmentPropertyFailure()
         {
-
-            //Assert.Throws<AssignmentException>(() =>
-            //{
-                 new AssignmentSyntax("sdfds", null);
-            //});
-            
-
+            Assert.Throws<AssignmentException>(() =>
+            {
+                new AssignmentSyntax("sdfds", null);
+            });
         }
     }
 }

@@ -1,20 +1,10 @@
-﻿
-using Microsoft.CSharp.RuntimeBinder;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using System.Threading;
 using TypeLess.DataTypes;
 using TypeLess.Properties;
 
 namespace TypeLess
 {
-
     /// <summary>
     /// Throws arg null exception instead of arg exception just to avoid parameter name messages ... could use a custom exception though
     /// </summary>

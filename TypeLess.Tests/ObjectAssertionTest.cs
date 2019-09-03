@@ -9,12 +9,14 @@ namespace TypeLess.Tests
     public class ObjectAssertionTest
     {
 
-        class A {
+        class A
+        {
             public int B { get; set; }
             public int C { get; set; }
         }
 
-        ObjectAssertion CanDelete(A a) {
+        ObjectAssertion CanDelete(A a)
+        {
             return ObjectAssertion.New(
                 a.If().IsTrue(x => x.B == 1, "B must not be 1"),
                 a.If().IsTrue(x => x.C == 2, "C must not be 2")
@@ -27,32 +29,32 @@ namespace TypeLess.Tests
         {
             var a = new A() { B = 1, C = 2 }; //values are correct according to the rules of CanDelete
 
-            Assert.Equal(true, CanDelete(a).True);
+            Assert.True(CanDelete(a).True);
             int errorCount = 0;
             Assert.Equal(0, errorCount);
 
             a.B = 2;
-            Assert.Equal(false, CanDelete(a).True);
+            Assert.False(CanDelete(a).True);
 
             a.C = 3;
-            Assert.Equal(false, CanDelete(a).True);
+            Assert.False(CanDelete(a).True);
         }
 
         [Fact]
         public void WhenRulesAreInvalidThenReturnFalse()
         {
             var a = new A() { B = 1, C = 2 };
-            Assert.Equal(false, CanDelete(a).False);
+            Assert.False(CanDelete(a).False);
 
             //Check current error message
             Assert.Equal("B must not be 1 and C must not be 2", CanDelete(a).ToString());
 
             a.B = 2;
-            Assert.Equal(true, CanDelete(a).False);
+            Assert.True(CanDelete(a).False);
             Assert.Equal("C must not be 2", CanDelete(a).ToString());
 
             a.C = 3;
-            Assert.Equal(true, CanDelete(a).False);
+            Assert.True(CanDelete(a).False);
         }
 
         ObjectAssertion CanUpdate(A a)
@@ -76,12 +78,12 @@ namespace TypeLess.Tests
 
             var msg = ex.Message;
 
-            Assert.Equal("B must be 1", msg); 
+            Assert.Equal("B must be 1", msg);
 
             a.B = 1;
-            
-                CanUpdate(a).ThrowIfFalse<ArgumentNullException>();
-            
+
+            CanUpdate(a).ThrowIfFalse<ArgumentNullException>();
+
 
             a.C = 3;
             ex = Assert.Throws<ArgumentException>(() =>
@@ -117,13 +119,13 @@ namespace TypeLess.Tests
 
             var msg = ex.Message;
 
-            Assert.Equal(msg, "B must not be 1 and C must not be 2");
+            Assert.Equal("B must not be 1 and C must not be 2", msg);
 
 
             a.B = 2;
-            
-                CanDelete(a).ThrowIfTrue<ArgumentNullException>();
-            
+
+            CanDelete(a).ThrowIfTrue<ArgumentNullException>();
+
         }
     }
 }

@@ -19,10 +19,7 @@ namespace TypeLess.Tests
         {
             object s = null;
             s.If().IsNotNull.Then(x => x = null).ThenReturn(4);
-
-
         }
-
     }
 
     public class ComparableSyntaxChecks<T> where T : IComparable<T>
@@ -30,9 +27,7 @@ namespace TypeLess.Tests
         public ComparableSyntaxChecks()
         {
             Range<int> i = new Range<int>();
-
         }
-
     }
 
     public class ClassSyntaxChecks
@@ -52,9 +47,7 @@ namespace TypeLess.Tests
             {
 
             });
-
         }
-
     }
 
     public class TraverserChecks
@@ -75,7 +68,6 @@ namespace TypeLess.Tests
 
             Assert.True(total.Sum == 7);
         }
-
     }
 
     public class DoubleSyntaxChecks
@@ -98,9 +90,7 @@ namespace TypeLess.Tests
             d.If().IsNotWithin(3, 5).ThenThrow();
             d.If().IsWithin(3, 5).ThenThrow();
             d.If().Or(e).IsGreaterThan(5).ThenThrow(); //this should not be possible
-
         }
-
     }
 
     public class ListSyntaxChecks
@@ -162,15 +152,15 @@ namespace TypeLess.Tests
 
     }
 
-    
+    public class AndChecks
+    {
 
-    public class AndChecks {
+        public AndChecks()
+        {
+            var arr1 = new int[] { 1, 2, 3, 4 };
+            var arr2 = new int[] { 1, 2 };
 
-        public AndChecks() {
-            var arr1 = new int[] {1,2,3,4};
-            var arr2 = new int[] {1,2};
-
-            arr1.If("Arr1").Contains(new int[] {1,2}).And(arr2, "Arr2").Contains(new int[] { 1, 2 }).ThenThrow<ArgumentException>();
+            arr1.If("Arr1").Contains(new int[] { 1, 2 }).And(arr2, "Arr2").Contains(new int[] { 1, 2 }).ThenThrow<ArgumentException>();
         }
     }
 
@@ -191,8 +181,6 @@ namespace TypeLess.Tests
             someIDict.If().IsEqualTo(someDict).ThenThrow(); //dont think we should have this
             someIDict.If().IsFalse(x => 1 == 0, "").ThenThrow();
             someIDict.If().IsTrue(x => 1 == 1, "").ThenThrow();
-
-
         }
 
     }
@@ -209,7 +197,6 @@ namespace TypeLess.Tests
             s.If().DoesNotContainAlphaChars.ThenThrow();
             s.If().IsNotValidPersonalNumber().ThenThrow();
         }
-
     }
 
     public class NullableChecks
@@ -222,7 +209,6 @@ namespace TypeLess.Tests
             i.If().IsNotNull.ThenThrow();
 
         }
-
     }
 
     public class DateTimeChecks
@@ -232,9 +218,8 @@ namespace TypeLess.Tests
             DateTime dt = new DateTime();
 
             dt.If().NotSameYearAs(DateTime.UtcNow).ThenThrow();
-            
-        }
 
+        }
     }
 
     public class TimeSpanChecks
@@ -244,21 +229,16 @@ namespace TypeLess.Tests
             TimeSpan dt = new TimeSpan();
             dt.If().IsShorterThan(TimeSpan.FromHours(5)).ThenThrow();
         }
-
     }
 
     public class ThenOtherwiseTests
     {
         public ThenOtherwiseTests()
         {
-            object o = null;
-            //how can we make a decision to call and return a value .. or another value without a execute function... 
-            //we can't evaluate until the last function call ... so how do we know when the last function has been added ... 
-          
-
+            // How can we make a decision to call and return a value .. or another value without a execute function... 
+            // We can't evaluate until the last function call ... so how do we know when the last function has been added ... 
+            //object o = null;
             //o.If().IsNotNull.ThenReturn(x => "").Otherwise(x => x. "");
-            
         }
-
     }
 }

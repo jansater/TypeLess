@@ -35,8 +35,8 @@ namespace TypeLess.Tests
             Xunit.Assert.True(val);
         }
 
-        public void Log(string msg) {
-
+        private void Log(string msg)
+        {
         }
 
         [Fact]

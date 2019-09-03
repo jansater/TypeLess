@@ -40,7 +40,7 @@ namespace TypeLess.Tests
             string s = null;
             var msg = s.If("s").IsNull.ToString();
 
-            Xunit.Assert.True(msg.Contains("required"));
+            Xunit.Assert.Contains("required", msg);
 
 
         }
@@ -60,7 +60,7 @@ namespace TypeLess.Tests
                     .ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("i1 must not be equal to 1<br>o2 is required"));
+            Assert.StartsWith("i1 must not be equal to 1<br>o2 is required", res.Message);
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace TypeLess.Tests
                 o2.If("o2").Or(o1, "o1").IsNull.ThenThrow();
             });
 
-            Assert.True(res.Message.Equals("o2 is required"));
+            Assert.Equal("o2 is required", res.Message);
         }
 
         [Fact]
@@ -87,7 +87,7 @@ namespace TypeLess.Tests
 
             });
 
-            Assert.True(res.Message.StartsWith("s is required"));
+            Assert.StartsWith("s is required", res.Message);
 
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
@@ -139,7 +139,7 @@ namespace TypeLess.Tests
                 s.If("s").IsNull.ThenThrow<ArgumentException>();
             });
 
-            Assert.True(res.Message.StartsWith("s is required"));
+            Assert.StartsWith("s is required", res.Message);
 
         }
 
@@ -173,7 +173,7 @@ namespace TypeLess.Tests
                 s.If("s").IsEmpty.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must not be empty"));
+            Assert.StartsWith("s must not be empty", res.Message);
 
 
             string s2 = "d";
@@ -190,7 +190,7 @@ namespace TypeLess.Tests
                 s.If("s").DoesNotMatch("\\d").ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must match pattern \\d"));
+            Assert.StartsWith("s must match pattern \\d", res.Message);
 
 
             string s2 = "asd 23123 asd";
@@ -207,7 +207,7 @@ namespace TypeLess.Tests
                 s.If("s").Match("\\d").ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must not match pattern \\d"));
+            Assert.StartsWith("s must not match pattern \\d", res.Message);
 
 
             string s2 = "asd asd";
@@ -224,7 +224,7 @@ namespace TypeLess.Tests
                 s.If("s").IsTrue(x => true, "<name> must be false i guess").ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be false i guess"));
+            Assert.StartsWith("s must be false i guess", res.Message);
 
 
             string s2 = "d";
@@ -241,7 +241,7 @@ namespace TypeLess.Tests
                 s.If("s").IsFalse(x => false, "{0} must be true i guess").ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be true i guess"));
+            Assert.StartsWith("s must be true i guess", res.Message);
 
 
             string s2 = "d";
@@ -258,7 +258,7 @@ namespace TypeLess.Tests
                 s.If("s").IsFalse(x => false).ThenThrow("s must be true i guess");
             });
 
-            Assert.True(res.Message.StartsWith("s must be true i guess"));
+            Assert.StartsWith("s must be true i guess", res.Message);
 
 
             string s2 = "d";
@@ -275,7 +275,7 @@ namespace TypeLess.Tests
                 l.If("s").IsEmpty.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must not be empty"));
+            Assert.StartsWith("s must not be empty", res.Message);
 
 
             var l2 = new List<int>() { 1 };
@@ -292,7 +292,7 @@ namespace TypeLess.Tests
                 l.If("s").IsEmpty.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must not be empty"));
+            Assert.StartsWith("s must not be empty", res.Message);
 
 
             var l2 = new List<int>() { 1 } as IEnumerable;
@@ -310,7 +310,7 @@ namespace TypeLess.Tests
                 l.If("s").ContainsLessThan(3).ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must contain more than 3 items"));
+            Assert.StartsWith("s must contain more than 3 items", res.Message);
 
 
             var l2 = new List<int> { 1, 2 };
@@ -327,7 +327,7 @@ namespace TypeLess.Tests
                 l.If("s").ContainsMoreThan(3).ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must contain less than 3 items"));
+            Assert.StartsWith("s must contain less than 3 items", res.Message);
 
 
             var l2 = new List<int> { 1, 2 };
@@ -344,7 +344,7 @@ namespace TypeLess.Tests
                 i.If("s").IsZero.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be non zero"));
+            Assert.StartsWith("s must be non zero", res.Message);
 
 
             int i2 = 1;
@@ -373,7 +373,7 @@ namespace TypeLess.Tests
                 i.If("s").IsNotEqualTo(1).ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be equal to 1"));
+            Assert.StartsWith("s must be equal to 1", res.Message);
 
 
             int i2 = 1;
@@ -391,7 +391,7 @@ namespace TypeLess.Tests
                 i.If("s").IsEqualTo(1).ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must not be equal to 1"));
+            Assert.StartsWith("s must not be equal to 1", res.Message);
 
 
             int i2 = 0;
@@ -409,7 +409,7 @@ namespace TypeLess.Tests
                 i.If("s").IsLessThan(2).ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be greater than 2"));
+            Assert.StartsWith("s must be greater than 2", res.Message);
 
 
             int i2 = 1;
@@ -459,7 +459,7 @@ namespace TypeLess.Tests
                 i.If("s").IsGreaterThan(2).ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be smaller than 2"));
+            Assert.StartsWith("s must be smaller than 2", res.Message);
 
 
             int i2 = 1;
@@ -477,7 +477,7 @@ namespace TypeLess.Tests
                 i.If("s").IsPositive.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be zero or negative"));
+            Assert.StartsWith("s must be zero or negative", res.Message);
 
 
             int i2 = 0;
@@ -498,7 +498,7 @@ namespace TypeLess.Tests
                 i.If("s").IsNegative.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be zero or positive"));
+            Assert.StartsWith("s must be zero or positive", res.Message);
 
 
             int i2 = 0;
@@ -519,7 +519,7 @@ namespace TypeLess.Tests
                 i.If("s").IsNegative.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be zero or positive"));
+            Assert.StartsWith("s must be zero or positive", res.Message);
 
 
             int i2 = 0;
@@ -540,7 +540,7 @@ namespace TypeLess.Tests
                 s.If("s").IsEmptyOrWhitespace.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must not be empty"));
+            Assert.StartsWith("s must not be empty", res.Message);
 
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
@@ -564,7 +564,7 @@ namespace TypeLess.Tests
                 s.If("s").IsNotValidEmail.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be a valid email address"));
+            Assert.StartsWith("s must be a valid email address", res.Message);
 
             Xunit.Assert.Throws<ArgumentNullException>(() =>
             {
@@ -603,7 +603,7 @@ namespace TypeLess.Tests
                 s.If("s").IsShorterThan(4).ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be longer than 3 characters"));
+            Assert.StartsWith("s must be longer than 3 characters", res.Message);
 
 
 
@@ -633,7 +633,7 @@ namespace TypeLess.Tests
                 s.If("s").IsLongerThan(2).ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be shorter than 3 characters"));
+            Assert.StartsWith("s must be shorter than 3 characters", res.Message);
 
 
 
@@ -663,7 +663,7 @@ namespace TypeLess.Tests
                 s.If("s").DoesNotContainAlphaChars.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must contain alpha numeric characters"));
+            Assert.StartsWith("s must contain alpha numeric characters", res.Message);
 
 
             string s2 = "123@";
@@ -681,7 +681,7 @@ namespace TypeLess.Tests
                 s.If("s").DoesNotContainDigit.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must contain at least 1 digit"));
+            Assert.StartsWith("s must contain at least 1 digit", res.Message);
 
 
             string s2 = "asd123";
@@ -699,7 +699,7 @@ namespace TypeLess.Tests
                 s.If("s").DoesNotContain("e").ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must contain text e"));
+            Assert.StartsWith("s must contain text e", res.Message);
 
 
             string s2 = "asd123";
@@ -717,7 +717,7 @@ namespace TypeLess.Tests
                 s.If("s").DoesNotStartWith("sd").ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must start with text sd"));
+            Assert.StartsWith("s must start with text sd", res.Message);
 
 
             string s2 = "asd123";
@@ -735,7 +735,7 @@ namespace TypeLess.Tests
                 s.If("s").DoesNotEndWith("as").ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must end with text as"));
+            Assert.StartsWith("s must end with text as", res.Message);
 
 
             string s2 = "asd123";
@@ -753,7 +753,7 @@ namespace TypeLess.Tests
                 i.If("s").IsNotWithin(1, 4).ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be within 1 and 4"));
+            Assert.StartsWith("s must be within 1 and 4", res.Message);
 
 
             int i2 = 5;
@@ -785,7 +785,7 @@ namespace TypeLess.Tests
                 i.If("s").IsWithin(1, 4).ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must not be within 1 and 4"));
+            Assert.StartsWith("s must not be within 1 and 4", res.Message);
 
 
             int i2 = 5;
@@ -865,7 +865,7 @@ namespace TypeLess.Tests
             double d2 = 10;
 
             var errMsg = d.If("d").IsEqualTo(1).IsGreaterThan(0).Or(d2.If("d2").IsEqualTo(10)).ToString();
-            Assert.True(errMsg.StartsWith("d must not be equal to 1 and d must be smaller than 0. d2 must not be equal to 10"));
+            Assert.StartsWith("d must not be equal to 1 and d must be smaller than 0. d2 must not be equal to 10", errMsg);
 
         }
 
@@ -937,7 +937,7 @@ namespace TypeLess.Tests
                 x.If("s").IsInvalid.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("Name1 must be shorter than 7 characters and Number1 must not be equal to 0 and Name2 must be shorter than 6 characters and Number2 must not be equal to 0"));
+            Assert.StartsWith("Name1 must be shorter than 7 characters and Number1 must not be equal to 0 and Name2 must be shorter than 6 characters and Number2 must not be equal to 0", res.Message);
         }
 
         [Fact]
@@ -989,14 +989,14 @@ namespace TypeLess.Tests
                 (1 == 0).If("expr").IsFalse.ThenThrow("1 must be equal to {0}", 0);
             });
 
-            Assert.True(res.Message.StartsWith("1 must be equal to 0"));
+            Assert.StartsWith("1 must be equal to 0", res.Message);
 
             var res2 = Xunit.Assert.Throws<SomeException>(() =>
             {
                 (1 == 0).If("expr").IsFalse.ThenThrow<SomeException>("1 must be equal to {0}", 2);
             });
 
-            Assert.True(res2.Message.StartsWith("1 must be equal to 2"));
+            Assert.StartsWith("1 must be equal to 2", res2.Message);
 
         }
 
@@ -1010,7 +1010,7 @@ namespace TypeLess.Tests
 
             var errMsg = d1.If("d1").Or(d2, "d2").Or(d3, "d3").IsLessThan(5).IsGreaterThan(0).ToString();
 
-            Xunit.Assert.True(errMsg.StartsWith("d1 must be greater than 5. d2 must be greater than 5. d3 must be greater than 5 and d1 must be smaller than 0. d2 must be smaller than 0. d3 must be smaller than 0"));
+            Xunit.Assert.StartsWith("d1 must be greater than 5. d2 must be greater than 5. d3 must be greater than 5 and d1 must be smaller than 0. d2 must be smaller than 0. d3 must be smaller than 0", errMsg);
 
         }
 
@@ -1023,7 +1023,7 @@ namespace TypeLess.Tests
                 (1 == 0).If("expr").IsFalse.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("expr must be true"));
+            Assert.StartsWith("expr must be true", res.Message);
 
 
             (1 == 1).If("expr").IsFalse.ThenThrow();
@@ -1040,7 +1040,7 @@ namespace TypeLess.Tests
                 (1 == 1).If("expr").IsTrue.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("expr must be false"));
+            Assert.StartsWith("expr must be false", res.Message);
 
 
             (1 == 0).If("expr").IsTrue.ThenThrow();
@@ -1059,7 +1059,7 @@ namespace TypeLess.Tests
                 d.If("s").SameDayAs(d2).ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must not be on same day as " + d2.ToString("yyyy-MM-dd")));
+            Assert.StartsWith("s must not be on same day as " + d2.ToString("yyyy-MM-dd"), res.Message);
 
 
             d.If().SameDayAs(d2.AddDays(1)).ThenThrow();
@@ -1078,7 +1078,7 @@ namespace TypeLess.Tests
                 d.If("s").NotSameDayAs(d2).ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be on same day as " + d2.ToString("yyyy-MM-dd")));
+            Assert.StartsWith("s must be on same day as " + d2.ToString("yyyy-MM-dd"), res.Message);
 
 
             d.If().NotSameDayAs(d2.AddDays(-1)).ThenThrow();
@@ -1094,7 +1094,7 @@ namespace TypeLess.Tests
                 d.If("s").DoesNotContainKey("some key").ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must contain key some key"));
+            Assert.StartsWith("s must contain key some key", res.Message);
 
 
             Dictionary<string, int> d2 = new Dictionary<string, int>();
@@ -1114,7 +1114,7 @@ namespace TypeLess.Tests
                 d.If("s").ContainsKey("some key").ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must not contain key some key"));
+            Assert.StartsWith("s must not contain key some key", res.Message);
 
 
             Dictionary<string, int> d2 = new Dictionary<string, int>();
@@ -1132,7 +1132,7 @@ namespace TypeLess.Tests
                 s.If("s").IsNotValidPersonalNumber().ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be a valid personal number"));
+            Assert.StartsWith("s must be a valid personal number", res.Message);
 
 
             string s2 = "6708021586";
@@ -1149,7 +1149,7 @@ namespace TypeLess.Tests
                 s.If("s").IsNotValidUrl.ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be a valid URL"));
+            Assert.StartsWith("s must be a valid URL", res.Message);
 
 
             string s2 = "http://www.rapidsolutions.se";

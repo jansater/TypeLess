@@ -13,7 +13,8 @@ namespace TypeLess.Tests
         [Fact]
         public void WhenNotValidIMOThenThrow()
         {
-            Xunit.Assert.Throws<ArgumentNullException>(() => {
+            Xunit.Assert.Throws<ArgumentNullException>(() =>
+            {
 
                 string s = "asdasd";
                 s.If().IsNotValidImoNr().ThenThrow();
@@ -30,13 +31,10 @@ namespace TypeLess.Tests
                 s.If("s").IsNotValidSocialSecurityNumber().ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be a valid social security number"));
+            Assert.StartsWith("s must be a valid social security number", res.Message);
 
-            
-                var s2 = "457-55-5462";
-                s2.If().IsNotValidSocialSecurityNumber().ThenThrow();
-            
-
+            var s2 = "457-55-5462";
+            s2.If().IsNotValidSocialSecurityNumber().ThenThrow();
         }
 
         [Fact]
@@ -48,12 +46,12 @@ namespace TypeLess.Tests
                 s.If("s").IsNotValidPhoneNumber().ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be a valid phone number"));
+            Assert.StartsWith("s must be a valid phone number", res.Message);
 
-            
-                var s2 = "(425) 555-0123";
-                s2.If().IsNotValidPhoneNumber().ThenThrow();
-            
+
+            var s2 = "(425) 555-0123";
+            s2.If().IsNotValidPhoneNumber().ThenThrow();
+
 
         }
 
@@ -66,12 +64,12 @@ namespace TypeLess.Tests
                 s.If("s").IsNotValidZipCode().ThenThrow();
             });
 
-            Assert.True(res.Message.StartsWith("s must be a valid zip code"));
+            Assert.StartsWith("s must be a valid zip code", res.Message);
 
-            
-                var s2 = "95124";
-                s2.If().IsNotValidZipCode().ThenThrow();
-            
+
+            var s2 = "95124";
+            s2.If().IsNotValidZipCode().ThenThrow();
+
 
         }
 

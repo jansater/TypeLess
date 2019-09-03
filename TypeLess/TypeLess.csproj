@@ -1,165 +1,30 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{01BD2432-E1FB-4C96-9607-653B45950669}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TypeLess</RootNamespace>
+    <TargetFrameworks>net462;netstandard2.0</TargetFrameworks>
     <AssemblyName>TypeLess</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>12.0</OldToolsVersion>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <Description>A library that lets you write more code while typing less</Description>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
-    <NoWarn>1685</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>
-    </StartupObject>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
+
+  <Import Project="..\Shared.props" />
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
+  
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+  </ItemGroup>
+  
   <ItemGroup>
-    <Compile Include="Algorithms\Luhn.cs" />
-    <Compile Include="AssignmentException.cs" />
-    <Compile Include="AssignmentExtensions.cs" />
-    <Compile Include="DataTypes\AssertResult.cs" />
-    <Compile Include="DataTypes\Range.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Debugging\PerfLogger.cs" />
-    <Compile Include="Difference.cs" />
-    <Compile Include="Extensions\Banks\Swift.cs" />
-    <Compile Include="GenericEnumerableAssertion.cs" />
-    <Compile Include="Extensions\Books\Isbn.cs" />
-    <Compile Include="Extensions\Misc\NumberExtensions.cs" />
-    <Compile Include="Extensions\Usa\ZipCode.cs" />
-    <Compile Include="Extensions\Usa\PhoneNumber.cs" />
-    <Compile Include="Extensions\Usa\SocialSecurityNumber.cs" />
-    <Compile Include="Helpers\EnumerableExtensions.cs" />
-    <Compile Include="Helpers\EnumerableTraverser.cs" />
-    <Compile Include="Helpers\HashHelper.cs" />
-    <Compile Include="Helpers\ListSync.cs" />
-    <Compile Include="Helpers\Maps\Kml\LineStyle.cs" />
-    <Compile Include="Helpers\Maps\Kml\PlacemarkStyle.cs" />
-    <Compile Include="Helpers\Maps\Kml\Polygon.cs" />
-    <Compile Include="Helpers\Maps\Kml\PolygonPoint.cs" />
-    <Compile Include="Helpers\Maps\Kml\PolygonReader.cs" />
-    <Compile Include="Helpers\Maps\Kml\PolygonStyle.cs" />
-    <Compile Include="Helpers\ObjectFactory.cs" />
-    <Compile Include="Helpers\RangeExtensions.cs" />
-    <Compile Include="Helpers\RegexHelper.cs" />
-    <Compile Include="Helpers\SpreadFunctions.cs" />
-    <Compile Include="Extensions\Sweden\PersonalNumber.cs" />
-    <Compile Include="Helpers\StringExtensions.cs" />
-    <Compile Include="Helpers\IntExtensions.cs" />
-    <Compile Include="Helpers\TypeLessException.cs" />
-    <Compile Include="Helpers\ValueRotator.cs" />
-    <Compile Include="MixedTypeAssertion.cs" />
-    <Compile Include="ClassAssertion.cs" />
-    <Compile Include="DictionaryAssertion.cs" />
-    <Compile Include="Extensions\Shipping\ImoValidator.cs" />
-    <Compile Include="Extensions\Shipping\ShippingExtensions.cs" />
-    <Compile Include="NumberAssertion.cs" />
-    <Compile Include="ObjectAssertion.cs" />
-    <Compile Include="Properties\Resources.sv.Designer.cs">
+    <Compile Update="Properties\Resources.sv.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.sv.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Update="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="TimeSpanAssertion.cs" />
-    <Compile Include="DateTimeAssertion.cs" />
-    <Compile Include="NullableAssertion.cs" />
-    <Compile Include="CompilerServiceExtensions.cs" />
-    <Compile Include="EnumerableAssertExtensions .cs" />
-    <Compile Include="StringAssertExtensions.cs" />
-    <Compile Include="AssertExtensions.cs" />
-    <Compile Include="EnumerableAssertion.cs" />
-    <Compile Include="BoolAssertion.cs" />
-    <Compile Include="StringAssertion.cs" />
-    <Compile Include="Assertion.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.sv.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.sv.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

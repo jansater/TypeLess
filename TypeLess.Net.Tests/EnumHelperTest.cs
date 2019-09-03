@@ -1,21 +1,16 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using Xunit;
-using TypeLess.Extensions.Shipping;
-using TypeLess.Extensions.Usa;
-using TypeLess.Extensions.Books;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace TypeLess.Net.Tests
 {
-
     [Flags]
-    public enum Types {
+    public enum Types
+    {
         Undefined,
         [Description("Much better than type B")]
-        [Display(Name="TYPE A", Order=1, Description = "Much better than type B")]
+        [Display(Name = "TYPE A", Order = 1, Description = "Much better than type B")]
         TypeA,
         [Description("Much worse than type A")]
         [Display(Name = "TYPE B", Order = 2, Description = "Much better than type A")]
@@ -56,7 +51,6 @@ namespace TypeLess.Net.Tests
         [Fact]
         public void ThreeFlagsCreateCorrectMessage()
         {
-
             var typeA = TypesShortEnum.TypeA | TypesShortEnum.TypeB | TypesShortEnum.TypeC | TypesShortEnum.TypeD;
 
             Assert.Equal("Type A, Type B, Type C & Type D", typeA.GetFlagDescription());
@@ -65,30 +59,19 @@ namespace TypeLess.Net.Tests
         }
 
         [Fact]
-        public void ItsPossibasdfasdfleToGetDescriptionForEnum()
-        {
-
-            var typeA = TypesEnum.TypeC;
-
-            var vals = EnumHelper.AllValues<TypesEnum>();
-        }
-
-
-        [Fact]
         public void ItsPossibleToGetDescriptionForEnum()
         {
-
             var typeA = TypesEnum.TypeC;
 
             Assert.Equal("Much better than type AB", typeA.GetDescription());
         }
 
         [Fact]
-        public void ItsPossibleToGetDescriptionAndDisplayNameFromEnum() {
-
+        public void ItsPossibleToGetDescriptionAndDisplayNameFromEnum()
+        {
             var typeA = Types.TypeA;
-            
-            Assert.Equal("Much better than type B", typeA.GetFlagDescription());   
+
+            Assert.Equal("Much better than type B", typeA.GetFlagDescription());
         }
 
         [Fact]
