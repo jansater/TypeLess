@@ -29,15 +29,21 @@ namespace TypeLess
 
         public static void AssignTo<T>(this T source, ref T target, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null) where T : class
         {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
 
-            source.If().IsNull.ThenThrow<AssignmentException>($"{typeof(T).Name} in {caller} of {Path.GetFileName(file)} at line {lineNumber} cannot be assigned a null value");
             target = source;
         }
 
         public static T CheckedAssignment<T>(this T source, [CallerFilePath] string file = null, [CallerLineNumber] int? lineNumber = null, [CallerMemberName] string caller = null) where T : class
         {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
 
-            source.If().IsNull.ThenThrow<AssignmentException>($"{typeof(T).Name} in {caller} of {Path.GetFileName(file)} at line {lineNumber} cannot be assigned a null value");
             return source;
         }
     }
